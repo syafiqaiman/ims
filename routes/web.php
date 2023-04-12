@@ -42,7 +42,7 @@ Route::get('/edit_product/{id}', [App\Http\Controllers\backend\ProductController
 Route::post('/update_product/{id}', [App\Http\Controllers\backend\ProductController::class,'ProductUpdate']);
 Route::get('/delete_product/{id}', [App\Http\Controllers\backend\ProductController::class,'ProductDelete']);
 
-Route::get('/quantity', [App\Http\Controllers\backend\QuantityController::class, 'CompanyList'])->name('quantity.index');
+Route::get('quantity_list', [App\Http\Controllers\backend\QuantityController::class, 'ProductQuantityList'])->name('quantity.index');
 
 Route::post('/cart/add/{product}', [App\Http\Controllers\CartController::class, 'addToCart'])->name('addToCart');
 

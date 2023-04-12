@@ -90,10 +90,10 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="{{URL::to('/cart_list')}}" class="nav-link">
+            <a href="{{URL::to('/quantity_list')}}" class="nav-link">
               <i class="nav-icon fas fa-th"></i>
               <p>
-                Cart
+                Product Stock Level
                 <!-- <span class="right badge badge-danger">New</span> -->
               </p>
             </a>
