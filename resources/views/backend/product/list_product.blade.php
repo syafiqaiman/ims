@@ -65,8 +65,11 @@
           </div>
        </div>
     </td>
-<td> <img src="{{ url('public/Image/'.$row->product_image) }}"
-       style="height: 100px; width: 150px;"> </td>
+    <td> 
+      <img src="{{ asset('storage/Image/'.$row->product_image) }}"
+           style="height: 100px; width: 150px;">
+    </td>
+    
 <td>{{ $row->date_to_be_stored }}</td>
 @if(Auth::user()->role == 1)
 <td>

@@ -117,15 +117,6 @@
             </a>
           </li>
 
-          <li class="nav-item">
-            <a href="{{URL::to('/user_list')}}" class="nav-link">
-              <i class="nav-icon fas fa-th"></i>
-              <p>
-                User List
-                <!-- <span class="right badge badge-danger">New</span> -->
-              </p>
-            </a>
-          </li>
 
           <li class="nav-item">
             <a href="{{URL::to('/user_list')}}" class="nav-link">
@@ -230,10 +221,12 @@
 
 
 <li class="nav-item">
-<a class="dropdown-item" href="{{ route('logout') }}"
+<a href="{{ route('logout') }}"
 onclick="event.preventDefault();
-document.getElementById('logout-form').submit();">
-<i class="nav-icon fas fa-th"></i> Logout
+document.getElementById('logout-form').submit();" class="nav-link">
+<i class="nav-icon fas fa-th"></i>
+   Logout
+   <!-- <span class="right badge badge-danger">New</span> -->
 </a>
 
 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">

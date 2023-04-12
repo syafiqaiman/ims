@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use App\Models\Product;
 use App\Models\Company;
@@ -71,7 +72,7 @@ class ProductController extends Controller
             'date_to_be_stored' => 'required|date',
             'carton_quantity' => 'required|integer',
             'item_per_carton' => 'required|integer',
-            'product_image' => 'required'
+            'product_image' => 'required|image|max:2048'
         ]);
         
         $data = [
@@ -94,7 +95,12 @@ class ProductController extends Controller
             $filename = date('YmdHi') . '.' . $file->getClientOriginalExtension();
             $file->storeAs('public/Image', $filename);
             $data['product_image'] = $filename;
+            
+            // Move the file to the desired folder
+            Storage::move('public/'.$filename, 'public/Image/'.$filename);
         }
+        
+        
         
         // Calculate the total quantity
         $total_quantity = $request->carton_quantity * $request->item_per_carton;
@@ -124,33 +130,51 @@ class ProductController extends Controller
         }
     }
     
-    
 
     public function ProductEdit($id)
     {
         $edit = DB::table('products')
-                 ->join('quantity', 'products.id', '=', 'quantity.product_id')
-                 ->select('products.*', 'quantity.remaining_quantity', 'quantity.carton_quantity', 'quantity.item_quantity')
-                 ->where('products.id', $id)
-                 ->first();
-        return view('backend.product.edit_product', compact('edit'));
+        ->join('quantities', 'products.id', '=', 'quantities.product_id')
+        ->join('companies', 'products.company_id', '=', 'companies.id')
+        ->select('products.id', 'products.company_id', 'companies.id AS company_id', 'companies.company_name', 'product_name', 'product_desc', 'product_image', 'product_dimensions', 'weight_per_item', 'weight_per_carton')
+        ->where('products.id', $id)
+        ->first();
+
+    $companies = Company::all();
+
+    return view('backend.product.edit_product', compact('edit', 'companies'));
     }
     
 
-
-    public function ProductUpdate(Request $request, $id)
+public function ProductUpdate(Request $request, $id)
 {
-    $data = array();
-    $data['user_id'] = auth()->user()->id;
-    $data['company'] = $request->company;
-    $data['product_name'] = $request->product_name;
-    $data['product_desc'] = $request->product_desc;
-    $data['rack_location'] = $request->rack_location;    
-    $data['weight_per_item'] = $request->weight_per_item; 
-    $data['weight_per_carton'] = $request->weight_per_carton; 
-    $data['product_dimensions'] = $request->product_dimensions;
-    $data['date_to_be_stored'] = $request->date_to_be_stored;
-    
+    $validatedData = $request->validate([
+        'company_id' => 'required',
+        'product_name' => 'required|string|max:255',
+        'product_desc' => 'required|string',
+        'weight_per_item' => 'required|numeric',
+        'weight_per_carton' => 'required|numeric',
+        'product_dimensions' => 'required|string|max:255',
+        'date_to_be_stored' => 'required|date',
+        'carton_quantity' => 'required|integer',
+        'item_per_carton' => 'required|integer',
+        'product_image' => 'image|max:2048'
+    ]);
+
+    $data = [
+        'user_id' => auth()->user()->id,
+        'company_id' => $request->company_id,
+        'product_name' => $request->product_name,
+        'product_desc' => $request->product_desc,
+        'item_per_carton' => $request->item_per_carton,
+        'carton_quantity' => $request->carton_quantity,
+        'weight_per_item' => $request->weight_per_item,
+        'weight_per_carton' => $request->weight_per_carton,
+        'product_dimensions' => $request->product_dimensions,
+        'date_to_be_stored' => $request->date_to_be_stored,
+        'updated_at' => now(),
+    ];
+
     // Check if image is uploaded
     if ($request->file('product_image')) {
         $file = $request->file('product_image');
@@ -164,8 +188,10 @@ class ProductController extends Controller
     if ($update) {
         // Update remaining_quantity
         $quantity_data = array();
-        $quantity_data['remaining_quantity'] = $request->carton_quantity * $request->item_quantity;
-        DB::table('quantity')->where('product_id', $id)->update($quantity_data);
+        $quantity_data['remaining_quantity'] = $request->carton_quantity * $request->item_per_carton;
+        $quantity_data['carton_quantity'] = $request->carton_quantity;
+        $quantity_data['item_quantity'] = $request->item_per_carton;
+        DB::table('quantities')->where('product_id', $id)->update($quantity_data);
 
         return Redirect()->route('product.index')->with('success','Product Updated Successfully!');                     
     } else {
