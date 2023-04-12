@@ -61,7 +61,18 @@ class CartController extends Controller
     return redirect()->route('carts.index');
 }
 
-
+public function update(Request $request, $id)
+{
+    $cart = Cart::findOrFail($id);
+    $cart->carton_quantity = $request->input('carton_quantity');
+    $cart->item_quantity = $request->input('item_quantity');
+    $quantityPerCarton = $cart->product->item_per_carton;
+    $cart->total_quantity = $cart->carton_quantity * $quantityPerCarton + $cart->item_quantity;
+    $cart->product->quantity->remaining_quantity -= $cart->total_quantity - $cart->original_total_quantity;
+    $cart->product->quantity->save();
+    $cart->save();
+    return redirect()->route('carts.index')->with('success', 'Cart updated successfully');
+}
 
 
 }
