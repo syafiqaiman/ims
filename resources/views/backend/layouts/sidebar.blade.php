@@ -71,7 +71,7 @@
 @if (Auth::user()->role == 1 )
 
           <li class="nav-item">
-            <a href="{{URL::to('/list_bookcategory')}}" class="nav-link">
+            <a href="{{URL::to('/cart_index')}}" class="nav-link">
               <i class="nav-icon fas fa-th"></i>
               <p>
                 List Book Category

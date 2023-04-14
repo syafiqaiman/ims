@@ -23,7 +23,7 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::get('list_bookcategory', [App\Http\Controllers\backend\BookcategoryController::class,'BookCategoryList'])->name('bookcategory.index');
+Route::get('product_cart', [App\Http\Controllers\backend\BookcategoryController::class,'BookCategoryList'])->name('bookcategory.index');
 Route::get('/add_bookcategory',[App\Http\Controllers\backend\BookcategoryController::class,'BookCategoryAdd'])->name('bookcategoryadd');
 Route::post('/insert_bookcategory', [App\Http\Controllers\backend\BookcategoryController::class,'BookCategoryInsert']);
 Route::get('/edit_bookcategory/{id}', [App\Http\Controllers\backend\BookcategoryController::class,'BookEditCategory']);
@@ -46,8 +46,10 @@ Route::get('quantity_list', [App\Http\Controllers\backend\QuantityController::cl
 
 Route::post('/cart/add/{product}', [App\Http\Controllers\CartController::class, 'addToCart'])->name('addToCart');
 
-Route::get('carts', [App\Http\Controllers\backend\CartController::class, 'store'])->name('carts.store');
-
+Route::get('cart_index', [App\Http\Controllers\backend\CartController::class, 'ItemList'])->name('quantity.index');
+Route::get('/cart_view', [App\Http\Controllers\backend\CartController::class, 'ItemList'])->name('quantitycart');
+Route::post('/cart_view', [App\Http\Controllers\backend\CartController::class, 'ItemList'])->name('cart.store');
+Route::get('/cart.destroy', [App\Http\Controllers\backend\CartController::class, 'cartRemove'])->name('cart.destroy');
 
 
     Route::get('detail_company', [App\Http\Controllers\backend\CompanyController::class, 'index'])->name('company.index');

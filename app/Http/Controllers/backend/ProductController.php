@@ -134,15 +134,14 @@ class ProductController extends Controller
     public function ProductEdit($id)
     {
         $edit = DB::table('products')
-        ->join('quantities', 'products.id', '=', 'quantities.product_id')
-        ->join('companies', 'products.company_id', '=', 'companies.id')
-        ->select('products.id', 'products.company_id', 'companies.id AS company_id', 'companies.company_name', 'product_name', 'product_desc', 'product_image', 'product_dimensions', 'weight_per_item', 'weight_per_carton')
-        ->where('products.id', $id)
-        ->first();
-
-    $companies = Company::all();
-
-    return view('backend.product.edit_product', compact('edit', 'companies'));
+            ->join('companies', 'products.company_id', '=', 'companies.id')
+            ->select('products.id', 'products.company_id', 'companies.id AS company_id', 'companies.company_name', 'product_name', 'product_desc', 'product_image', 'product_dimensions','date_to_be_stored', 'weight_per_item', 'weight_per_carton')
+            ->where('products.id', $id)
+            ->first();
+    
+        $companies = Company::all();
+    
+        return view('backend.product.edit_product', compact('edit', 'companies'));
     }
     
 
@@ -156,8 +155,6 @@ public function ProductUpdate(Request $request, $id)
         'weight_per_carton' => 'required|numeric',
         'product_dimensions' => 'required|string|max:255',
         'date_to_be_stored' => 'required|date',
-        'carton_quantity' => 'required|integer',
-        'item_per_carton' => 'required|integer',
         'product_image' => 'image|max:2048'
     ]);
 
@@ -166,8 +163,6 @@ public function ProductUpdate(Request $request, $id)
         'company_id' => $request->company_id,
         'product_name' => $request->product_name,
         'product_desc' => $request->product_desc,
-        'item_per_carton' => $request->item_per_carton,
-        'carton_quantity' => $request->carton_quantity,
         'weight_per_item' => $request->weight_per_item,
         'weight_per_carton' => $request->weight_per_carton,
         'product_dimensions' => $request->product_dimensions,
@@ -176,23 +171,19 @@ public function ProductUpdate(Request $request, $id)
     ];
 
     // Check if image is uploaded
-    if ($request->file('product_image')) {
+    if ($request->hasFile('product_image')) {
         $file = $request->file('product_image');
-        $filename = date('YmdHi') . $file->getClientOriginalName();
-        $file->move(public_path('public/Image'), $filename);
+        $filename = date('YmdHi') . '.' . $file->getClientOriginalExtension();
+        $file->storeAs('public/Image', $filename);
         $data['product_image'] = $filename;
+        
+        // Move the file to the desired folder
+        Storage::move('public/'.$filename, 'public/Image/'.$filename);
     }
 
     $update = DB::table('products')->where('id', $id)->update($data);
 
     if ($update) {
-        // Update remaining_quantity
-        $quantity_data = array();
-        $quantity_data['remaining_quantity'] = $request->carton_quantity * $request->item_per_carton;
-        $quantity_data['carton_quantity'] = $request->carton_quantity;
-        $quantity_data['item_quantity'] = $request->item_per_carton;
-        DB::table('quantities')->where('product_id', $id)->update($quantity_data);
-
         return Redirect()->route('product.index')->with('success','Product Updated Successfully!');                     
     } else {
         $notification = array(

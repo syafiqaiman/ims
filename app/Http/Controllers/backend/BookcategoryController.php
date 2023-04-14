@@ -19,8 +19,8 @@ class BookcategoryController extends Controller
         	
     public function BookCategoryList(Request $request)
     {
-        $list = DB::table('bookcategories')->get();
-        return view('backend.bookcategory.list_bookcategory',compact('list'));
+        $list = DB::table('products')->get();
+        return view('backend.carts.product_cart',compact('list'));
     }
 
 

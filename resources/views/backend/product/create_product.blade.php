@@ -125,17 +125,7 @@
   @enderror
 </div>
 
-<div class="form-group">
-  <label for="exampleInputEmail1">Product Image</label>
-  <input type="file" name="product_image"  class="form-control @error('title') is-invalid @enderror"
-   id="exampleInputEmail1" placeholder="Upload Image">
-  
-  @error('title')
-  <span class="invalid-feedback" role="alert">
-  <strong>{{ $message }}</strong>
-  </span>
-  @enderror
-</div>
+0185494422
 
 <div class="form-group">
   <label for="exampleInputEmail1">Date to be stored</label>

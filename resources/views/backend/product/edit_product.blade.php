@@ -95,6 +95,18 @@
                      </span>
                      @enderror
                      </div>
+
+                     <div class="form-group">
+                      <label for="exampleInputEmail1">Date to be stored</label>
+                      <input type="date" name="date_to_be_stored" value="{{ $edit->date_to_be_stored }}" class="form-control @error('title') is-invalid @enderror"
+                       id="exampleInputEmail1" placeholder="Date">
+                      
+                      @error('title')
+                      <span class="invalid-feedback" role="alert">
+                      <strong>{{ $message }}</strong>
+                      </span>
+                      @enderror
+                    </div>
  
 
                      <div class="form-group">
