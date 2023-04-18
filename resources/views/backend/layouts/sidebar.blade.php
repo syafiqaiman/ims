@@ -74,7 +74,7 @@
             <a href="{{URL::to('/cart_index')}}" class="nav-link">
               <i class="nav-icon fas fa-th"></i>
               <p>
-                List Book Category
+                Assign Product
                 <!-- <span class="right badge badge-danger">New</span> -->
               </p>
             </a>

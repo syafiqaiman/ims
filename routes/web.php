@@ -44,13 +44,13 @@ Route::get('/delete_product/{id}', [App\Http\Controllers\backend\ProductControll
 
 Route::get('quantity_list', [App\Http\Controllers\backend\QuantityController::class, 'ProductQuantityList'])->name('quantity.index');
 
-Route::post('/cart/add/{product}', [App\Http\Controllers\CartController::class, 'addToCart'])->name('addToCart');
 
 Route::get('cart_index', [App\Http\Controllers\backend\CartController::class, 'ItemList'])->name('quantity.index');
 Route::get('/cart_view', [App\Http\Controllers\backend\CartController::class, 'ItemList'])->name('quantitycart');
-Route::post('/cart_view', [App\Http\Controllers\backend\CartController::class, 'ItemList'])->name('cart.store');
-Route::get('/cart.destroy', [App\Http\Controllers\backend\CartController::class, 'cartRemove'])->name('cart.destroy');
-
+Route::post('/cart/add/{id}', [App\Http\Controllers\backend\CartController::class, 'addToCart'])->name('cart.add');
+Route::post('/cart/remove/{id}', [App\Http\Controllers\backend\CartController::class, 'cartRemove'])->name('cart.remove');
+Route::get('/checkout', [App\Http\Controllers\backend\CartController::class, 'checkout'])->name('checkout.index');
+Route::post('/cart/update/{id}', [App\Http\Controllers\backend\CartController::class, 'update'])->name('cart.update');
 
     Route::get('detail_company', [App\Http\Controllers\backend\CompanyController::class, 'index'])->name('company.index');
     Route::get('/add_company', [App\Http\Controllers\backend\CompanyController::class, 'create'])->name('company.create');
