@@ -17,7 +17,7 @@
               <th>Product Image</th>
               <th>Product Name</th>
               <th>Stock</th>
-              <th>Add To Cart</th>
+              <th>Choose Product</th>
             </tr>
           </thead>
           <tbody>
@@ -36,7 +36,7 @@
                         <input type="hidden" value="{{ $product->product_image }}"  name="product_image">
                         <input type="hidden" value="1" name="quantity">
                     <span class="input-group-append">
-                      <button type="submit" class="btn btn-info btn-flat">Add to Cart</button>
+                      <button type="submit" class="btn btn-info btn-flat">Select Product</button>
                     </span>
                   </div>
                 </form>
@@ -53,9 +53,15 @@
   <div class="card">
     <div class="card-header">
       <h3 class="card-title">Selected Product</h3>
+      @if (!empty(session('cart')))
+    <form method="POST" action="{{ route('cart.clear') }}">
+      @csrf
+      <button type="submit" class="btn btn-warning float-right">Clear Cart</button>
+    </form>
+  @endif
     </div>
     @if (empty(session('cart')))
-    <p>Your cart is empty.</p>
+    <p class="m-4">Your cart is empty.</p>
     @else
     <div class="card-body">
       <table class="table">
@@ -76,7 +82,7 @@
                 <div class="input-group input-group-sm">
                   <input min="0" name="quantity" value="{{ $item['quantity'] }}" type="number" class="form-control">
                   <span class="input-group-append">
-                    <button type="submit" class="btn btn-info btn-flat">Update</button>
+                    <button type="submit" class="btn btn-info btn-flat">Confirm</button>
                   </span>
                 </div>
               </form>
@@ -92,15 +98,31 @@
           @endforeach
         </tbody>
       </table>
+      <div class="form-group">
+        <form method="POST" action="{{ route('assign.index') }}">
+          @csrf
+          <input type="hidden" name="product_id" value="{{ $product->id }}">
+          <div class="form-group">
+            <label for="picker">Assign to:</label>
+            <select name="user_id" class="form-control">
+              @foreach ($users as $user)
+                @if ($user->role == 2)
+                  <option value="{{ $user->id }}">{{ $user->name }}</option>
+                @endif
+              @endforeach
+            </select>
+          </div>
+    </div>    
       <div class="d-flex justify-content-between align-items-center">
-        <h4>Total: {{ session('total') }}</h4>
-        <a href="{{ route('checkout.index') }}" class="btn btn-primary">Checkout</a>
+        <button type="submit" class="btn btn-primary">Assign</button>
       </div>
+    </form>
        @endif
     </div>
   </div>
 </div>
 </div>
+
 
 @endsection
 

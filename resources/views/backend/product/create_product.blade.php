@@ -125,8 +125,6 @@
   @enderror
 </div>
 
-0185494422
-
 <div class="form-group">
   <label for="exampleInputEmail1">Date to be stored</label>
   <input type="date" name="date_to_be_stored"  class="form-control @error('title') is-invalid @enderror"

@@ -49,8 +49,9 @@ Route::get('cart_index', [App\Http\Controllers\backend\CartController::class, 'I
 Route::get('/cart_view', [App\Http\Controllers\backend\CartController::class, 'ItemList'])->name('quantitycart');
 Route::post('/cart/add/{id}', [App\Http\Controllers\backend\CartController::class, 'addToCart'])->name('cart.add');
 Route::post('/cart/remove/{id}', [App\Http\Controllers\backend\CartController::class, 'cartRemove'])->name('cart.remove');
-Route::get('/checkout', [App\Http\Controllers\backend\CartController::class, 'checkout'])->name('checkout.index');
+Route::post('/assign', [App\Http\Controllers\backend\CartController::class, 'assign'])->name('assign.index');
 Route::post('/cart/update/{id}', [App\Http\Controllers\backend\CartController::class, 'update'])->name('cart.update');
+Route::post('/cart_clear', [App\Http\Controllers\backend\CartController::class, 'clear'])->name('cart.clear');
 
     Route::get('detail_company', [App\Http\Controllers\backend\CompanyController::class, 'index'])->name('company.index');
     Route::get('/add_company', [App\Http\Controllers\backend\CompanyController::class, 'create'])->name('company.create');

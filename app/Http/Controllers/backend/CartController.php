@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Models\Company;
 use App\Models\Product;
+use App\Models\Picker;
 use App\Models\Order;
 use App\Models\Quantity;
 use Illuminate\Http\Request;
@@ -32,7 +33,8 @@ class CartController extends Controller
 
     // check if the authenticated user is an admin (role 1)
     if ($user->role == 1) {
-        // if admin, get all products from the database
+        // if admin, get all products and users info from the database
+        $users = DB::table('users')->get();
         $list = DB::table('products')
             ->join('quantities', 'products.id', '=', 'quantities.product_id')
             ->join('companies', 'products.company_id', '=', 'companies.id')
@@ -44,7 +46,7 @@ class CartController extends Controller
     }
 
     // return the view with the list of products and the cart data
-    return view('backend.carts.cart_index', compact('list', 'cart', 'total'));
+    return view('backend.carts.cart_index', compact('list', 'cart', 'users' ,'total'));
 }
 
 
@@ -97,47 +99,59 @@ public function update(Request $request, $id)
     }
 
 
-    public function checkout() 
-{
-    // Get the cart items
-    $cart = session()->get('cart', []);
-    
-    // Deduct the items from the remaining quantity and update the product and quantity
-    foreach ($cart as $id => $item) {
-        $quantity_to_deduct = $item['quantity'];
+    public function assign(Request $request) 
+    {
+        // Get the cart items
+        $cart = session()->get('cart', []);
         
-        $quantity = Quantity::where('product_id', $id)->firstOrFail();
-        $product = Product::findOrFail($quantity->product_id);
-        $num_cartons = floor($quantity_to_deduct / $product->item_per_carton);
-        $num_items = $quantity_to_deduct % $product->item_per_carton;
-        $quantity_deducted = $num_cartons * $product->item_per_carton + $num_items;
-        
-        // Check if the quantity is available
-        if ($quantity->remaining_quantity < $quantity_deducted) {
-            return redirect()->back()->with('error', 'Not enough stock!');
+        // Deduct the items from the remaining quantity and update the product and quantity
+        foreach ($cart as $id => $item) {
+            $quantity_to_deduct = $item['quantity'];
+            
+            $quantity = Quantity::where('product_id', $id)->firstOrFail();
+            $product = Product::findOrFail($quantity->product_id);
+            $num_cartons = floor($quantity_to_deduct / $product->item_per_carton);
+            $num_items = $quantity_to_deduct % $product->item_per_carton;
+            $quantity_deducted = $num_cartons * $product->item_per_carton + $num_items;
+            
+            // Check if the quantity is available
+            if ($quantity->remaining_quantity < $quantity_deducted) {
+                return redirect()->back()->with('error', 'Not enough stock!');
+            }
+            
+            $quantity->remaining_quantity -= $quantity_deducted;
+            $quantity->sold_carton_quantity += $num_cartons;
+            $quantity->sold_item_quantity += $num_items;
+            $quantity->save();
         }
         
-        $quantity->remaining_quantity -= $quantity_deducted;
-        $quantity->sold_carton_quantity += $num_cartons;
-        $quantity->sold_item_quantity += $num_items;
-        $quantity->save();
+        // Create a new order for each cart item
+        foreach ($cart as $id => $item) {
+            $order = new Order();
+            $order->user_id = auth()->user()->id;
+            $order->product_id = $id;
+            $order->quantity = $item['quantity'];
+            $order->save();
+        }
+        
+        // Get the selected user ID
+        $user_id = $request->input('user_id');
+        
+        // Store the assigned products and quantity in the pickers table
+        foreach ($cart as $id => $item) {
+            $picker = new Picker();
+            $picker->user_id = $user_id;
+            $picker->product_id = $id;
+            $picker->quantity = $item['quantity'];
+            $picker->save();
+        }
+        
+        // Clear the cart
+        session()->forget('cart');
+        
+        return redirect()->back()->with('success', 'Order placed and products assigned successfully!');
     }
     
-    // Create a new order for each cart item
-    foreach ($cart as $id => $item) {
-        $order = new Order();
-        $order->user_id = auth()->user()->id;
-        $order->product_id = $id;
-        $order->quantity = $item['quantity'];
-        $order->save();
-    }
-    
-    // Clear the cart
-    session()->forget('cart');
-    
-    return redirect()->back()->with('success', 'Order placed successfully!');
-}
-
     
 
 
@@ -146,20 +160,6 @@ public function update(Request $request, $id)
 public function cartRemove($id)
 {
     $cart = session()->get('cart', []);
-    $product = Product::findOrFail($id);
-
-    // Get the quantity to be added back to the stock
-    $prev_quantity = $cart[$id]['quantity'];
-    $prev_num_cartons = ceil($prev_quantity / $product->item_per_carton);
-    $prev_num_items = $prev_quantity % $product->item_per_carton;
-    $prev_quantity_to_add = $prev_num_cartons * $product->carton_quantity + $prev_num_items;
-
-    // Update the product quantities in the Quantity model
-    $quantity = Quantity::where('product_id', $id)->firstOrFail();
-    $quantity->sold_carton_quantity -= $prev_num_cartons;
-    $quantity->sold_item_quantity -= $prev_num_items;
-    $quantity->remaining_quantity += $prev_quantity_to_add;
-    $quantity->save();
 
     // Remove the item from the cart
     unset($cart[$id]);
