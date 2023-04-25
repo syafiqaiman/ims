@@ -51,8 +51,10 @@ Route::get('/company/getUsers', function (Request $request) {
 })->name('company.getUsers');
 
 
-
 Route::get('quantity_list', [App\Http\Controllers\backend\QuantityController::class, 'ProductQuantityList'])->name('quantity.index');
+
+
+Route::get('picker_task', [App\Http\Controllers\backend\PickerController::class, 'PickerTaskList'])->name('pickertask');
 
 
 Route::get('cart_index', [App\Http\Controllers\backend\CartController::class, 'ItemList'])->name('quantity.index');

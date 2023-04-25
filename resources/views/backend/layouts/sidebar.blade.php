@@ -143,10 +143,10 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="{{URL::to('/add_bookcategory')}}" class="nav-link">
+            <a href="{{URL::to('/picker_task')}}" class="nav-link">
               <i class="nav-icon fas fa-th"></i>
               <p>
-                Add Book Category
+                Task
                 <!-- <span class="right badge badge-danger">New</span> -->
               </p>
             </a>
