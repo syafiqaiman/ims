@@ -35,7 +35,7 @@ if($row->role==1)
 }
 if($row->role==2)
 {
-       echo 'Manager';
+       echo 'Picker';
 }
 if($row->role==3)
 {

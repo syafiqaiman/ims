@@ -28,7 +28,7 @@ if($edit->role==1)
 }
 if($edit->role==2)
 {
-       echo 'Present Permission is : <b>Manager</b>';
+       echo 'Present Permission is : <b>Picker</b>';
 }
 if($edit->role==3)
 {
@@ -45,7 +45,7 @@ if($edit->role==3)
              <select class="form-control" id="exampleFormControlSelect1" name="role" required>
              <option  required> Please Select </option>          
 <option value="1" >Admin </option>
-<option value="2" >Manager </option>
+<option value="2" >Picker </option>
 <option value="3" >User </option>
 
 
