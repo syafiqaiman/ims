@@ -21,13 +21,11 @@
 
 
                   <div class="form-group">
-                    <label for="exampleInputEmail1">Company Name</label>
-                    <select name="company_id" class="form-control">
+                    <label for="company_id">Company Name</label>
+                    <select name="company_id" class="form-control" id="company_id">
                         <option value="">Select Company Name</option>
                         @foreach($companies as $company)
-                            @if(auth()->user()->role == 1 || (auth()->user()->role == 3 && $company->user_id == auth()->user()->id))
-                                <option value="{{ $company->id }}">{{ $company->company_name }}</option>
-                            @endif
+                            <option value="{{ $company->id }}">{{ $company->company_name }}</option>
                         @endforeach
                     </select>
                     @error('company_id')
@@ -37,7 +35,7 @@
                     @enderror
                 </div>
                 
-                
+                           
 
 <div class="form-group">
 <label for="exampleInputEmail1">Product Name</label>
@@ -117,6 +115,18 @@
   <label for="exampleInputEmail1">Weight Per Carton</label>
   <input type="number" name="weight_per_carton"  class="form-control @error('title') is-invalid @enderror"
    id="exampleInputEmail1" placeholder="Weight Per Carton">
+  
+  @error('title')
+  <span class="invalid-feedback" role="alert">
+  <strong>{{ $message }}</strong>
+  </span>
+  @enderror
+</div>
+
+<div class="form-group">
+  <label for="exampleInputEmail1">Product Image</label>
+  <input type="file" name="product_image"  class="form-control @error('title') is-invalid @enderror"
+   id="exampleInputEmail1" placeholder="Upload Image">
   
   @error('title')
   <span class="invalid-feedback" role="alert">

@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use App\Models\Company;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,6 +43,14 @@ Route::post('/insert_product', [App\Http\Controllers\backend\ProductController::
 Route::get('/edit_product/{id}', [App\Http\Controllers\backend\ProductController::class,'ProductEdit']);
 Route::post('/update_product/{id}', [App\Http\Controllers\backend\ProductController::class,'ProductUpdate']);
 Route::get('/delete_product/{id}', [App\Http\Controllers\backend\ProductController::class,'ProductDelete']);
+
+Route::get('/company/getUsers', function (Request $request) {
+    $company = Company::find($request->company_id);
+    $users = $company ? $company->getUsers() : [];
+    return response()->json($users);
+})->name('company.getUsers');
+
+
 
 Route::get('quantity_list', [App\Http\Controllers\backend\QuantityController::class, 'ProductQuantityList'])->name('quantity.index');
 
