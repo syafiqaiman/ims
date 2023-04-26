@@ -143,6 +143,7 @@ public function update(Request $request, $id)
             $picker->user_id = $user_id;
             $picker->product_id = $id;
             $picker->quantity = $item['quantity'];
+            $picker->status = 'Pending'; 
             $picker->save();
         }
         

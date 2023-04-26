@@ -27,6 +27,7 @@
                                 <th>Product Name</th>
                                 <th>Quantity</th>
                                 <th>Date of Pick Up</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -34,13 +35,20 @@
                             <tr>
                                 <td>{{ $picker->product->product_name }}</td>
                                 <td>{{ $picker->quantity }}</td>
-                                <td>{{ $picker->created_at->format('d M, Y') }}
+                                <td>{{ $picker->created_at->format('d M, Y') }}</td>
+                                <td>
+                                    @if($picker->status == 'Approved')
+                                        <span class="badge bg-success">{{ $picker->status }}</span>
+                                    @elseif($picker->status == 'Pending')
+                                        <span class="badge bg-warning">{{ $picker->status }}</span>
+                                    @else
+                                        <span class="badge bg-danger">{{ $picker->status }}</span>
+                                    @endif
                                 </td>
-                                <td><span class="tag tag-{{ $picker->status == 'Approved' ? 'success' : ($picker->status == 'Pending' ? 'warning' : 'danger') }}">{{ $picker->status }}</span></td>
-                                <td>{{ $picker->reason }}</td>
+                                
                             </tr>
                             @endforeach
-                        </tbody>
+                        </tbody>                        
                     </table>
                 </div>
             </div>
@@ -48,3 +56,4 @@
     </div>
 </div>
 @endsection
+
