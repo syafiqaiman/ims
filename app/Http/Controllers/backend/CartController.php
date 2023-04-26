@@ -126,13 +126,13 @@ public function update(Request $request, $id)
         }
         
         // Create a new order for each cart item
-        foreach ($cart as $id => $item) {
+        /*foreach ($cart as $id => $item) {
             $order = new Order();
             $order->user_id = auth()->user()->id;
             $order->product_id = $id;
             $order->quantity = $item['quantity'];
             $order->save();
-        }
+        }*/
         
         // Get the selected user ID
         $user_id = $request->input('user_id');

@@ -105,6 +105,7 @@
           <div class="form-group">
             <label for="picker">Assign to:</label>
             <select name="user_id" class="form-control">
+              <option value="">Select Picker</option>
               @foreach ($users as $user)
                 @if ($user->role == 2)
                   <option value="{{ $user->id }}">{{ $user->name }}</option>

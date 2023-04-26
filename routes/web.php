@@ -55,6 +55,7 @@ Route::get('quantity_list', [App\Http\Controllers\backend\QuantityController::cl
 
 
 Route::get('picker_task', [App\Http\Controllers\backend\PickerController::class, 'PickerTaskList'])->name('pickertask');
+Route::post('/picker/confirm-collection/{id}/{quantity}', [App\Http\Controllers\backend\PickerController::class, 'confirmCollection'])->name('picker.confirm');
 
 
 Route::get('cart_index', [App\Http\Controllers\backend\CartController::class, 'ItemList'])->name('quantity.index');
