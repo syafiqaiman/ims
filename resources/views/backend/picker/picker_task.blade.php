@@ -44,18 +44,19 @@
                                         <span class="badge bg-danger">{{ $picker->status }}</span>
                                     @endif
                                 </td>
-                                <td>
+                                <td class="status-cell">
                                     @if($picker->status == 'Collected')
                                         <span class="badge bg-success">{{ $picker->status }}</span>
                                     @elseif($picker->status == 'Pending')
                                         <form action="{{ route('picker.confirm', ['id' => $picker->id, 'quantity' => $picker->quantity]) }}" method="POST">
                                             @csrf
-                                            <button type="submit" class="btn btn-primary btn-sm btn-collect">Collect</button>
+                                            <button type="submit" class="btn btn-primary btn-sm btn-collect collect-btn">Collect</button>
                                         </form>                                    
                                     @else
                                         <span class="badge bg-primary">Collected</span>
                                     @endif
                                 </td>
+                                
                                 
                             </tr>
                             @endforeach
@@ -64,10 +65,13 @@
                 </div>
             </div>
             <div class="text-center mt-4">
-                <button class="btn btn-success" id="proceed-to-packing" disabled>Proceed to Packing</button>
+                <a href="{{ route('picker.history') }}" class="btn btn-success" id="proceed-to-packing" disabled>Proceed to Packing</a>
             </div>
             
         </div>
     </div>
 </div>
+
+
+
 @endsection

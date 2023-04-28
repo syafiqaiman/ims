@@ -133,15 +133,7 @@
 
 @if (Auth::user()->role == 2 )
 
-          <li class="nav-item">
-            <a href="{{URL::to('/list_bookcategory')}}" class="nav-link">
-              <i class="nav-icon fas fa-th"></i>
-              <p>
-                List Book Category
-                <!-- <span class="right badge badge-danger">New</span> -->
-              </p>
-            </a>
-          </li>
+
           <li class="nav-item">
             <a href="{{URL::to('/picker_task')}}" class="nav-link">
               <i class="nav-icon fas fa-th"></i>
@@ -152,26 +144,15 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="{{URL::to('/list_product')}}" class="nav-link">
+            <a href="{{URL::to('/quantity_list')}}" class="nav-link">
               <i class="nav-icon fas fa-th"></i>
               <p>
-                Product List
-                <!-- <span class="right badge badge-danger">New</span> -->
-              </p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{{URL::to('/add_product')}}" class="nav-link">
-              <i class="nav-icon fas fa-th"></i>
-              <p>
-                Add Product
+                Product Stock Level
                 <!-- <span class="right badge badge-danger">New</span> -->
               </p>
             </a>
           </li>
 
-     
-        
 @endif
 
 

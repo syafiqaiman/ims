@@ -247,7 +247,29 @@
     </script>
 
 
+
 <!-- End Datatables -->
+
+<script>
+  $(document).ready(function() {
+    // Disable the "Proceed to Packing" button on page load
+    $('#proceed-to-packing').prop('disabled', true);
+
+    // Enable the "Proceed to Packing" button only if all labels have been collected
+    var allCollected = true;
+    $('.status-cell span').each(function() {
+        if ($(this).hasClass('bg-danger')) {
+            allCollected = false;
+            return false;
+        }
+    });
+
+    if (allCollected) {
+        $('#proceed-to-packing').prop('disabled', false);
+    }
+});
+
+</script>
 
 
 
