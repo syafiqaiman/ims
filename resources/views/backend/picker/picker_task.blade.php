@@ -37,25 +37,26 @@
                                 <td>{{ $picker->created_at->format('d M, Y') }}</td>
                                 <td>
                                     @if($picker->status == 'Collected')
-                                        <span class="badge bg-success">{{ $picker->status }}</span>
-                                    @elseif($picker->status == 'Pending')
-                                        <span class="badge bg-warning">{{ $picker->status }}</span>
-                                    @else
-                                        <span class="badge bg-danger">{{ $picker->status }}</span>
-                                    @endif
+                                    <span class="badge bg-success">{{ $picker->status }}</span>
+                                @elseif($picker->status == 'Pending')
+                                    <span class="badge bg-warning">{{ $picker->status }}</span>
+                                @else
+                                    <span class="badge bg-danger">{{ $picker->status }}</span>
+                                @endif
                                 </td>
                                 <td class="status-cell">
-                                    @if($picker->status == 'Collected')
-                                        <span class="badge bg-success">{{ $picker->status }}</span>
-                                    @elseif($picker->status == 'Pending')
-                                        <form action="{{ route('picker.confirm', ['id' => $picker->id, 'quantity' => $picker->quantity]) }}" method="POST">
-                                            @csrf
-                                            <button type="submit" class="btn btn-primary btn-sm btn-collect collect-btn">Collect</button>
-                                        </form>                                    
-                                    @else
-                                        <span class="badge bg-primary">Collected</span>
-                                    @endif
+                                @if($picker->status == 'Collected')
+                                    <span class="badge bg-success">{{ $picker->status }}</span>
+                                @elseif($picker->status == 'Pending')
+                                    <form action="{{ route('picker.confirm', ['id' => $picker->id, 'quantity' => $picker->quantity]) }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="btn btn-primary btn-sm btn-collect collect-btn">Collect</button>
+                                    </form>                                    
+                                @else
+                                    <span class="badge bg-primary">Collected</span>
+                                @endif
                                 </td>
+                                
                                 
                                 
                             </tr>
@@ -72,6 +73,6 @@
     </div>
 </div>
 
-
+    
 
 @endsection

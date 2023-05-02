@@ -9,7 +9,7 @@
                 <a class="nav-link @if($loop->first) active @endif" id="vert-tabs-{{ $date }}-tab" data-toggle="pill" href="#vert-tabs-{{ $date }}" role="tab" aria-controls="vert-tabs-{{ $date }}" aria-selected="{{ $loop->first ? 'true' : 'false' }}">{{ $date }}</a>
             @endforeach
         </div>
-    </div>
+    </div>  
     <div class="col-7 col-sm-9">
         <div class="tab-content" id="vert-tabs-tabContent">
             @foreach($dates as $date)

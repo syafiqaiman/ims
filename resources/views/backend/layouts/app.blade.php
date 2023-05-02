@@ -249,27 +249,46 @@
 
 
 <!-- End Datatables -->
-
 <script>
-  $(document).ready(function() {
-    // Disable the "Proceed to Packing" button on page load
-    $('#proceed-to-packing').prop('disabled', true);
-
-    // Enable the "Proceed to Packing" button only if all labels have been collected
-    var allCollected = true;
+$(document).ready(function() {
+  // Disable the "Proceed to Packing" button on page load
+  $('#proceed-to-packing').prop('disabled', true);
+  
+  // Check if all labels have been collected or not
+  var checkAllLabels = function() {
+    var allCollected = false;
+    var hasPending = false;
+    
     $('.status-cell span').each(function() {
-        if ($(this).hasClass('bg-danger')) {
-            allCollected = false;
-            return false;
-        }
+      var status = $(this).text();
+      
+      if (status === 'Pending') {
+        hasPending = true;
+        allCollected = false;
+      } else if (status !== 'Collected') {
+        allCollected = false;
+      }
     });
-
-    if (allCollected) {
-        $('#proceed-to-packing').prop('disabled', false);
+    
+    if (allCollected && !hasPending) {
+      $('#proceed-to-packing').prop('disabled', false);
+    } else {
+      $('#proceed-to-packing').prop('disabled', true);
     }
+  };
+  
+  // Call checkAllLabels function on page load
+  checkAllLabels();
+  
+  // Listen for changes in the status of the products
+  $('.status-cell').on('DOMSubtreeModified', function() {
+    checkAllLabels();
+  });
 });
-
 </script>
+
+
+
 
 
 

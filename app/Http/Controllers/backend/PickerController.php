@@ -8,30 +8,41 @@ use App\Models\Picker;
 use App\Models\Product;
 use App\Models\Order;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class PickerController extends Controller
 {
     public function PickerTaskList()
-{
-    $user = Auth::user();
-    $pickers = Picker::where('user_id', $user->id)
-                      ->orderBy('created_at', 'desc')
-                      ->get();
+    {
+        $user = Auth::user();
+        $pickers = Picker::where('user_id', $user->id)
+                          ->whereIn('status', ['Collected', 'Pending'])
+                          ->orderBy('created_at', 'desc')
+                          ->get();
+    
+        $allCollected = true; // Set to true by default
+        $hasPending = false;
 
-    $allCollected = true; // Set to true by default
-    foreach ($pickers as $picker) {
-        $product = Product::find($picker->product_id);
-        $picker->product_name = $product->name;
-        if ($picker->status !== 'Collected') {
-            $allCollected = false; // Set to false if any picker is not collected
+        foreach ($pickers as $picker) {
+            $product = Product::find($picker->product_id);
+            $picker->product_name = $product->name;
+            if ($picker->status !== 'Collected' && $picker->status !== 'Packing') {
+                $allCollected = false; // Set to false if any picker is not collected
+                if ($picker->status === 'Pending') {
+                    $hasPending = true; // Set to true if any picker is in 'Pending' status
+                }
+            }
         }
+    
+        return view('backend.picker.picker_task', [
+            'pickers' => $pickers,
+            'allCollected' => $allCollected,
+            'hasPending' => $hasPending, // Pass the variable to the view
+        ]);
     }
-
-    return view('backend.picker.picker_task', [
-        'pickers' => $pickers,
-        'allCollected' => $allCollected, // Pass the variable to the view
-    ]);
-}
+    
+    
+    
 
 
 
@@ -62,7 +73,10 @@ public function confirmCollection(Request $request, $id, $quantity)
 public function history()
 {
     $user = Auth::user();
-    
+    $pickers = Picker::where('user_id', $user->id)
+                      ->where('status', 'Collected')
+                      ->update(['status' => 'Packing']);
+
     $orders = Order::with('product')
                    ->join('products', 'orders.product_id', '=', 'products.id')
                    ->where('orders.user_id', $user->id) // Retrieve orders of the logged-in picker only
@@ -79,6 +93,22 @@ public function history()
     return view('backend.picker.picker_history', [
         'orders' => $orders,
         'dates' => $dates,
+    ]);
+}
+
+public function AdminView()
+{
+    $user = Auth::user();
+    
+    $pickers = DB::table('pickers')
+        ->join('users', 'pickers.user_id', '=', 'users.id')
+        ->join('products', 'pickers.product_id', '=', 'products.id')
+        ->select('users.name as picker_name', 'products.product_name', 'pickers.quantity', 'pickers.status', 'pickers.created_at', 'pickers.updated_at')
+        ->groupBy('picker_name', 'products.product_name', 'pickers.quantity', 'pickers.status', 'pickers.created_at', 'pickers.updated_at')
+        ->get();
+
+    return view('backend.picker.picker_status_view', [
+        'pickers' => $pickers,
     ]);
 }
 

@@ -81,10 +81,10 @@
           </li>
           
           <li class="nav-item">
-            <a href="{{URL::to('/add_bookcategory')}}" class="nav-link">
+            <a href="{{URL::to('/picker_status')}}" class="nav-link">
               <i class="nav-icon fas fa-th"></i>
               <p>
-                Add Book Category
+                Picker Status
                 <!-- <span class="right badge badge-danger">New</span> -->
               </p>
             </a>
@@ -139,6 +139,16 @@
               <i class="nav-icon fas fa-th"></i>
               <p>
                 Task
+                <!-- <span class="right badge badge-danger">New</span> -->
+              </p>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a href="{{URL::to('/picker/history')}}" class="nav-link">
+              <i class="nav-icon fas fa-th"></i>
+              <p>
+                History
                 <!-- <span class="right badge badge-danger">New</span> -->
               </p>
             </a>
