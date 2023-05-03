@@ -11,6 +11,7 @@ use Illuminate\View\View;
 use App\Models\Product;
 use App\Models\Company;
 use App\Models\User;
+use App\Models\Rack;
 
 
 class ProductController extends Controller
@@ -33,7 +34,8 @@ class ProductController extends Controller
         $list = DB::table('products')
         ->join('quantities', 'products.id', '=', 'quantities.product_id')
         ->join('companies', 'products.company_id', '=', 'companies.id')
-        ->select('products.id', 'companies.company_name', 'products.product_name', 'products.product_desc', 'products.item_per_carton', 'products.carton_quantity', 'quantities.total_quantity', 'quantities.remaining_quantity', 'products.weight_per_item', 'products.weight_per_carton', 'products.product_dimensions', 'products.product_image', 'products.date_to_be_stored')
+        ->join('rack_locations', 'products.rack_id', '=', 'rack_locations.id')
+        ->select('products.id','rack_locations.location_code', 'companies.company_name', 'products.product_name', 'products.product_desc', 'products.item_per_carton', 'products.carton_quantity', 'quantities.total_quantity', 'quantities.remaining_quantity', 'products.weight_per_item', 'products.weight_per_carton', 'products.product_dimensions', 'products.product_image', 'products.date_to_be_stored')
         ->get();
 
     } else {
@@ -73,7 +75,7 @@ public function getUsers(Request $request)
     {
      // Get all companies
     $companies = Company::all();
-
+    $racks = Rack::all();
     // Get the selected company's ID
     $company_id = $request->input('company');
 
@@ -88,7 +90,7 @@ public function getUsers(Request $request)
     $allProducts = DB::table('products')->get();
 
     // Return the view with the companies, users, and products
-    return view('backend.product.create_product', compact('companies', 'users', 'allProducts'));
+    return view('backend.product.create_product', compact('companies', 'users', 'allProducts','racks'));
     }
     
 
@@ -108,7 +110,8 @@ public function getUsers(Request $request)
         'date_to_be_stored' => 'required|date',
         'carton_quantity' => 'required|integer',
         'item_per_carton' => 'required|integer',
-        'product_image' => 'required|image|max:2048'
+        'product_image' => 'required|image|max:2048',
+        'rack_id' => 'required'
     ]);
 
     $company = DB::table('companies')
@@ -125,6 +128,7 @@ public function getUsers(Request $request)
         'weight_per_item' => $request->weight_per_item,
         'weight_per_carton' => $request->weight_per_carton,
         'product_dimensions' => $request->product_dimensions,
+        'rack_id' => $request->rack_id,
         'date_to_be_stored' => $request->date_to_be_stored,
         'created_at' => now(),
         'updated_at' => now(),
@@ -195,6 +199,7 @@ public function ProductUpdate(Request $request, $id)
         'weight_per_item' => 'required|numeric',
         'weight_per_carton' => 'required|numeric',
         'product_dimensions' => 'required|string|max:255',
+        'rack_id' => 'required',
         'date_to_be_stored' => 'required|date',
         'product_image' => 'image|max:2048'
     ]);
@@ -207,6 +212,7 @@ public function ProductUpdate(Request $request, $id)
         'weight_per_item' => $request->weight_per_item,
         'weight_per_carton' => $request->weight_per_carton,
         'product_dimensions' => $request->product_dimensions,
+        'rack_id' => $request->rack_id,
         'date_to_be_stored' => $request->date_to_be_stored,
         'updated_at' => now(),
     ];

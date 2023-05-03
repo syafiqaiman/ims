@@ -35,7 +35,20 @@
                     @enderror
                 </div>
                 
-                           
+                <div class="form-group">
+                  <label for="rack_ids">Rack Location</label>
+                  <select name="rack_id" class="form-control" id="rack_id">
+                      <option value="">Select Rack Location</option>
+                      @foreach($racks as $location)
+                          <option value="{{ $location->id }}">{{ $location->location_code }}</option>
+                      @endforeach
+                  </select>
+                  @error('rack_id')
+                      <span class="invalid-feedback" role="alert">
+                          <strong>{{ $message }}</strong>
+                      </span>
+                  @enderror
+                </div>       
 
 <div class="form-group">
 <label for="exampleInputEmail1">Product Name</label>

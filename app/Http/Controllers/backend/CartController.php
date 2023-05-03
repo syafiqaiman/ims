@@ -7,6 +7,7 @@ use App\Models\Cart;
 use App\Models\Company;
 use App\Models\Product;
 use App\Models\Picker;
+use App\Models\Rack;
 use App\Models\Order;
 use App\Models\Quantity;
 use Illuminate\Http\Request;
@@ -38,7 +39,8 @@ class CartController extends Controller
         $list = DB::table('products')
             ->join('quantities', 'products.id', '=', 'quantities.product_id')
             ->join('companies', 'products.company_id', '=', 'companies.id')
-            ->select('products.id', 'companies.company_name', 'products.product_name', 'products.item_per_carton', 'quantities.remaining_quantity', 'products.product_image','products.weight_per_item')
+            ->join('rack_locations', 'products.rack_id', '=', 'rack_locations.id')
+            ->select('products.id', 'companies.company_name', 'rack_locations.location_code','products.product_name', 'products.item_per_carton', 'quantities.remaining_quantity', 'products.product_image','products.weight_per_item')
             ->get();
     } else {
         // if not admin, get products owned by the user
@@ -53,6 +55,7 @@ class CartController extends Controller
 public function addToCart(Request $request, $id) 
 {
     $product = Product::findOrFail($id);
+    $rack = Rack::findOrFail($id);
     
     // Validate input
     $validatedData = $request->validate([
@@ -76,6 +79,7 @@ public function addToCart(Request $request, $id)
     $cart[$product->id] = [
         'name' => $product->product_name,
         'quantity' => $quantity,
+        'rack' => $rack->rack_id,
         'image' => $product->product_image
     ];
     session()->put('cart', $cart);
@@ -142,6 +146,7 @@ public function update(Request $request, $id)
             $picker = new Picker();
             $picker->user_id = $user_id;
             $picker->product_id = $id;
+            $picker->rack_id = $product->rack_id;
             $picker->quantity = $item['quantity'];
             $picker->status = 'Pending'; 
             $picker->save();

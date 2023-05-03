@@ -13,7 +13,12 @@
 <thead>
 <tr>
 <th>ID</th>
-<th>Company</th>   
+<th>Company</th>
+
+@if (Auth::user()->role == 1 || Auth::user()->role == 2) 
+<th>Rack Location</th>   
+@endif
+
 <th>Product Name & Desc</th>             
 <th>Qty</th>   
 <th>Product Dimensions</th>   
@@ -30,6 +35,9 @@
 <tr>
 <td>{{ $row->id }}</td>
 <td>{{ $row->company_name }}</td>
+@if (Auth::user()->role == 1 || Auth::user()->role == 2) 
+<td>{{ $row->location_code }}</td>
+@endif
 <td>
        <div class="dropdown">
           <button class="btn btn-secondary dropdown-toggle" type="button" id="prodDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

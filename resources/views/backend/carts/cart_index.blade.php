@@ -15,6 +15,7 @@
           <thead>
             <tr>
               <th>Product Image</th>
+              <th>Product Location</th>
               <th>Product Name</th>
               <th>Stock</th>
               <th>Choose Product</th>
@@ -24,6 +25,7 @@
             @foreach ($list as $product)
             <tr>
               <td><img src="{{ asset('storage/Image/'.$product->product_image) }}" style="height: 40px; width: 60px;"></td>
+              <td>{{ $product->location_code }}
               <td>{{ $product->product_name }}</td>
               <td>{{ $product->remaining_quantity }}</td>
               <td>
@@ -32,6 +34,7 @@
                   <div class="input-group input-group-sm">
                       <input type="hidden" value="{{ $product->id }}" name="id">
                         <input type="hidden" value="{{ $product->product_name }}" name="product_name">
+                        <input type="hidden" value="{{ $product->location_code }}" name="location_code">
                         <input type="hidden" value="{{ $product->weight_per_item }}" name="weight_per_item">
                         <input type="hidden" value="{{ $product->product_image }}"  name="product_image">
                         <input type="hidden" value="1" name="quantity">

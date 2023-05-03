@@ -74,6 +74,8 @@ Route::post('/cart_clear', [App\Http\Controllers\backend\CartController::class, 
     Route::put('/companies/{id}', [App\Http\Controllers\backend\CompanyController::class, 'update'])->name('company.update');
     Route::delete('/companies/{id}', [App\Http\Controllers\backend\CompanyController::class, 'destroy'])->name('company.destroy');
 
+
+    Route::get('/racks', [App\Http\Controllers\backend\RackController::class, 'RackList'])->name('rack.list'); 
     //Route::group(['middleware' => ['auth']], function () {
 
 
