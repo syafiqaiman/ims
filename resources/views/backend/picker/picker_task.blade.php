@@ -66,7 +66,7 @@
                 </div>
             </div>
             <div class="text-center mt-4">
-                <a href="{{ route('picker.history') }}" class="btn btn-success" id="proceed-to-packing" disabled>Proceed to Packing</a>
+                <button type="button" class="btn btn-success" id="proceed-to-packing" @if(count($pickers->where('status', 'Pending'))) disabled @endif>Proceed to Packing</button>
             </div>
             
         </div>

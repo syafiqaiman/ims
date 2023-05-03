@@ -250,42 +250,31 @@
 
 <!-- End Datatables -->
 <script>
-$(document).ready(function() {
-  // Disable the "Proceed to Packing" button on page load
-  $('#proceed-to-packing').prop('disabled', true);
+  $(document).ready(function() {
+    updateProceedToPackingButton();
   
-  // Check if all labels have been collected or not
-  var checkAllLabels = function() {
-    var allCollected = false;
-    var hasPending = false;
-    
-    $('.status-cell span').each(function() {
-      var status = $(this).text();
-      
-      if (status === 'Pending') {
-        hasPending = true;
-        allCollected = false;
-      } else if (status !== 'Collected') {
-        allCollected = false;
-      }
+    // Listen for changes to the table rows
+    $('.status-cell').on('DOMSubtreeModified', function() {
+      updateProceedToPackingButton();
     });
-    
-    if (allCollected && !hasPending) {
-      $('#proceed-to-packing').prop('disabled', false);
-    } else {
-      $('#proceed-to-packing').prop('disabled', true);
-    }
-  };
-  
-  // Call checkAllLabels function on page load
-  checkAllLabels();
-  
-  // Listen for changes in the status of the products
-  $('.status-cell').on('DOMSubtreeModified', function() {
-    checkAllLabels();
   });
-});
+  
+  function updateProceedToPackingButton() {
+    var pendingRows = $('td:contains("Pending")').parent();
+    var proceedButton = $('#proceed-to-packing');
+      
+    if (pendingRows.length > 0) {
+      proceedButton.prop('disabled', true);
+    } else {
+      proceedButton.prop('disabled', false);
+    }
+  }
+
+  $('#proceed-to-packing').click(function() {
+    window.location.href = "{{ route('picker.history') }}";
+  });
 </script>
+
 
 
 
