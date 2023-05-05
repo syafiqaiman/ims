@@ -114,9 +114,8 @@
 
 <div class="form-group">
   <label for="exampleInputEmail1">Weight Per Item (kg)</label>
-  <input type="number" name="weight_per_item"  class="form-control @error('title') is-invalid @enderror"
-   id="exampleInputEmail1" placeholder="Weight Per Item">
-  
+  <<input type="text" name="weight_per_item"  class="form-control @error('title') is-invalid @enderror"
+  id="exampleInputEmail1" placeholder="Weight Per Item" step="0.1">
   @error('title')
   <span class="invalid-feedback" role="alert">
   <strong>{{ $message }}</strong>
@@ -126,9 +125,8 @@
 
 <div class="form-group">
   <label for="exampleInputEmail1">Weight Per Carton (kg)</label>
-  <input type="number" name="weight_per_carton"  class="form-control @error('title') is-invalid @enderror"
-   id="exampleInputEmail1" placeholder="Weight Per Carton">
-  
+  <input type="text" name="weight_per_carton"  class="form-control @error('title') is-invalid @enderror"
+   id="exampleInputEmail1" placeholder="Weight Per Carton" step="0.1">
   @error('title')
   <span class="invalid-feedback" role="alert">
   <strong>{{ $message }}</strong>
