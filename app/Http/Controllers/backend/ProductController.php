@@ -145,31 +145,41 @@ public function getUsers(Request $request)
     }
 
     // Calculate the total quantity
-    $total_quantity = $request->carton_quantity * $request->item_per_carton;
+    // Calculate the total quantity
+$total_quantity = $request->carton_quantity * $request->item_per_carton;
+$total_weight = $total_quantity * $request->weight_per_item;
+$rack_id = $request->rack_id;
 
-    // Insert data into the products table
-    $product_id = DB::table('products')->insertGetId($data);
+// Insert data into the products table
+$product_id = DB::table('products')->insertGetId($data);
 
-    if ($product_id) {
-        // Insert data into the quantity table
-        DB::table('quantities')->insert([
-            'product_id' => $product_id,
-            'total_quantity' => $total_quantity,
-            'sold_carton_quantity' => 0,
-            'sold_item_quantity' => 0,
-            'remaining_quantity' => $total_quantity,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+if ($product_id) {
+    // Insert data into the quantity table
+    DB::table('quantities')->insert([
+        'product_id' => $product_id,
+        'total_quantity' => $total_quantity,
+        'sold_carton_quantity' => 0,
+        'sold_item_quantity' => 0,
+        'remaining_quantity' => $total_quantity,
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
 
-        return redirect()->route('product.index')->with('success','Product added successfully');
-    } else {
-        $notification = [
-            'message' => 'Error',
-            'alert-type' => 'error',
-        ];
-        return redirect()->route('product.index')->with($notification);
-    }
+    // Update rack_locations table with the occupied weight
+    DB::table('rack_locations')
+    ->where('id', $rack_id)
+    ->update(['occupied' => $total_weight]);
+
+
+    return redirect()->route('product.index')->with('success','Product added successfully');
+} else {
+    $notification = [
+        'message' => 'Error',
+        'alert-type' => 'error',
+    ];
+    return redirect()->route('product.index')->with($notification);
+}
+
 }
 
 

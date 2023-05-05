@@ -22,6 +22,7 @@
                     <table class="table table-hover text-nowrap">
                         <thead>
                             <tr>
+                                <th>Rack Location</th>
                                 <th>Product Name</th>
                                 <th>Quantity</th>
                                 <th>Date of Pick Up</th>
@@ -32,6 +33,7 @@
                         <tbody>
                             @foreach($pickers as $picker)
                             <tr>
+                                <td>{{ $picker->location_code }}</td>
                                 <td>{{ $picker->product->product_name }}</td>
                                 <td>{{ $picker->quantity }}</td>
                                 <td>{{ $picker->created_at->format('d M, Y') }}</td>

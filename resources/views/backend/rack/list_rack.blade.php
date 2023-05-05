@@ -28,19 +28,12 @@
                                 @foreach ($rows as $index => $row)
                                     <tr>
                                         @if ($index === 0)
-                                            <td rowspan="{{ $rowspan }}">{{ $location }}</td>
+                                            <td rowspan="{{ $rowspan }}">{{ $row->location_code }}</td>
                                         @endif
                                         <td>{{ $row->company_name }}</td>
                                         <td>{{ $row->product_name }}</td>
-                                        <td>{{ $row->remaining_quantity }}</td>
-                                        {{-- @if (Auth::user()->role == 1)
-                                            <td>
-                                                <button type="button" class="btn btn-primary" data-toggle="modal"
-                                                    data-target="#edit-rack-modal">
-                                                    Edit Weight
-                                                </button>
-                                            </td>
-                                        @endif --}}
+                                        <td>{{ $row->occupied }}/200</td>
+
                                     </tr>
                                 @endforeach
                             @endforeach
@@ -54,50 +47,4 @@
         </div>
     </div>
 
-    {{-- <div class="modal fade" id="edit-rack-modal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Edit Quantity</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p>Quantity</p>
-                    <input class="form-control" type="text" placeholder="{{ $row->remaining_quantity }}">
-                </div>
-                <div class="modal-footer justify-content-between">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save changes</button>
-                </div>
-            </div>
-            <!-- /.modal-content -->
-        </div>
-        <!-- /.modal-dialog -->
-    </div>
-    <!-- /.modal --> --}}
-
-    {{-- <div class="modal fade" id="edit-rack-modal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Edit Quantity</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p>Weight</p>
-                    <input class="form-control" type="text" placeholder="">
-                </div>
-                <div class="modal-footer justify-content-between">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="save-quantity-btn">Save changes</button>
-                </div>
-            </div>
-            <!-- /.modal-content -->
-        </div>
-        <!-- /.modal-dialog -->
-    </div> --}}
 @endsection

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Picker;
 use App\Models\Product;
 use App\Models\Order;
+use App\Models\Rack;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -22,10 +23,12 @@ class PickerController extends Controller
     
         $allCollected = true; // Set to true by default
         $hasPending = false;
-
+    
         foreach ($pickers as $picker) {
             $product = Product::find($picker->product_id);
             $picker->product_name = $product->name;
+            $rack_location = Rack::where('id', $product->rack_id)->first();
+            $picker->location_code = $rack_location->location_code; // Get the location_code from the rack_location
             if ($picker->status !== 'Collected' && $picker->status !== 'Packing') {
                 $allCollected = false; // Set to false if any picker is not collected
                 if ($picker->status === 'Pending') {
@@ -40,6 +43,7 @@ class PickerController extends Controller
             'hasPending' => $hasPending, // Pass the variable to the view
         ]);
     }
+    
     
     
     
@@ -63,6 +67,7 @@ public function confirmCollection(Request $request, $id, $quantity)
     $order->product()->associate($product);
     $order->user_id = Auth::user()->id;
     $order->quantity = $picker->quantity;
+    $order->rack_id = $picker->rack_id;
     $order->save();
 
     // Redirect back with success message

@@ -31,11 +31,13 @@ class RackController extends Controller
         if ($user->role == 1) {
             // if admin, get all products from the database
             $racking = DB::table('rack_locations')
-                ->join('products', 'rack_locations.id', '=', 'products.rack_id')
-                ->join('companies', 'products.company_id', '=', 'companies.id')
-                ->join('quantities', 'products.id', '=', 'quantities.id')
-                ->select('rack_locations.location_code', 'products.product_name', 'companies.company_name', 'rack_locations.capacity', 'quantities.remaining_quantity', 'products.id')
-                ->get();
+            ->leftJoin('products', 'rack_locations.id', '=', 'products.rack_id')
+            ->leftJoin('companies', 'products.company_id', '=', 'companies.id')
+            ->leftJoin(DB::raw('(SELECT product_id, SUM(remaining_quantity) AS remaining_quantity FROM quantities GROUP BY product_id) q'), 'products.id', '=', 'q.product_id')
+            ->select('rack_locations.location_code','rack_locations.occupied', 'companies.company_name', 'products.product_name', 'rack_locations.capacity', DB::raw('IFNULL(q.remaining_quantity, 0) AS remaining_quantity'))
+            ->whereRaw('(SELECT COUNT(*) FROM products WHERE rack_id = rack_locations.id) < rack_locations.capacity')
+            ->get();
+
         } else {
             // if not admin, get products owned by the user
             $racking = DB::table('rack_locations')->where('user_id', $user->id)->get();

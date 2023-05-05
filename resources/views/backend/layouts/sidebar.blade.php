@@ -71,6 +71,16 @@
 @if (Auth::user()->role == 1 )
 
           <li class="nav-item">
+            <a href="{{URL::to('/add_product')}}" class="nav-link">
+              <i class="nav-icon fas fa-th"></i>
+              <p>
+                Add Product
+                <!-- <span class="right badge badge-danger">New</span> -->
+              </p>
+            </a>
+          </li>
+
+          <li class="nav-item">
             <a href="{{URL::to('/cart_index')}}" class="nav-link">
               <i class="nav-icon fas fa-th"></i>
               <p>
@@ -108,10 +118,10 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="{{URL::to('/add_product')}}" class="nav-link">
+            <a href="{{URL::to('/racks')}}" class="nav-link">
               <i class="nav-icon fas fa-th"></i>
               <p>
-                Add Product
+                Rack List
                 <!-- <span class="right badge badge-danger">New</span> -->
               </p>
             </a>
