@@ -165,20 +165,33 @@ if ($product_id) {
         'updated_at' => now(),
     ]);
 
+    // Insert data into the weights table
+DB::table('weights')->insert([
+    'product_id' => $product_id,
+    'weight_of_product' => $total_weight,
+    'rack_id' => $data['rack_id'],
+    'created_at' => now(),
+    'updated_at' => now(),
+]);
+
+
+    // Get the total weight of products in the current rack
+    $total_weight_in_rack = DB::table('weights')
+        ->join('products', 'weights.product_id', '=', 'products.id')
+        ->where('products.rack_id', $rack_id)
+        ->sum('weight_of_product');
+
     // Update rack_locations table with the occupied weight
     DB::table('rack_locations')
-    ->where('id', $rack_id)
-    ->update(['occupied' => $total_weight]);
-
+        ->where('id', $rack_id)
+        ->update(['occupied' => $total_weight_in_rack]);
 
     return redirect()->route('product.index')->with('success','Product added successfully');
 } else {
-    $notification = [
-        'message' => 'Error',
-        'alert-type' => 'error',
-    ];
+    $notification = [        'message' => 'Error',        'alert-type' => 'error',    ];
     return redirect()->route('product.index')->with($notification);
 }
+
 
 }
 
