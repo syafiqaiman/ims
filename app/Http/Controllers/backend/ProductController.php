@@ -35,8 +35,10 @@ class ProductController extends Controller
         ->join('quantities', 'products.id', '=', 'quantities.product_id')
         ->join('companies', 'products.company_id', '=', 'companies.id')
         ->join('rack_locations', 'products.rack_id', '=', 'rack_locations.id')
-        ->select('products.id','rack_locations.location_code', 'companies.company_name', 'products.product_name', 'products.product_desc', 'products.item_per_carton', 'products.carton_quantity', 'quantities.total_quantity', 'quantities.remaining_quantity', 'products.weight_per_item', 'products.weight_per_carton', 'products.product_dimensions', 'products.product_image', 'products.date_to_be_stored')
+        ->join('weights', 'products.id', '=', 'weights.product_id')
+        ->select('products.id','rack_locations.location_code', 'companies.company_name', 'products.product_name', 'products.product_desc', 'products.item_per_carton', 'products.carton_quantity', 'quantities.total_quantity', 'quantities.remaining_quantity', 'products.weight_per_item', 'products.weight_per_carton', 'weights.weight_of_product', 'products.product_dimensions', 'products.product_image', 'products.date_to_be_stored')
         ->get();
+
 
     } else {
         // if not admin, get products owned by the user

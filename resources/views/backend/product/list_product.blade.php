@@ -22,7 +22,7 @@
 <th>Product Name & Desc</th>             
 <th>Qty</th>   
 <th>Product Dimensions</th>   
-<th>Weight (kg)</th>   
+<th>Total Weight In Stock (kg)</th>   
 <th>Product Image</th>   
 <th>Date To Be Stored</th>  
 @if(Auth::user()->role == 1)    
@@ -63,15 +63,13 @@
     
 <td>{{ $row->product_dimensions }}</td>
 <td>
-       <div class="dropdown">
-          <button class="btn btn-secondary dropdown-toggle" type="button" id="weightDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-             {{ $row->weight_per_carton }}
-          </button>
-          <div class="dropdown-menu" aria-labelledby="quantityDropdown">
+
+             {{ $row->weight_of_product }}
+
+          {{-- <div class="dropdown-menu" aria-labelledby="quantityDropdown">
              <a class="dropdown-item" href="#">Weight per Carton: {{ $row->weight_per_carton }}</a>
              <a class="dropdown-item" href="#">Weight per Item: {{ $row->weight_per_item }}</a>
-          </div>
-       </div>
+          </div> --}}
     </td>
     <td> 
       <img src="{{ asset('storage/Image/'.$row->product_image) }}"
