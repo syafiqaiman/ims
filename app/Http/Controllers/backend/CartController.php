@@ -8,6 +8,7 @@ use App\Models\Company;
 use App\Models\Product;
 use App\Models\Picker;
 use App\Models\Rack;
+use App\Models\Weight;
 use App\Models\Order;
 use App\Models\Quantity;
 use Illuminate\Http\Request;
@@ -130,9 +131,10 @@ public function update(Request $request, $id)
 
         // Calculate the total weight of the items and deduct it from the rack's occupied amount
         $total_weight = $product->weight_per_item * $quantity_deducted;
-        $rack_location = Rack::where('id', $product->rack_id)->firstOrFail();
-        $rack_location->occupied -= $total_weight;
-        $rack_location->save();
+        $weight = Weight::where('product_id', $product->id)->firstOrFail();
+        $weight->weight_of_product -= $total_weight;
+        $weight->save();
+
     }
     
     

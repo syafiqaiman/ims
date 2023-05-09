@@ -79,7 +79,7 @@
 <div class="form-group">
   <label for="exampleInputEmail1">Carton Quantity</label>
   <input type="number" name="carton_quantity"  class="form-control @error('title') is-invalid @enderror"
-   id="exampleInputEmail1" placeholder="Enter Quantity">
+   id="carton_quantity" placeholder="Enter Quantity">
   
   @error('slug')
   <span class="invalid-feedback" role="alert">
@@ -115,7 +115,7 @@
 <div class="form-group">
   <label for="exampleInputEmail1">Weight Per Item (kg)</label>
   <<input type="text" name="weight_per_item"  class="form-control @error('title') is-invalid @enderror"
-  id="exampleInputEmail1" placeholder="Weight Per Item" step="0.1">
+  id="weight_per_item" placeholder="Weight Per Item" step="0.1">
   @error('title')
   <span class="invalid-feedback" role="alert">
   <strong>{{ $message }}</strong>
@@ -126,7 +126,17 @@
 <div class="form-group">
   <label for="exampleInputEmail1">Weight Per Carton (kg)</label>
   <input type="text" name="weight_per_carton"  class="form-control @error('title') is-invalid @enderror"
-   id="exampleInputEmail1" placeholder="Weight Per Carton" step="0.1">
+   id="weight_per_carton" placeholder="Weight Per Carton" step="0.1">
+  @error('title')
+  <span class="invalid-feedback" role="alert">
+  <strong>{{ $message }}</strong>
+  </span>
+  @enderror
+</div>
+
+<div class="form-group">
+  <label for="exampleInputEmail1">Total Weight (kg)</label>
+  <input type="text" name="total_weight" id="total_weight" class="form-control @error('title') is-invalid @enderror" readonly>
   @error('title')
   <span class="invalid-feedback" role="alert">
   <strong>{{ $message }}</strong>
@@ -194,6 +204,20 @@
           reader.readAsDataURL(input.files[0]);
       }
    }
+
+   const cartonQuantity = document.getElementById('carton_quantity');
+  const weightPerCarton = document.getElementById('weight_per_carton');
+  const totalWeightOutput = document.getElementById('total_weight');
+
+  cartonQuantity.addEventListener('input', updateTotalWeight);
+  weightPerCarton.addEventListener('input', updateTotalWeight);
+
+  function updateTotalWeight() {
+    const cartonQuantityValue = parseFloat(cartonQuantity.value) || 0;
+    const weightPerCartonValue = parseFloat(weightPerCarton.value) || 0;
+    const totalWeight = cartonQuantityValue * weightPerCartonValue;
+    totalWeightOutput.value = totalWeight.toFixed(2);
+  }
 </script>
 
 @endsection
