@@ -105,62 +105,61 @@ public function update(Request $request, $id)
 
 
     public function assign(Request $request) 
-{
-    // Get the cart items
-    $cart = session()->get('cart', []);
+    {
+        // Get the cart items
+        $cart = session()->get('cart', []);
+        
+        // Deduct the items from the remaining quantity and update the product and quantity
+        foreach ($cart as $id => $item) {
+            $quantity_to_deduct = $item['quantity'];
+            
+            $quantity = Quantity::where('product_id', $id)->firstOrFail();
+            $product = Product::findOrFail($quantity->product_id);
+            $num_cartons = floor($quantity_to_deduct / $product->item_per_carton);
+            $num_items = $quantity_to_deduct % $product->item_per_carton;
+            $quantity_deducted = $num_cartons * $product->item_per_carton + $num_items;
+            
+            // Check if the quantity is available
+            if ($quantity->remaining_quantity < $quantity_deducted) {
+                return redirect()->back()->with('error', 'Not enough stock!');
+            }
+            
+            $quantity->remaining_quantity -= $quantity_deducted;
+            $quantity->sold_carton_quantity += $num_cartons;
+            $quantity->sold_item_quantity += $num_items;
+            $quantity->save();
     
-    // Deduct the items from the remaining quantity and update the product and quantity
-    foreach ($cart as $id => $item) {
-        $quantity_to_deduct = $item['quantity'];
-        
-        $quantity = Quantity::where('product_id', $id)->firstOrFail();
-        $product = Product::findOrFail($quantity->product_id);
-        $num_cartons = floor($quantity_to_deduct / $product->item_per_carton);
-        $num_items = $quantity_to_deduct % $product->item_per_carton;
-        $quantity_deducted = $num_cartons * $product->item_per_carton + $num_items;
-        
-        // Check if the quantity is available
-        if ($quantity->remaining_quantity < $quantity_deducted) {
-            return redirect()->back()->with('error', 'Not enough stock!');
+            // Calculate the total weight of the items and deduct it from the rack's occupied amount
+            $total_weight = $product->weight_per_item * $quantity_deducted;
+            $rack = Rack::where('id', $product->rack_id)->firstOrFail();
+            $rack->occupied = max(0, $rack->occupied - $total_weight);
+            $rack->save();
+    
         }
         
-        $quantity->remaining_quantity -= $quantity_deducted;
-        $quantity->sold_carton_quantity += $num_cartons;
-        $quantity->sold_item_quantity += $num_items;
-        $quantity->save();
-
-        // Calculate the total weight of the items and deduct it from the rack's occupied amount
-        $total_weight = $product->weight_per_item * $quantity_deducted;
-        $weight = Weight::where('product_id', $product->id)->firstOrFail();
-        $weight->weight_of_product -= $total_weight;
-        $weight->save();
-
+        
+        // Get the selected user ID
+        $user_id = $request->input('user_id');
+        
+        // Store the assigned products and quantity in the pickers table
+        foreach ($cart as $id => $item) {
+            $picker = new Picker();
+            $picker->user_id = $user_id;
+            $picker->product_id = $id;
+            $picker->rack_id = $product->rack_id;
+            $picker->quantity = $item['quantity'];
+            $picker->status = 'Pending'; 
+            $picker->save();
+        }
+        
+        // Clear the cart
+        session()->forget('cart');
+        
+        return redirect()->back()->with('success', 'Order placed and products assigned successfully!');
     }
     
-    
-    // Get the selected user ID
-    $user_id = $request->input('user_id');
-    
-    // Store the assigned products and quantity in the pickers table
-    foreach ($cart as $id => $item) {
-        $picker = new Picker();
-        $picker->user_id = $user_id;
-        $picker->product_id = $id;
-        $picker->rack_id = $product->rack_id;
-        $picker->quantity = $item['quantity'];
-        $picker->status = 'Pending'; 
-        $picker->save();
-    }
-    
-    // Clear the cart
-    session()->forget('cart');
-    
-    return redirect()->back()->with('success', 'Order placed and products assigned successfully!');
-}
 
     
-
-
 
 
 public function cartRemove($id)

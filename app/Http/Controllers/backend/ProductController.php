@@ -152,6 +152,11 @@ $total_quantity = $request->carton_quantity * $request->item_per_carton;
 $total_weight = $total_quantity * $request->weight_per_item;
 $rack_id = $request->rack_id;
 
+ // Check if the total weight exceeds the limit of 200
+ if ($total_weight > 200) {
+    return redirect()->back()->with('error', 'Total weight exceeds limit of 200. Please adjust your inputs.')->withInput();
+}
+
 // Insert data into the products table
 $product_id = DB::table('products')->insertGetId($data);
 
