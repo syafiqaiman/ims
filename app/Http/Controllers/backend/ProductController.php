@@ -229,7 +229,6 @@ public function ProductUpdate(Request $request, $id)
         'weight_per_item' => 'required|numeric',
         'weight_per_carton' => 'required|numeric',
         'product_dimensions' => 'required|string|max:255',
-        'rack_id' => 'required',
         'date_to_be_stored' => 'required|date',
         'product_image' => 'image|max:2048'
     ]);
@@ -242,7 +241,6 @@ public function ProductUpdate(Request $request, $id)
         'weight_per_item' => $request->weight_per_item,
         'weight_per_carton' => $request->weight_per_carton,
         'product_dimensions' => $request->product_dimensions,
-        'rack_id' => $request->rack_id,
         'date_to_be_stored' => $request->date_to_be_stored,
         'updated_at' => now(),
     ];

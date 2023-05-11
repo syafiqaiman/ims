@@ -130,10 +130,15 @@ public function update(Request $request, $id)
             $quantity->save();
     
             // Calculate the total weight of the items and deduct it from the rack's occupied amount
+            
             $total_weight = $product->weight_per_item * $quantity_deducted;
             $rack = Rack::where('id', $product->rack_id)->firstOrFail();
             $rack->occupied = max(0, $rack->occupied - $total_weight);
             $rack->save();
+
+            $weight = Weight::where('product_id', $product->id)->firstOrFail();
+            $weight->weight_of_product -= $total_weight;
+            $weight->save();
     
         }
         
