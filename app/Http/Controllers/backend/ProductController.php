@@ -277,8 +277,18 @@ public function ProductDelete($id)
     $product = Product::findOrFail($id);
 
     $rack = $product->rack;
-    $rack->occupied = 0.00;
-    $rack->save();
+    $rackId = $rack->id;
+
+    $newOccupied = DB::table('weights')
+        ->join('rack_locations', 'rack_locations.id', '=', 'weights.rack_id')
+        ->where('rack_locations.id', '=', $rackId)
+        ->select('weights.weight_of_product')
+        ->first()
+        ->weight_of_product - $product->weight;
+
+    DB::table('rack_locations')
+        ->where('id', '=', $rackId)
+        ->update(['occupied' => $newOccupied]);
 
     if ($product->delete()) {
         $notification = array(
@@ -294,6 +304,7 @@ public function ProductDelete($id)
         return redirect()->back()->with($notification);
     }
 }
+
 
 
 
