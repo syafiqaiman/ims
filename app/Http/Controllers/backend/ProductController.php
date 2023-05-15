@@ -47,7 +47,8 @@ class ProductController extends Controller
             $list = DB::table('products')
                 ->join('quantities', 'products.id', '=', 'quantities.product_id')
                 ->join('companies', 'products.company_id', '=', 'companies.id')
-                ->select('products.id', 'companies.company_name', 'products.product_name', 'products.product_desc', 'products.item_per_carton', 'products.carton_quantity', 'quantities.total_quantity', 'quantities.remaining_quantity', 'products.weight_per_item', 'products.weight_per_carton', 'products.product_dimensions', 'products.product_image', 'products.date_to_be_stored')
+                ->join('weights', 'products.id', '=', 'weights.product_id')
+                ->select('products.id','weights.weight_of_product', 'companies.company_name', 'products.product_name', 'products.product_desc', 'products.item_per_carton', 'products.carton_quantity', 'quantities.total_quantity', 'quantities.remaining_quantity', 'products.weight_per_item', 'products.weight_per_carton', 'products.product_dimensions', 'products.product_image', 'products.date_to_be_stored')
                 ->where('products.user_id', $user->id)
                 ->get();
         } else {

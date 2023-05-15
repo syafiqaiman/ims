@@ -49,17 +49,8 @@
           </div>
        </div>
     </td>
-<td>
-       <div class="dropdown">
-          <button class="btn btn-secondary dropdown-toggle" type="button" id="quantityDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-             {{ $row->remaining_quantity }}
-          </button>
-          <div class="dropdown-menu" aria-labelledby="quantityDropdown">
-             <a class="dropdown-item" href="#">Carton Quantity: {{ $row->carton_quantity }}</a>
-             <a class="dropdown-item" href="#">Item per Carton: {{ $row->item_per_carton }}</a>
-          </div>
-       </div>
-    </td>
+    
+<td>{{ $row->remaining_quantity }}</td>
     
 <td>{{ $row->product_dimensions }}</td>
 <td>
