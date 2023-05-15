@@ -13,4 +13,9 @@ class Product extends Model
     {
         return $this->belongsToMany(User::class);
     }
+
+    public function rack()
+    {
+        return $this->belongsTo(Rack::class);
+    }
 }

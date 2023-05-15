@@ -272,29 +272,30 @@ public function ProductUpdate(Request $request, $id)
 
     
 
-public function ProductDelete ($id)
-    {
-    
-        $delete = DB::table('products')->where('id', $id)->delete();
-        if ($delete)
-                            {
-                            $notification=array(
-                            'message'=>'Product Deleted Successfully',
-                            'alert-type'=>'success'
-                            );
-                            return Redirect()->back()->with($notification);                      
-                            }
-             else
-                  {
-                  $notification=array(
-                  'message'=>'error ',
-                  'alert-type'=>'error'
-                  );
-                  return Redirect()->back()->with($notification);
+public function ProductDelete($id)
+{
+    $product = Product::findOrFail($id);
 
-                  }
+    $rack = $product->rack;
+    $rack->occupied = 0.00;
+    $rack->save();
 
-      }
+    if ($product->delete()) {
+        $notification = array(
+            'message' => 'Product Deleted Successfully',
+            'alert-type' => 'success'
+        );
+        return redirect()->back()->with($notification);
+    } else {
+        $notification = array(
+            'message' => 'Error',
+            'alert-type' => 'error'
+        );
+        return redirect()->back()->with($notification);
+    }
+}
+
+
 
       public function getProducts($company_id)
 {
