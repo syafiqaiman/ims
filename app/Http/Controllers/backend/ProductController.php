@@ -203,8 +203,6 @@ DB::table('weights')->insert([
 
 }
 
-
-
     
 
     public function ProductEdit($id)
@@ -280,15 +278,16 @@ public function ProductDelete($id)
     $rackId = $rack->id;
 
     $newOccupied = DB::table('weights')
-        ->join('rack_locations', 'rack_locations.id', '=', 'weights.rack_id')
-        ->where('rack_locations.id', '=', $rackId)
-        ->select('weights.weight_of_product')
-        ->first()
-        ->weight_of_product - $product->weight;
+    ->join('rack_locations', 'rack_locations.id', '=', 'weights.rack_id')
+    ->where('rack_locations.id', '=', $rackId)
+    ->where('weights.product_id', '!=', $id) // exclude the product being deleted
+    ->sum('weights.weight_of_product');
 
-    DB::table('rack_locations')
-        ->where('id', '=', $rackId)
-        ->update(['occupied' => $newOccupied]);
+
+DB::table('rack_locations')
+    ->where('id', '=', $rackId)
+    ->update(['occupied' => $newOccupied]);
+
 
     if ($product->delete()) {
         $notification = array(
