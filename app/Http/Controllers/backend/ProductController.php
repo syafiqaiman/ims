@@ -103,6 +103,30 @@ public function getUsers(Request $request)
      */
     public function ProductInsert(Request $request)
 {
+
+    // Calculate the total quantity
+    $total_quantity = $request->carton_quantity * $request->item_per_carton;
+    $total_weight = $total_quantity * $request->weight_per_item;
+    $rack_id = $request->rack_id;
+    
+     // Check if the total weight exceeds the limit of 200
+     if ($total_weight > 200) {
+        return redirect()->back()->with('error', 'Total weight exceeds limit of 200. Please adjust your inputs.')->withInput();
+    }
+
+    // Get the rack capacity and occupied weight
+$rack_data = DB::table('rack_locations')
+->where('id', $rack_id)
+->select('capacity', 'occupied')
+->first();
+
+$rack_capacity = $rack_data->capacity;
+$occupied_weight = $rack_data->occupied;
+
+// Calculate the remaining capacity
+$remaining_capacity = $rack_capacity - $occupied_weight;
+
+
     $validatedData = $request->validate([
         'company_id' => 'required',
         'product_name' => 'required|string|max:255',
@@ -147,60 +171,53 @@ public function getUsers(Request $request)
         Storage::move('public/'.$filename, 'public/Image/'.$filename);
     }
 
-    // Calculate the total quantity
-    // Calculate the total quantity
-$total_quantity = $request->carton_quantity * $request->item_per_carton;
-$total_weight = $total_quantity * $request->weight_per_item;
-$rack_id = $request->rack_id;
 
- // Check if the total weight exceeds the limit of 200
- if ($total_weight > 200) {
-    return redirect()->back()->with('error', 'Total weight exceeds limit of 200. Please adjust your inputs.')->withInput();
-}
-
-// Insert data into the products table
-$product_id = DB::table('products')->insertGetId($data);
-
-if ($product_id) {
-    // Insert data into the quantity table
-    DB::table('quantities')->insert([
-        'product_id' => $product_id,
-        'total_quantity' => $total_quantity,
-        'sold_carton_quantity' => 0,
-        'sold_item_quantity' => 0,
-        'remaining_quantity' => $total_quantity,
-        'created_at' => now(),
-        'updated_at' => now(),
-    ]);
-
-    // Insert data into the weights table
-DB::table('weights')->insert([
-    'product_id' => $product_id,
-    'weight_of_product' => $total_weight,
-    'rack_id' => $data['rack_id'],
-    'created_at' => now(),
-    'updated_at' => now(),
-]);
-
-
-    // Get the total weight of products in the current rack
-    $total_weight_in_rack = DB::table('weights')
-        ->join('products', 'weights.product_id', '=', 'products.id')
-        ->where('products.rack_id', $rack_id)
-        ->sum('weight_of_product');
-
-    // Update rack_locations table with the occupied weight
-    DB::table('rack_locations')
-        ->where('id', $rack_id)
-        ->update(['occupied' => $total_weight_in_rack]);
-
-    return redirect()->route('product.index')->with('success','Product added successfully');
+// Check if the remaining capacity is less than the weight of the new product
+if ($remaining_capacity < $total_weight) {
+    return redirect()->back()->with('error', 'Rack capacity exceeded. Remaining capacity: '.$remaining_capacity.'. Please adjust your inputs.')->withInput();
 } else {
-    $notification = [        'message' => 'Error',        'alert-type' => 'error',    ];
-    return redirect()->route('product.index')->with($notification);
-}
+    // Insert data into the products table
+    $product_id = DB::table('products')->insertGetId($data);
 
+    if ($product_id) {
+        // Insert data into the quantity table
+        DB::table('quantities')->insert([
+            'product_id' => $product_id,
+            'total_quantity' => $total_quantity,
+            'sold_carton_quantity' => 0,
+            'sold_item_quantity' => 0,
+            'remaining_quantity' => $total_quantity,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
+        // Insert data into the weights table
+        DB::table('weights')->insert([
+            'product_id' => $product_id,
+            'weight_of_product' => $total_weight,
+            'rack_id' => $data['rack_id'],
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        // Get the total weight of products in the current rack
+        $total_weight_in_rack = DB::table('weights')
+            ->join('products', 'weights.product_id', '=', 'products.id')
+            ->where('products.rack_id', $rack_id)
+            ->sum('weight_of_product');
+
+        // Update rack_locations table with the occupied weight
+        DB::table('rack_locations')
+            ->where('id', $rack_id)
+            ->update(['occupied' => $total_weight_in_rack]);
+
+        return redirect()->route('product.index')->with('success','Product added successfully');
+    } else {
+        $notification = ['message' => 'Error', 'alert-type' => 'error'];
+        return redirect()->route('product.index')->with($notification);
+    }
+
+    }
 }
 
     
