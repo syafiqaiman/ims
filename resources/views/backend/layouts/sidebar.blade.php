@@ -69,6 +69,25 @@
 
 
 @if (Auth::user()->role == 1 )
+<li class="nav-item">
+  <a href="{{URL::to('/add_product')}}" class="nav-link">
+    <i class="nav-icon fas fa-th"></i>
+    <p>
+      New Product Request
+      <!-- <span class="right badge badge-danger">New</span> -->
+    </p>
+  </a>
+</li>
+
+<li class="nav-item">
+  <a href="{{URL::to('/add_product')}}" class="nav-link">
+    <i class="nav-icon fas fa-th"></i>
+    <p>
+      Restock Request
+      <!-- <span class="right badge badge-danger">New</span> -->
+    </p>
+  </a>
+</li>
 
           <li class="nav-item">
             <a href="{{URL::to('/add_product')}}" class="nav-link">
@@ -178,7 +197,53 @@
 
 
 @if (Auth::user()->role == 3 )
-
+<li class="nav-item">
+  <a href="{{URL::to('/add_company')}}" class="nav-link">
+    <i class="nav-icon fas fa-th"></i>
+    <p>
+      Request New Product (future feature)
+      <!-- <span class="right badge badge-danger">New</span> -->
+    </p>
+  </a>
+</li>
+<li class="nav-item">
+  <a href="{{URL::to('/add_company')}}" class="nav-link">
+    <i class="nav-icon fas fa-th"></i>
+    <p>
+      Restock Form (future feature)
+      {{-- oonly display existing item --}}
+      <!-- <span class="right badge badge-danger">New</span> -->
+    </p>
+  </a>
+</li>
+<li class="nav-item">
+  <a href="{{URL::to('/add_company')}}" class="nav-link">
+    <i class="nav-icon fas fa-th"></i>
+    <p>
+      Product Pick Up (future feature)
+      <!-- <span class="right badge badge-danger">New</span> -->
+    </p>
+  </a>
+</li>
+<li class="nav-item">
+  <a href="{{URL::to('/add_company')}}" class="nav-link">
+    <i class="nav-icon fas fa-th"></i>
+    <p>
+      Delivery Form (future feature)
+      <!-- <span class="right badge badge-danger">New</span> -->
+    </p>
+  </a>
+</li>
+<li class="nav-item">
+  <a href="{{URL::to('/add_company')}}" class="nav-link">
+    <i class="nav-icon fas fa-th"></i>
+    <p>
+      Assign Delivery (future feature)
+      <!-- <span class="right badge badge-danger">New</span> -->
+      
+    </p>
+  </a>
+</li>
 <li class="nav-item">
   <a href="{{URL::to('/detail_company')}}" class="nav-link">
     <i class="nav-icon fas fa-th"></i>
