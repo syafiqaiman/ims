@@ -23,8 +23,10 @@
 <th>Qty</th>   
 <th>Product Dimensions</th>   
 <th>Total Weight In Stock (kg)</th>   
-<th>Product Image</th>   
+<th>Product Image</th>  
+@if (Auth::user()->role == 1 || Auth::user()->role == 2) 
 <th>Date To Be Stored</th>  
+@endif
 @if(Auth::user()->role == 1)    
 <th>Action</th>  
 @endif             
@@ -66,15 +68,16 @@
       <img src="{{ asset('storage/Image/'.$row->product_image) }}"
            style="height: 100px; width: 150px;">
     </td>
-    
+    @if (Auth::user()->role == 1) 
 <td>{{ $row->date_to_be_stored }}</td>
+@endif
 @if(Auth::user()->role == 1)
 <td>
-      
+  
        <a href="{{ URL::to('/edit_product/'.$row->id) }}" class="btn btn-sm btn-info">Edit</a>
        <a href="{{ URL::to('delete_product/'.$row->id) }}" class="btn btn-sm btn-danger" id="delete" class="middle-align">Delete</a>
-       
    </td>
+
    @endif
 </tr>
 @endforeach

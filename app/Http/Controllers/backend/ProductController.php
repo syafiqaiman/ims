@@ -330,4 +330,32 @@ DB::table('rack_locations')
     return response()->json($products);
 }
 
+
+//Customer Side For Product Adding
+
+public function RestockForm(Request $request)
+{
+    // Get the authenticated user's ID
+    $user_id = auth()->user()->id;
+
+    // Get the authenticated user with their associated companies and products
+    $user = User::with(['companies.products'])->find($user_id);
+
+    // Get the authenticated user's company
+    $company = $user->companies->first();
+
+    // Get the products of the authenticated user's company
+    $products = $company->products;
+
+    // Return the view with the user's company and products
+    return view('backend.product.restock_form', compact('company', 'products','user'));
+}
+
+public function RequestProduct(Request $request){
+
+    return view('backend.product.request_product');
+}
+
+
+
 }

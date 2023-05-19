@@ -19,4 +19,9 @@ public function getUsers()
     return $this->users()->select('id', 'name')->get();
 }
 
+public function products()
+{
+    return $this->hasMany(Product::class);
+}
+
 }

@@ -198,7 +198,7 @@
 
 @if (Auth::user()->role == 3 )
 <li class="nav-item">
-  <a href="{{URL::to('/add_company')}}" class="nav-link">
+  <a href="{{URL::to('/request_newproduct')}}" class="nav-link">
     <i class="nav-icon fas fa-th"></i>
     <p>
       Request New Product (future feature)
@@ -207,11 +207,20 @@
   </a>
 </li>
 <li class="nav-item">
-  <a href="{{URL::to('/add_company')}}" class="nav-link">
+  <a href="{{URL::to('/restock_form')}}" class="nav-link">
     <i class="nav-icon fas fa-th"></i>
     <p>
       Restock Form (future feature)
       {{-- oonly display existing item --}}
+      <!-- <span class="right badge badge-danger">New</span> -->
+    </p>
+  </a>
+</li>
+<li class="nav-item">
+  <a href="{{URL::to('/my_stock_level')}}" class="nav-link">
+    <i class="nav-icon fas fa-th"></i>
+    <p>
+      Stock Level (future feature)
       <!-- <span class="right badge badge-danger">New</span> -->
     </p>
   </a>

@@ -30,4 +30,21 @@ class QuantityController extends Controller
         return view('backend.quantity.list_quantity', compact('quantities'));
     }
 
+    public function MyStockLevel(Request $request)
+{
+    // Get the authenticated user's ID
+    $user_id = auth()->user()->id;
+
+    $quantities = DB::table('quantities')
+        ->join('products', 'quantities.product_id', '=', 'products.id')
+        ->join('companies', 'products.company_id', '=', 'companies.id')
+        ->where('companies.user_id', $user_id) // Filter by the user's ID
+        ->select('products.id', 'companies.company_name', 'products.product_name', 'quantities.total_quantity', 'quantities.remaining_quantity')
+        ->get();
+
+    return view('backend.quantity.my_stock', compact('quantities'));
 }
+
+
+}
+

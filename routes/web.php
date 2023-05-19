@@ -20,13 +20,18 @@ Route::get('user_list', [App\Http\Controllers\backend\UsermanagementController::
 Route::get('/edit_user/{id}', [App\Http\Controllers\backend\UsermanagementController::class,'UserEdit']);
 Route::post('/update_user/{id}', [App\Http\Controllers\backend\UsermanagementController::class,'UserUpdate']);
 Route::get('/delete_user/{id}', [App\Http\Controllers\backend\UsermanagementController::class,'UserDelete']);
-
+//admin side
 Route::get('list_product', [App\Http\Controllers\backend\ProductController::class,'ProductList'])->name('product.index');
 Route::get('/add_product',[App\Http\Controllers\backend\ProductController::class,'ProductAdd'])->name('productadd');
 Route::post('/insert_product', [App\Http\Controllers\backend\ProductController::class,'ProductInsert']);
 Route::get('/edit_product/{id}', [App\Http\Controllers\backend\ProductController::class,'ProductEdit']);
 Route::post('/update_product/{id}', [App\Http\Controllers\backend\ProductController::class,'ProductUpdate']);
 Route::get('/delete_product/{id}', [App\Http\Controllers\backend\ProductController::class,'ProductDelete']);
+//below is customer side
+Route::get('/restock_form',[App\Http\Controllers\backend\ProductController::class,'RestockForm'])->name('restockform');
+Route::get('/request_newproduct',[App\Http\Controllers\backend\ProductController::class,'RequestProduct'])->name('requestproduct');
+
+
 
 Route::get('/company/getUsers', function (Request $request) {
     $company = Company::find($request->company_id);
@@ -36,7 +41,7 @@ Route::get('/company/getUsers', function (Request $request) {
 
 
 Route::get('quantity_list', [App\Http\Controllers\backend\QuantityController::class, 'ProductQuantityList'])->name('quantity.index');
-
+Route::get('my_stock_level', [App\Http\Controllers\backend\QuantityController::class, 'MyStockLevel'])->name('mystocklevel');
 
 Route::get('picker_task', [App\Http\Controllers\backend\PickerController::class, 'PickerTaskList'])->name('pickertask');
 Route::post('/picker/confirm-collection/{id}/{quantity}', [App\Http\Controllers\backend\PickerController::class, 'confirmCollection'])->name('picker.confirm');
