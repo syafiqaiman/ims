@@ -39,7 +39,7 @@ class QuantityController extends Controller
         ->join('products', 'quantities.product_id', '=', 'products.id')
         ->join('companies', 'products.company_id', '=', 'companies.id')
         ->where('companies.user_id', $user_id) // Filter by the user's ID
-        ->select('products.id', 'companies.company_name', 'products.product_name', 'quantities.total_quantity', 'quantities.remaining_quantity')
+        ->select('products.id', 'companies.company_name', 'products.product_name','products.product_desc','products.weight_per_item','products.weight_per_carton',   'quantities.total_quantity', 'quantities.remaining_quantity')
         ->get();
 
     return view('backend.quantity.my_stock', compact('quantities'));

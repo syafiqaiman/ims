@@ -12,6 +12,7 @@ use App\Models\Product;
 use App\Models\Company;
 use App\Models\User;
 use App\Models\Rack;
+use App\Models\Restock;
 
 
 class ProductController extends Controller
@@ -351,9 +352,77 @@ public function RestockForm(Request $request)
     return view('backend.product.restock_form', compact('company', 'products','user'));
 }
 
-public function RequestProduct(Request $request){
 
-    return view('backend.product.request_product');
+
+//view chosen item to be restocked
+public function RestockItem($id)
+{
+    $user_id = auth()->user()->id;
+
+    $restock = DB::table('products')
+        ->join('companies', 'products.company_id', '=', 'companies.id')
+        ->join('rack_locations', 'products.rack_id', '=', 'rack_locations.id')
+        ->select('products.id', 'products.company_id','rack_locations.id AS rack_id', 'companies.id AS company_id', 'companies.company_name', 'product_name', 'product_desc', 'product_image', 'product_dimensions','date_to_be_stored', 'weight_per_item', 'weight_per_carton')
+        ->where('products.id', $id)
+        ->where('companies.user_id', $user_id) // Add condition to check if the company belongs to the user
+        ->first();
+
+    $companies = Company::all();
+
+    if (!$restock) {
+        // Product not found or does not belong to the user's company
+        return redirect()->back()->with('error', 'Invalid product.');
+    }
+
+    return view('backend.product.restock_form_test', compact('restock', 'companies'));
+}
+
+
+
+public function SendRequestProduct(Request $request)
+{
+    $total_quantity = $request->carton_quantity * $request->item_per_carton;
+    $total_weight = $total_quantity * $request->weight_per_item;
+
+    // Check if the total weight exceeds the limit of 200
+    if ($total_weight > 200) {
+        return redirect()->back()->with('error', 'Total weight exceeds the limit of 200. Please adjust your inputs.')->withInput();
+    }
+
+    // Get the user's ID
+    $user_id = auth()->user()->id;
+
+    $restock = DB::table('restock_request')
+    ->join('products', 'restock_request.product_id', '=', 'products.id')
+    ->select('restock_request.*', 'products.product_name', 'products.product_desc', 'products.weight_per_item')
+    ->where('restock_request.user_id', $user_id)
+    ->get();
+
+    // Insert data into the restock_request table
+    DB::table('restock_request')->insert([
+        'total_weight' => $total_weight,
+        'product_id' => $request->product_id,
+        'rack_id' => $request->rack_id,
+        'status' => 'Under Review',
+        'user_id' => $user_id,
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+
+    return view('backend.product.restock_status_customer', compact('restock'));
+}
+
+public function showRestockRequests()
+{
+    $user_id = auth()->user()->id;
+
+    $restock = DB::table('restock_request')
+        ->join('products', 'restock_request.product_id', '=', 'products.id')
+        ->select('restock_request.*', 'products.product_name', 'products.product_desc', 'products.weight_per_item')
+        ->where('restock_request.user_id', $user_id)
+        ->get();
+
+    return view('backend.product.restock_status_customer', compact('restock'));
 }
 
 

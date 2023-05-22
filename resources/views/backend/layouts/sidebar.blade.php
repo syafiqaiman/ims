@@ -2,7 +2,13 @@
     <!-- Brand Logo -->
     <a href="{{URL::to('/home')}}" class="brand-link">
       <img src="{{('backend/dist/img/AdminLTELogo.png')}}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+      @if(Auth::user()->role == 1 )
       <span class="brand-text font-weight-light">Admin Panel</span>
+      @endif
+      @if(Auth::user()->role == 3 )
+      <span class="brand-text font-weight-light">Customer Panel</span>
+      @endif
+
     </a>
 
     <!-- Sidebar -->
@@ -207,10 +213,10 @@
   </a>
 </li>
 <li class="nav-item">
-  <a href="{{URL::to('/restock_form')}}" class="nav-link">
+  <a href="{{URL::to('/request_restock_status')}}" class="nav-link">
     <i class="nav-icon fas fa-th"></i>
     <p>
-      Restock Form (future feature)
+      Product Restock Status
       {{-- oonly display existing item --}}
       <!-- <span class="right badge badge-danger">New</span> -->
     </p>
@@ -220,7 +226,7 @@
   <a href="{{URL::to('/my_stock_level')}}" class="nav-link">
     <i class="nav-icon fas fa-th"></i>
     <p>
-      Stock Level (future feature)
+      Stock Level
       <!-- <span class="right badge badge-danger">New</span> -->
     </p>
   </a>

@@ -29,7 +29,9 @@ Route::post('/update_product/{id}', [App\Http\Controllers\backend\ProductControl
 Route::get('/delete_product/{id}', [App\Http\Controllers\backend\ProductController::class,'ProductDelete']);
 //below is customer side
 Route::get('/restock_form',[App\Http\Controllers\backend\ProductController::class,'RestockForm'])->name('restockform');
-Route::get('/request_newproduct',[App\Http\Controllers\backend\ProductController::class,'RequestProduct'])->name('requestproduct');
+Route::get('/restock_form/{id}',[App\Http\Controllers\backend\ProductController::class,'RestockItem'])->name('restock');
+Route::post('/send_request_restock',[App\Http\Controllers\backend\ProductController::class,'SendRequestProduct'])->name('requestproduct');
+Route::get('/request_restock_status',[App\Http\Controllers\backend\ProductController::class,'showRestockRequests'])->name('showstatus');
 
 
 
