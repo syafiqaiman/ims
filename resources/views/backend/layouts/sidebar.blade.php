@@ -86,7 +86,7 @@
 </li>
 
 <li class="nav-item">
-  <a href="{{URL::to('/add_product')}}" class="nav-link">
+  <a href="{{URL::to('/review_request')}}" class="nav-link">
     <i class="nav-icon fas fa-th"></i>
     <p>
       Restock Request

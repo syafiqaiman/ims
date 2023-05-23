@@ -408,8 +408,8 @@ public function SendRequestProduct(Request $request)
         'created_at' => now(),
         'updated_at' => now(),
     ]);
-
-    return view('backend.product.restock_status_customer', compact('restock'));
+    
+    return redirect()->route('showstatus')->with('success','Request has been send');
 }
 
 public function showRestockRequests()
@@ -425,6 +425,35 @@ public function showRestockRequests()
     return view('backend.product.restock_status_customer', compact('restock'));
 }
 
+public function reviewRestockRequest()
+{
+    $user_id = auth()->user()->id;
 
+    $restock = DB::table('restock_request')
+        ->join('products', 'restock_request.product_id', '=', 'products.id')
+        ->join('companies', 'products.company_id', '=', 'companies.id')
+        ->select('restock_request.*', 'products.product_name','companies.company_name', 'products.product_desc', 'products.weight_per_item','products.weight_per_carton','products.product_image')
+        ->get();
+
+    return view('backend.product.review_restock_request', compact('restock'));
+}
+
+public function RemoveRequest($id)
+{
+
+    $restock = Restock::findOrFail($id);
+
+    // Update the status to "Rejected"
+    $restock->status = 'Rejected';
+    $restock->save();
+
+    $notification = array(
+        'message' => 'Request Rejected Successfully',
+        'alert-type' => 'success'
+    );
+    return redirect()->back()->with($notification);
+}
 
 }
+
+

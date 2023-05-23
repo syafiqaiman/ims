@@ -1,4 +1,5 @@
 @extends('backend.layouts.app')
+
 @section('content')
 
 <div class="card">
@@ -19,7 +20,13 @@
                 @foreach($restock as $request)
                 <tr data-widget="expandable-table" aria-expanded="false">
                     <td>{{$request->product_name}}</td>
-                    <td>{{$request->status}}</td>
+                    <td>
+                        @if ($request->status === 'Under Review')
+                            <button class="btn btn-info">Under Review</button>
+                        @elseif ($request->status === 'Rejected')
+                            <button class="btn btn-danger">Rejected</button>
+                        @endif
+                    </td>
                 </tr>
                 <tr class="expandable-body">
                     <td colspan="2">
