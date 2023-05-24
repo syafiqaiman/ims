@@ -30,14 +30,16 @@
                                         <td>{{ $request->product_name }}</td>
                                         <td>{{ $request->total_weight }}</td>
                                         <td>
-                                            <button class="btn btn-success">Approve</button>
+                                            <a href="{{ URL::to('approve_request/'.$request->id) }}" class="btn btn-success">Approve</a>
                                             <a href="{{ URL::to('remove_request/'.$request->id) }}" class="btn btn-danger">Reject</a>
                                         </td>
                                     </tr>
                                     <tr class="expandable-body">
                                         <td colspan="5">
                                             <p><strong>Product Image:</strong></p>
+                                            <div class="col-sm-2">
                                             <img src="{{ asset('storage/Image/'.$request->product_image) }}" width="100">
+                                            </div>
                                             <p><strong>Weight Per Item (kg):</strong> {{ $request->weight_per_item }}</p>
                                             <p><strong>Weight Per Carton (kg):</strong> {{ $request->weight_per_carton }}</p>
                                         </td>

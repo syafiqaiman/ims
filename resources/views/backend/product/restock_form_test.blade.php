@@ -53,7 +53,7 @@
                           
                             <div class="form-group">
                               <label for="exampleInputEmail1">Item Per Carton</label>
-                              <input type="number" name="item_per_carton"  class="form-control @error('title') is-invalid @enderror"
+                              <input type="number" name="item_per_carton" value="{{$restock->item_per_carton}}" class="form-control @error('title') is-invalid @enderror"
                                id="exampleInputEmail1" placeholder="Enter Quantity">
                               
                               @error('slug')
@@ -66,7 +66,7 @@
                           
                           <div class="form-group">
                             <label for="exampleInputEmail1">Weight Per Item (kg)</label>
-                            <<input type="text" name="weight_per_item"  class="form-control @error('title') is-invalid @enderror"
+                            <<input type="text" name="weight_per_item" value="{{$restock->weight_per_item}}" class="form-control  @error('title') is-invalid @enderror"
                             id="weight_per_item" placeholder="Weight Per Item" step="0.1">
                             @error('title')
                             <span class="invalid-feedback" role="alert">
@@ -77,7 +77,7 @@
                           
                           <div class="form-group">
                             <label for="exampleInputEmail1">Weight Per Carton (kg)</label>
-                            <input type="text" name="weight_per_carton"  class="form-control @error('title') is-invalid @enderror"
+                            <input type="text" name="weight_per_carton" value="{{$restock->weight_per_carton}}" class="form-control @error('title') is-invalid @enderror"
                              id="weight_per_carton" placeholder="Weight Per Carton" step="0.1">
                             @error('title')
                             <span class="invalid-feedback" role="alert">

@@ -362,7 +362,7 @@ public function RestockItem($id)
     $restock = DB::table('products')
         ->join('companies', 'products.company_id', '=', 'companies.id')
         ->join('rack_locations', 'products.rack_id', '=', 'rack_locations.id')
-        ->select('products.id', 'products.company_id','rack_locations.id AS rack_id', 'companies.id AS company_id', 'companies.company_name', 'product_name', 'product_desc', 'product_image', 'product_dimensions','date_to_be_stored', 'weight_per_item', 'weight_per_carton')
+        ->select('products.id', 'products.company_id','rack_locations.id AS rack_id', 'companies.id AS company_id', 'companies.company_name', 'product_name', 'product_desc', 'product_image', 'product_dimensions','date_to_be_stored', 'weight_per_item','item_per_carton', 'weight_per_carton')
         ->where('products.id', $id)
         ->where('companies.user_id', $user_id) // Add condition to check if the company belongs to the user
         ->first();
@@ -408,7 +408,7 @@ public function SendRequestProduct(Request $request)
         'created_at' => now(),
         'updated_at' => now(),
     ]);
-    
+
     return redirect()->route('showstatus')->with('success','Request has been send');
 }
 
