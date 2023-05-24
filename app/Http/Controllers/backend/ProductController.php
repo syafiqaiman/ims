@@ -454,6 +454,25 @@ public function RemoveRequest($id)
     return redirect()->back()->with($notification);
 }
 
+
+//customer add new product
+
+public function CustomerAddProduct(Request $request)
+{
+    // Get the user's ID
+    $user_id = auth()->user()->id;
+
+    // Get the user's company
+    $company = Company::where('user_id', $user_id)->first();
+
+    // Get all companies
+    $companies = Company::where('id', $company->id)->get();
+
+    // Return the view with the company and companies
+    return view('backend.product.request_product', compact('company', 'companies'));
+}
+
+
 }
 
 

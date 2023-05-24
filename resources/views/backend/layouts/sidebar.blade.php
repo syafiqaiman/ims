@@ -204,10 +204,10 @@
 
 @if (Auth::user()->role == 3 )
 <li class="nav-item">
-  <a href="{{URL::to('/request_newproduct')}}" class="nav-link">
+  <a href="{{URL::to('/customer_add_product')}}" class="nav-link">
     <i class="nav-icon fas fa-th"></i>
     <p>
-      Request New Product (future feature)
+      Add New Product
       <!-- <span class="right badge badge-danger">New</span> -->
     </p>
   </a>

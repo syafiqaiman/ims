@@ -11,13 +11,28 @@
             <!-- general form elements -->
             <div class="card card-primary">
               <div class="card-header">
-                <h3 class="card-title">Send Product</h3>
+                <h3 class="card-title">Fill in the detail of your product</h3>
               </div>
               <!-- /.card-header -->
               <!-- form start -->
               <form role="form" action="{{URL::to('/insert_product')}}" method="post" enctype="multipart/form-data">
               	@csrf
                 <div class="card-body">     
+
+                  <div class="form-group">
+                    <label for="company_id">My Company</label>
+                    <select name="company_id" class="form-control" id="company_id">
+                        <option value="">Select Company Name</option>
+                        @foreach($companies as $company)
+                            <option value="{{ $company->id }}">{{ $company->company_name }}</option>
+                        @endforeach
+                    </select>
+                    @error('company_id')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
+                </div>
 
 <div class="form-group">
 <label for="exampleInputEmail1">Product Name</label>
