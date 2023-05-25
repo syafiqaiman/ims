@@ -69,27 +69,49 @@
                     </span>
                     @enderror
                 </div>
+
+                <div class="form-group">
+                  <label for="product_dimensions">Product Dimension</label>
+                  <input type="text" name="product_dimensions" class="form-control @error('product_dimensions') is-invalid @enderror" id="product_dimensions" placeholder="Enter Product Dimension">
+                  @error('product_dimensions')
+                  <span class="invalid-feedback" role="alert">
+                      <strong>{{ $message }}</strong>
+                  </span>
+                  @enderror
+              </div>
             </div>
 
             <div class="col-md-6">
-                <div class="form-group">
-                    <label for="product_dimensions">Product Dimension</label>
-                    <input type="text" name="product_dimensions" class="form-control @error('product_dimensions') is-invalid @enderror" id="product_dimensions" placeholder="Enter Product Dimension">
-                    @error('product_dimensions')
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
-                    @enderror
-                </div>
+               
 
                 <div class="form-group">
-                    <label for="product_weight">Product Weight</label>
-                    <input type="text" name="product_weight" class="form-control @error('product_weight') is-invalid @enderror" id="product_weight" placeholder="Enter Product Weight">
-                    @error('product_weight')
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
-                    @enderror
+                  <label for="exampleInputEmail1">Weight Per Item (kg)</label>
+                  <<input type="text" name="weight_per_item"  class="form-control @error('title') is-invalid @enderror" id="weight_per_item" placeholder="Weight Per Item" step="0.1">
+                  @error('title')
+                  <span class="invalid-feedback" role="alert">
+                  <strong>{{ $message }}</strong>
+                  </span>
+                  @enderror
+                </div>
+                
+                <div class="form-group">
+                  <label for="exampleInputEmail1">Weight Per Carton (kg)</label>
+                  <input type="text" name="weight_per_carton"  class="form-control @error('title') is-invalid @enderror" id="weight_per_carton" placeholder="Weight Per Carton" step="0.1">
+                  @error('title')
+                  <span class="invalid-feedback" role="alert">
+                  <strong>{{ $message }}</strong>
+                  </span>
+                  @enderror
+                </div>
+                
+                <div class="form-group">
+                  <label for="exampleInputEmail1">Total Weight (kg)</label>
+                  <input type="text" name="total_weight" id="total_weight" class="form-control @error('title') is-invalid @enderror">
+                  @error('title')
+                  <span class="invalid-feedback" role="alert">
+                  <strong>{{ $message }}</strong>
+                  </span>
+                  @enderror
                 </div>
 
                 <div class="form-group">
@@ -183,7 +205,34 @@
 
 </div>
 
+<script type="text/javascript">
+  function readURL(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            $('#image')
+                .attr('src', e.target.result)
+                .width(80)
+                .height(80);
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+ }
 
+ const cartonQuantity = document.getElementById('carton_quantity');
+const weightPerCarton = document.getElementById('weight_per_carton');
+const totalWeightOutput = document.getElementById('total_weight');
+
+cartonQuantity.addEventListener('input', updateTotalWeight);
+weightPerCarton.addEventListener('input', updateTotalWeight);
+
+function updateTotalWeight() {
+  const cartonQuantityValue = parseFloat(cartonQuantity.value) || 0;
+  const weightPerCartonValue = parseFloat(weightPerCarton.value) || 0;
+  const totalWeight = cartonQuantityValue * weightPerCartonValue;
+  totalWeightOutput.value = totalWeight.toFixed(2);
+}
+</script>
 
 <script type="text/javascript">
   document.addEventListener('DOMContentLoaded', function() {
