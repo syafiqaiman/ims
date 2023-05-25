@@ -1,7 +1,8 @@
 @extends('backend.layouts.app')
 @section('content')
-
-<div class="card card-default">
+<form role="form" action="{{URL::to('/request_product')}}" method="post" enctype="multipart/form-data">
+  @csrf
+  <div class="card card-default">
     <div class="card-header">
         <h3 class="card-title">Fill in the detail of your product</h3>
         <div class="card-tools">
@@ -144,7 +145,7 @@
     
                 <div class="form-group">
                     <label for="address">Address</label>
-                    <input type="text" name="address" class="form-control @error('address') is-invalid @enderror" id="address" placeholder="Enter Address" readonly>
+                    <input type="text" name="address" class="form-control @error('address') is-invalid @enderror" id="address" placeholder="Enter Address">
                     @error('address')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
@@ -154,7 +155,7 @@
     
                 <div class="form-group">
                     <label for="phone">Phone number</label>
-                    <input type="text" name="phone_number" class="form-control @error('phone_number') is-invalid @enderror" id="phone_number" placeholder="Enter Phone Number" readonly>
+                    <input type="text" name="phone_number" class="form-control @error('phone_number') is-invalid @enderror" id="phone_number" placeholder="Enter Phone Number">
                     @error('phone_number')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
@@ -164,7 +165,7 @@
     
                 <div class="form-group">
                     <label for="email">Email</label>
-                    <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" id="email" placeholder="Enter Email" readonly>
+                    <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" id="email" placeholder="Enter Email">
                     @error('email')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
@@ -178,7 +179,10 @@
     <div class="card-footer">
         <button type="submit" class="btn btn-primary">Submit</button>
     </div>
+  </form>
+
 </div>
+
 
 
 <script type="text/javascript">

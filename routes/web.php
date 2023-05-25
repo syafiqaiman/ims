@@ -34,8 +34,8 @@ Route::post('/send_request_restock',[App\Http\Controllers\backend\ProductControl
 Route::get('/request_restock_status',[App\Http\Controllers\backend\ProductController::class,'showRestockRequests'])->name('showstatus');
 Route::get('/review_request',[App\Http\Controllers\backend\ProductController::class,'reviewRestockRequest'])->name('reviewrequest');
 Route::get('remove_request/{id}', [App\Http\Controllers\backend\ProductController::class,'RemoveRequest']);
-Route::get('/customer_add_product',[App\Http\Controllers\backend\ProductController::class,'CustomerAddProduct'])->name('customerproductadd');
-
+Route::get('/customer_add_product',[App\Http\Controllers\backend\ProductController::class,'CustomerAddProductForm'])->name('customerproductadd');
+Route::post('/request_product',[App\Http\Controllers\backend\ProductController::class,'storeProductRequest'])->name('productrequest');
 
 
 Route::get('/company/getUsers', function (Request $request) {

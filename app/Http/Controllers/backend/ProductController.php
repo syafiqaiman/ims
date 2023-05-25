@@ -457,7 +457,7 @@ public function RemoveRequest($id)
 
 //customer add new product
 
-public function CustomerAddProduct(Request $request)
+public function CustomerAddProductForm(Request $request)
 {
     // Get the user's ID
     $user_id = auth()->user()->id;
@@ -472,6 +472,47 @@ public function CustomerAddProduct(Request $request)
     return view('backend.product.request_product', compact('company', 'companies'));
 }
 
+public function storeProductRequest(Request $request)
+{
+    // Validate the incoming request data
+    $validatedData = $request->validate([
+        'company_id' => 'required',
+        'product_name' => 'required',
+        'product_desc' => 'required',
+        'carton_quantity' => 'required|numeric',
+        'item_per_carton' => 'required|numeric',
+        'product_dimensions' => 'required',
+        'product_weight' => 'required',
+        'product_price' => 'required',
+        'product_image' => 'required|image',
+        'address' => 'required',
+        'phone_number' => 'required',
+        'email' => 'required|email',
+    ]);
+
+    // Handle the product image upload
+    $imagePath = $request->file('product_image')->store('product_images');
+
+    // Insert the product request into the database using the DB::table() method
+    DB::table('product_request')->insert([
+        'company_id' => $validatedData['company_id'],
+        'product_name' => $validatedData['product_name'],
+        'product_desc' => $validatedData['product_desc'],
+        'carton_quantity' => $validatedData['carton_quantity'],
+        'item_per_carton' => $validatedData['item_per_carton'],
+        'product_dimensions' => $validatedData['product_dimensions'],
+        'product_weight' => $validatedData['product_weight'],
+        'product_price' => $validatedData['product_price'],
+        'product_image' => $imagePath,
+        'address' => $validatedData['address'],
+        'phone_number' => $validatedData['phone_number'],
+        'email' => $validatedData['email'],
+    ]);
+
+    // Redirect the user or return a response
+    // (You can customize this based on your application's logic)
+    return redirect()->back()->with('success', 'Product request submitted successfully.');
+}
 
 
 }
