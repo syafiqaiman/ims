@@ -113,11 +113,90 @@
             </div>
         </div>
     </div>
+</div>
+    <div class="card card-default">
+      <div class="card-header">
+          <h3 class="card-title">Fill in the address detail</h3>
+          <div class="card-tools">
+              <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                  <i class="fas fa-minus"></i>
+              </button>
+          </div>
+      </div>
+  
+      <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="company_id">My Company</label>
+                    <select name="company_id" id="company_id" class="form-control select2 select2-hidden-accessible" style="width: 100%;" data-select2-id="1" tabindex="-1" aria-hidden="true">
+                        <option value="">Select Company Name</option>
+                        @foreach($companies as $company)
+                        <option value="{{ $company->id }}" data-address="{{ $company->address }}" data-phone_number="{{ $company->phone_number }}" data-email="{{ $company->email }}">{{ $company->company_name }}</option>
+                        @endforeach
+                    </select>
+                    @error('company_id')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                    @enderror
+                </div>
+    
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <input type="text" name="address" class="form-control @error('address') is-invalid @enderror" id="address" placeholder="Enter Address" readonly>
+                    @error('address')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                    @enderror
+                </div>
+    
+                <div class="form-group">
+                    <label for="phone">Phone number</label>
+                    <input type="text" name="phone_number" class="form-control @error('phone_number') is-invalid @enderror" id="phone_number" placeholder="Enter Phone Number" readonly>
+                    @error('phone_number')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                    @enderror
+                </div>
+    
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" id="email" placeholder="Enter Email" readonly>
+                    @error('email')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                    @enderror
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="card-footer">
         <button type="submit" class="btn btn-primary">Submit</button>
     </div>
 </div>
 
+
+<script type="text/javascript">
+  document.addEventListener('DOMContentLoaded', function() {
+      var companySelect = document.getElementById('company_id');
+      var addressField = document.getElementById('address');
+      var phoneField = document.getElementById('phone_number');
+      var emailField = document.getElementById('email');
+
+      companySelect.addEventListener('change', function() {
+          var selectedOption = companySelect.options[companySelect.selectedIndex];
+          addressField.value = selectedOption.getAttribute('data-address');
+          phoneField.value = selectedOption.getAttribute('data-phone_number');
+          emailField.value = selectedOption.getAttribute('data-email');
+      });
+  });
+</script>
+
 @endsection
+
 
