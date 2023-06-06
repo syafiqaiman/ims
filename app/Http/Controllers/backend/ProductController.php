@@ -509,7 +509,15 @@ public function storeProductRequest(Request $request)
     ]);
 
     // Handle the product image upload
-    $imagePath = $request->file('product_image')->store('product_images');
+    if ($request->hasFile('product_image')) {
+        $file = $request->file('product_image');
+        $filename = date('YmdHi') . '.' . $file->getClientOriginalExtension();
+        $file->storeAs('public/Image', $filename);
+        $data['product_image'] = $filename;
+
+        // Move the file to the desired folder
+        Storage::move('public/'.$filename, 'public/Image/'.$filename);
+    }
 
     // Insert the product request into the database using the DB::table() method
     DB::table('product_request')->insert([
@@ -523,11 +531,13 @@ public function storeProductRequest(Request $request)
         'product_dimensions' => $validatedData['product_dimensions'],
         'total_weight' => $validatedData['total_weight'],
         'product_price' => $validatedData['product_price'],
-        'product_image' => $imagePath,
+        'product_image' => $filename,
         'address' => $validatedData['address'],
         'phone_number' => $validatedData['phone_number'],
         'email' => $validatedData['email'],
     ]);
+
+ 
 
     // Redirect the user or return a response
     // (You can customize this based on your application's logic)
@@ -566,14 +576,14 @@ public function adminCheckNewProductRequest()
 {
     $user_id = auth()->user()->id;
 
-    $restock = DB::table('restock_request')
-        ->join('products', 'restock_request.product_id', '=', 'products.id')
-        ->select('restock_request.*', 'products.product_name', 'products.product_desc', 'products.weight_per_item')
-        ->where('restock_request.user_id', $user_id)
+    $newrequest = DB::table('product_request')
+        ->join('companies', 'product_request.company_id', '=', 'companies.id')
+        ->select('product_request.id', 'companies.company_name', 'companies.address', 'companies.phone_number', 'companies.email', 'product_request.product_name','product_request.carton_quantity','product_request.item_per_carton','product_request.product_dimensions','product_request.total_weight','product_request.product_price', 'product_request.product_image','product_request.product_desc','product_request.weight_per_carton', 'product_request.weight_per_item')
         ->get();
 
-    return view('backend.product.retrieve_product', compact('restock'));
+    return view('backend.product.retrieve_product', compact('newrequest'));
 }
+
 }
 
 

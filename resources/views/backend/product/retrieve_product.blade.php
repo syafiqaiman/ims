@@ -4,7 +4,7 @@
 
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title">Restock Requests</h3>
+        <h3 class="card-title">New Product Request</h3>
     </div>
     <!-- /.card-header -->
 
@@ -18,7 +18,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($restock as $request)
+                @foreach($newrequest as $request)
                 <tr data-widget="expandable-table" aria-expanded="false">
                     <td>{{$request->company_name}}</td>
                     <td>{{$request->product_name}}</td>
@@ -29,69 +29,39 @@
                 </tr>
                 <tr class="expandable-body">
                     <td colspan="3">
-                        <form role="form" action="{{URL::to('/insert_product')}}" method="post" enctype="multipart/form-data">
-                            @csrf
-                            <div class="form-group">
-                                <label for="company_id">Company Name</label>
-                                <select name="company_id" class="form-control" id="company_id">
-                                    <option value="">Select Company Name</option>
-                                    @foreach($companies as $company)
-                                        <option value="{{ $company->id }}" data-address="{{ $company->address }}" data-phone_number="{{ $company->phone_number }}" data-email="{{ $company->email }}">{{ $company->company_name }}</option>
-                                    @endforeach
-                                </select>
-                                @error('company_id')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+                        <!-- Display the product details here -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Product Description:</strong> {{$request->product_desc}}</p>
+                                <p><strong>Carton Quantity:</strong> {{$request->carton_quantity}}</p>
+                                <p><strong>Items per Carton:</strong> {{$request->item_per_carton}}</p>
+                                <p><strong>Product Dimensions:</strong> {{$request->product_dimensions}}</p>
                             </div>
-
-                            <div class="form-group">
-                                <label for="rack_id">Rack Location</label>
-                                <select name="rack_id" class="form-control" id="rack_id">
-                                    <option value="">Select Rack Location</option>
-                                    @foreach($racks as $location)
-                                        <option value="{{ $location->id }}">{{ $location->location_code }}</option>
-                                    @endforeach
-                                </select>
-                                @error('rack_id')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+                            <div class="col-md-6">
+                                <p><strong>Weight per Item:</strong> {{$request->weight_per_item}}</p>
+                                <p><strong>Weight per Carton:</strong> {{$request->weight_per_carton}}</p>
+                                <p><strong>Total Weight:</strong> {{$request->total_weight}}</p>
+                                <p><strong>Product Price:</strong> {{$request->product_price}}</p>
                             </div>
-
-                            <div class="form-group">
-                                <label for="product_name">Product Name</label>
-                                <input type="text" name="product_name" class="form-control @error('title') is-invalid @enderror" id="product_name" placeholder="Enter Product Name">
-                                @error('title')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+                        </div>
+                        <div class="row">
+                          <div class="col-md-6">
+                            <p><strong>Product Image:</strong></p>
+                            <img src="{{ asset('storage/Image/'.$request->product_image)}}" alt="Product Image" style="height: 100px; width: 150px;">
+                        </div>
+                        
+                            <div class="col-md-6">
+                                <p><strong>Address:</strong> {{$request->address}}</p>
+                                <p><strong>Phone Number:</strong> {{$request->phone_number}}</p>
+                                <p><strong>Email:</strong> {{$request->email}}</p>
                             </div>
-
-                            <div class="form-group">
-                                <label for="product_desc">Product Description</label>
-                                <input type="text" name="product_desc" class="form-control @error('title') is-invalid @enderror" id="product_desc" placeholder="Enter Product Description">
-                                @error('title')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-
-                            <!-- Include the remaining form fields here -->
-
-                            <div class="card-footer">
-                                <button type="submit" class="btn btn-primary">Submit</button>
-                            </div>
-                        </form>
+                        </div>
+                        <!-- End of product details -->
                     </td>
                 </tr>
 
                 <!-- Add modal for approve and reject actions (optional) -->
-                <div class="modal fade" id="approveModal{{$request->id}}" tabindex="-1" role="dialog" aria-labelledby="approveModalLabel{{$request->id}}" aria-hidden="true">
+                {{-- <div class="modal fade" id="approveModal{{$request->id}}" tabindex="-1" role="dialog" aria-labelledby="approveModalLabel{{$request->id}}" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -109,9 +79,9 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> --}}
 
-                <div class="modal fade" id="rejectModal{{$request->id}}" tabindex="-1" role="dialog" aria-labelledby="rejectModalLabel{{$request->id}}" aria-hidden="true">
+                {{-- <div class="modal fade" id="rejectModal{{$request->id}}" tabindex="-1" role="dialog" aria-labelledby="rejectModalLabel{{$request->id}}" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -129,7 +99,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> --}}
                 @endforeach
             </tbody>
         </table>
