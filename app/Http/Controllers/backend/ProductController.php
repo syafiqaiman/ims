@@ -562,7 +562,18 @@ return view('backend.product.product_request_list', compact('allRequestProduct')
 }
 
 
+public function adminCheckNewProductRequest()
+{
+    $user_id = auth()->user()->id;
 
+    $restock = DB::table('restock_request')
+        ->join('products', 'restock_request.product_id', '=', 'products.id')
+        ->select('restock_request.*', 'products.product_name', 'products.product_desc', 'products.weight_per_item')
+        ->where('restock_request.user_id', $user_id)
+        ->get();
+
+    return view('backend.product.retrieve_product', compact('restock'));
+}
 }
 
 

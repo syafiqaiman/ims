@@ -38,6 +38,7 @@ Route::get('approve_request/{id}', [App\Http\Controllers\backend\ProductControll
 Route::get('/customer_add_product',[App\Http\Controllers\backend\ProductController::class,'CustomerAddProductForm'])->name('customerproductadd');
 Route::post('/request_product',[App\Http\Controllers\backend\ProductController::class,'storeProductRequest'])->name('productrequest');
 Route::get('/product_request_list', [App\Http\Controllers\backend\ProductController::class, 'viewRequestProductList'])->name('viewrequestproduct');
+Route::get('/check_new_product',[App\Http\Controllers\backend\ProductController::class,'adminCheckNewProductRequest'])->name('checknewproduct');
 
 Route::get('/company/getUsers', function (Request $request) {
     $company = Company::find($request->company_id);

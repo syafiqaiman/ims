@@ -79,7 +79,7 @@
 
 @if (Auth::user()->role == 1 )
 <li class="nav-item">
-  <a href="{{URL::to('/add_product')}}" class="nav-link">
+  <a href="{{URL::to('/check_new_product')}}" class="nav-link">
     <i class="nav-icon fas fa-th"></i>
     <p>
       New Product Request
