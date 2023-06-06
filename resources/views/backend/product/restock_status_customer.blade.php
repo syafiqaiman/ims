@@ -23,6 +23,8 @@
                     <td>
                         @if ($request->status === 'Under Review')
                             <button class="btn btn-info">Under Review</button>
+                        @elseif ($request->status === 'Approved')
+                            <button class="btn btn-success">Approved</button>
                         @elseif ($request->status === 'Rejected')
                             <button class="btn btn-danger">Rejected</button>
                         @endif

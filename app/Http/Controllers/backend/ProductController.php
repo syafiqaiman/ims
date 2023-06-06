@@ -438,6 +438,22 @@ public function reviewRestockRequest()
     return view('backend.product.review_restock_request', compact('restock'));
 }
 
+public function approveRequest($id)
+{
+    $restock = Restock::findOrFail($id);
+
+    // Update the status to "Approved"
+    $restock->status = 'Approved';
+    $restock->save();
+
+    $notification = array(
+        'message' => 'Request Approved Successfully',
+        'alert-type' => 'success'
+    );
+    return redirect()->back()->with($notification);
+}
+
+
 public function RemoveRequest($id)
 {
 
@@ -517,6 +533,34 @@ public function storeProductRequest(Request $request)
     // (You can customize this based on your application's logic)
     return redirect()->back()->with('success', 'Product request submitted successfully.');
 }
+
+
+public function viewRequestProductList(){
+
+    $user_id = auth()->user()->id;
+
+    $allRequestProduct = DB::table('product_request')->get();
+
+return view('backend.product.product_request_list', compact('allRequestProduct'));
+}
+
+public function DisplayIntoChoosenProductForm(){
+
+    $user_id = auth()->user()->id;
+
+    $racks = Rack::all();
+
+    $list = DB::table('product_request')
+    ->join('quantities', 'products.id', '=', 'quantities.product_id')
+    ->join('companies', 'product_request.company_id', '=', 'companies.id')
+    ->join('rack_locations', 'products.rack_id', '=', 'rack_locations.id')
+    ->join('weights', 'products.id', '=', 'weights.product_id')
+    ->select('products.id','rack_locations.location_code', 'companies.company_name', 'products.product_name', 'products.product_desc', 'products.item_per_carton', 'products.carton_quantity', 'quantities.total_quantity', 'quantities.remaining_quantity', 'products.weight_per_item', 'products.weight_per_carton', 'weights.weight_of_product', 'products.product_dimensions', 'products.product_image', 'products.date_to_be_stored')
+    ->get();
+
+return view('backend.product.product_request_list', compact('allRequestProduct'));
+}
+
 
 
 }

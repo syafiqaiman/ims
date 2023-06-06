@@ -5,6 +5,9 @@
       @if(Auth::user()->role == 1 )
       <span class="brand-text font-weight-light">Admin Panel</span>
       @endif
+      @if(Auth::user()->role == 2 )
+      <span class="brand-text font-weight-light">Picker Panel</span>
+      @endif
       @if(Auth::user()->role == 3 )
       <span class="brand-text font-weight-light">Customer Panel</span>
       @endif
