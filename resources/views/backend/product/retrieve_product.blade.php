@@ -61,25 +61,57 @@
                 </tr>
 
                 <!-- Add modal for approve and reject actions (optional) -->
-                {{-- <div class="modal fade" id="approveModal{{$request->id}}" tabindex="-1" role="dialog" aria-labelledby="approveModalLabel{{$request->id}}" aria-hidden="true">
+                <div class="modal fade" id="approveModal{{$request->id}}" tabindex="-1" role="dialog" aria-labelledby="approveModalLabel{{$request->id}}" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="approveModalLabel{{$request->id}}">Approve Request</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <p>Are you sure you want to approve this request?</p>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                <a href="{{ route('approveRequest', ['id' => $request->id]) }}" class="btn btn-primary">Approve</a>
-                            </div>
+                            <form method="POST" action="{{ route('approveProductRequest', ['id' => $request->id]) }}">
+                                @csrf
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="approveModalLabel{{$request->id}}">Approve Request</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Are you sure you want to approve this request?</p>
+                                
+                                    <div class="form-group">
+                                        <label for="rack_id">Rack Location</label>
+                                        <select name="rack_id" class="form-control" id="rack_id" onchange="updateRackId(this)">
+                                            <option value="">Select Rack Location</option>
+                                            @foreach($racks as $location)
+                                                <option value="{{ $location->id }}">{{ $location->location_code }}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('rack_id')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="form-group">
+                                      <label for="date_to_be_stored">Date to be Stored</label>
+                                      <input type="date" name="date_to_be_stored" class="form-control" id="date_to_be_stored">
+                                      @error('date_to_be_stored')
+                                          <span class="invalid-feedback" role="alert">
+                                              <strong>{{ $message }}</strong>
+                                          </span>
+                                      @enderror
+                                  </div>
+                                  
+
+                                    <!-- Hidden input field to store the selected rack_id -->
+                                    <input type="hidden" id="hidden_rack_id" name="hidden_rack_id" value="">
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-primary">Approve</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
-                </div> --}}
+                </div>
 
                 {{-- <div class="modal fade" id="rejectModal{{$request->id}}" tabindex="-1" role="dialog" aria-labelledby="rejectModalLabel{{$request->id}}" aria-hidden="true">
                     <div class="modal-dialog" role="document">
@@ -109,6 +141,25 @@
 <!-- /.card -->
 
 <script>
+    function updateRackId(selectElement) {
+        var rackId = selectElement.value;
+        document.getElementById('hidden_rack_id').value = rackId;
+    }
+
+    function submitForm(linkElement) {
+        var rackId = document.getElementById('hidden_rack_id').value;
+        var href = linkElement.getAttribute('href');
+
+        // Append rack_id to the form action URL
+        var updatedHref = href + '?rack_id=' + rackId;
+
+        // Update the href attribute of the Approve link
+        linkElement.setAttribute('href', updatedHref);
+
+        // Submit the form
+        linkElement.click();
+    }
+
     $(function () {
         $("#restock-table").DataTable({
             "paging": true,

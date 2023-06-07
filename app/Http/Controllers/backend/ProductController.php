@@ -13,6 +13,8 @@ use App\Models\Company;
 use App\Models\User;
 use App\Models\Rack;
 use App\Models\Restock;
+use App\Models\ProductRequest;
+
 
 
 class ProductController extends Controller
@@ -576,13 +578,57 @@ public function adminCheckNewProductRequest()
 {
     $user_id = auth()->user()->id;
 
+    $racks = Rack::all();
+
     $newrequest = DB::table('product_request')
         ->join('companies', 'product_request.company_id', '=', 'companies.id')
         ->select('product_request.id', 'companies.company_name', 'companies.address', 'companies.phone_number', 'companies.email', 'product_request.product_name','product_request.carton_quantity','product_request.item_per_carton','product_request.product_dimensions','product_request.total_weight','product_request.product_price', 'product_request.product_image','product_request.product_desc','product_request.weight_per_carton', 'product_request.weight_per_item')
         ->get();
 
-    return view('backend.product.retrieve_product', compact('newrequest'));
+    return view('backend.product.retrieve_product', compact('newrequest','racks'));
 }
+
+public function approveProductRequest($id, Request $request)
+{
+    // Retrieve the product request by ID
+    $productRequest = ProductRequest::findOrFail($id);
+
+    // Retrieve the company by company_id
+    $company = Company::findOrFail($productRequest->company_id);
+
+    // Retrieve the user associated with the company
+    $user = User::findOrFail($company->user_id);
+
+    // Create a new product based on the approved request
+    $product = new Product();
+    $product->product_name = $productRequest->product_name;
+    $product->product_desc = $productRequest->product_desc;
+    $product->carton_quantity = $productRequest->carton_quantity;
+    $product->item_per_carton = $productRequest->item_per_carton;
+    $product->product_dimensions = $productRequest->product_dimensions;
+    $product->weight_per_item = $productRequest->weight_per_item;
+    $product->weight_per_carton = $productRequest->weight_per_carton;
+    $product->product_image = $productRequest->product_image;
+    $product->company_id = $productRequest->company_id;
+    $product->user_id = $user->id; // Assign the user_id associated with the company
+    $product->rack_id = $request->input('hidden_rack_id'); // Get the selected rack_id from the hidden input field
+    $product->date_to_be_stored = $request->input('date_to_be_stored');
+    $product->save();
+
+    // Delete the product request from the database
+    $productRequest->delete();
+
+    // Redirect back or to a success page
+    return redirect()->back()->with('success', 'Product request approved and added to products.');
+
+    // Alternatively, you can redirect to a specific route or page
+    // return redirect()->route('products.index')->with('success', 'Product request approved and added to products.');
+}
+
+
+
+
+
 
 }
 
