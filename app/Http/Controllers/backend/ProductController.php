@@ -599,7 +599,33 @@ public function approveProductRequest($id, Request $request)
     // Retrieve the user associated with the company
     $user = User::findOrFail($company->user_id);
 
-    // Create a new product based on the approved request
+    // Calculate the total quantity and total weight
+    $total_quantity = $productRequest->carton_quantity * $productRequest->item_per_carton;
+    $total_weight = $total_quantity * $productRequest->weight_per_item;
+
+    // Get the rack capacity and occupied weight
+    $rack_data = DB::table('rack_locations')
+        ->where('id', $request->input('hidden_rack_id'))
+        ->select('capacity', 'occupied')
+        ->first();
+
+    $rack_capacity = $rack_data->capacity;
+    $occupied_weight = $rack_data->occupied;
+
+    // Calculate the remaining capacity
+    $remaining_capacity = $rack_capacity - $occupied_weight;
+
+    // Check if the total weight exceeds the limit of 200
+    if ($total_weight > 200) {
+        return redirect()->back()->with('error', 'Total weight exceeds limit of 200. Please adjust your inputs.')->withInput();
+    }
+
+    // Check if the remaining capacity is less than the weight of the new product
+    if ($remaining_capacity < $total_weight) {
+        return redirect()->back()->with('error', 'Rack capacity exceeded. Remaining capacity: '.$remaining_capacity.'. Please adjust your inputs.')->withInput();
+    }
+
+    // Insert data into the products table
     $product = new Product();
     $product->product_name = $productRequest->product_name;
     $product->product_desc = $productRequest->product_desc;
@@ -615,6 +641,32 @@ public function approveProductRequest($id, Request $request)
     $product->date_to_be_stored = $request->input('date_to_be_stored');
     $product->save();
 
+    // Insert data into the quantities table
+    $product_id = $product->id;
+    DB::table('quantities')->insert([
+        'product_id' => $product_id,
+        'total_quantity' => $total_quantity,
+        'sold_carton_quantity' => 0,
+        'sold_item_quantity' => 0,
+        'remaining_quantity' => $total_quantity,
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+
+    // Insert data into the weights table
+    DB::table('weights')->insert([
+        'product_id' => $product_id,
+        'weight_of_product' => $total_weight,
+        'rack_id' => $product->rack_id,
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+
+    // Update the occupied weight in the rack_locations table
+    DB::table('rack_locations')
+        ->where('id', $request->input('hidden_rack_id'))
+        ->update(['occupied' => $occupied_weight + $total_weight]);
+
     // Delete the product request from the database
     $productRequest->delete();
 
@@ -624,6 +676,7 @@ public function approveProductRequest($id, Request $request)
     // Alternatively, you can redirect to a specific route or page
     // return redirect()->route('products.index')->with('success', 'Product request approved and added to products.');
 }
+
 
 
 public function rejectProductRequest($id)
