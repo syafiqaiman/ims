@@ -40,6 +40,7 @@ Route::post('/request_product',[App\Http\Controllers\backend\ProductController::
 Route::get('/product_request_list', [App\Http\Controllers\backend\ProductController::class, 'viewRequestProductList'])->name('viewrequestproduct');
 Route::get('/check_new_product',[App\Http\Controllers\backend\ProductController::class,'adminCheckNewProductRequest'])->name('checknewproduct');
 Route::post('/check_new_product/{id}/approve',[App\Http\Controllers\backend\ProductController::class,'approveProductRequest'])->name('approveProductRequest');
+Route::get('/check_new_product/{id}/reject',[App\Http\Controllers\backend\ProductController::class,'rejectProductRequest'])->name('rejectProductRequest');
 
 Route::get('/company/getUsers', function (Request $request) {
     $company = Company::find($request->company_id);

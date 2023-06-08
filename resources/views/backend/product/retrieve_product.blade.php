@@ -73,7 +73,7 @@
                                     </button>
                                 </div>
                                 <div class="modal-body">
-                                    <p>Are you sure you want to approve this request?</p>
+                                    <p>Please set the rack location and date to be stored for this product</p>
                                 
                                     <div class="form-group">
                                         <label for="rack_id">Rack Location</label>
@@ -113,25 +113,26 @@
                     </div>
                 </div>
 
-                {{-- <div class="modal fade" id="rejectModal{{$request->id}}" tabindex="-1" role="dialog" aria-labelledby="rejectModalLabel{{$request->id}}" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="rejectModalLabel{{$request->id}}">Reject Request</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <p>Are you sure you want to reject this request?</p>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                <a href="{{ route('rejectRequest', ['id' => $request->id]) }}" class="btn btn-danger">Reject</a>
-                            </div>
-                        </div>
-                    </div>
-                </div> --}}
+                <div class="modal fade" id="rejectModal{{$request->id}}" tabindex="-1" role="dialog" aria-labelledby="rejectModalLabel{{$request->id}}" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                          <div class="modal-header">
+                              <h5 class="modal-title" id="rejectModalLabel{{$request->id}}">Reject Request</h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                              </button>
+                          </div>
+                          <div class="modal-body">
+                              <p>Are you sure you want to reject this request?</p>
+                          </div>
+                          <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                              <a href="{{ route('rejectProductRequest', ['id' => $request->id]) }}" class="btn btn-danger">Reject</a>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              
                 @endforeach
             </tbody>
         </table>

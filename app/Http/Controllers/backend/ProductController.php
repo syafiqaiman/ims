@@ -626,6 +626,20 @@ public function approveProductRequest($id, Request $request)
 }
 
 
+public function rejectProductRequest($id)
+{
+    // Find the product request by ID
+    $productRequest = ProductRequest::findOrFail($id);
+
+    // Delete the product request from the database
+    $productRequest->delete();
+
+    // Redirect back or to a success page
+    return redirect()->back()->with('success', 'Product request rejected.');
+
+    // Alternatively, you can redirect to a specific route or page
+    // return redirect()->route('productRequests.index')->with('success', 'Product request rejected.');
+}
 
 
 
