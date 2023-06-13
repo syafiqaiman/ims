@@ -244,7 +244,7 @@
   </a>
 </li>
 <li class="nav-item">
-  <a href="{{URL::to('/add_company')}}" class="nav-link">
+  <a href="{{URL::to('/delivery/delivery_form')}}" class="nav-link">
     <i class="nav-icon fas fa-th"></i>
     <p>
       Delivery Form (future feature)

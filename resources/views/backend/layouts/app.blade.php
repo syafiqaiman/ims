@@ -22,6 +22,12 @@
   <link rel="stylesheet" href="{{asset('backend/dist/css/adminlte.min.css')}}">
 </head>
 <body class="hold-transition sidebar-mini">
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- Include AdminLTE JS -->
+  <script src="https://cdn.jsdelivr.net/npm/adminlte@3.1.0/dist/js/adminlte.min.js"></script>
+  <!-- Include your custom scripts -->
+  @stack('scripts')
 <div class="wrapper">
 
   <!-- Navbar -->

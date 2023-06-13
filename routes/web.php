@@ -42,6 +42,12 @@ Route::get('/check_new_product',[App\Http\Controllers\backend\ProductController:
 Route::post('/check_new_product/{id}/approve',[App\Http\Controllers\backend\ProductController::class,'approveProductRequest'])->name('approveProductRequest');
 Route::get('/check_new_product/{id}/reject',[App\Http\Controllers\backend\ProductController::class,'rejectProductRequest'])->name('rejectProductRequest');
 
+
+//Delivery
+Route::get('/delivery/delivery_form',[App\Http\Controllers\backend\DeliveryController::class,'deliveryFormCust'])->name('deliveryform');
+
+
+
 Route::get('/company/getUsers', function (Request $request) {
     $company = Company::find($request->company_id);
     $users = $company ? $company->getUsers() : [];
