@@ -142,5 +142,13 @@ return view('backend.company.detail_company', compact('companies'));
         }
 
     }
+
+
+    public function showAll()
+    {
+        $companies = Company::all();
+
+        return view('backend.company.company_list', compact('companies'));
+    }
             
 }

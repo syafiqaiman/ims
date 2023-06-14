@@ -1,7 +1,6 @@
 @extends('backend.layouts.app')
 
 @section('content')
-
 <div class="card-body">
     <div class="row">
         <div class="col-12">
@@ -38,7 +37,7 @@
                                         <td colspan="5">
                                             <p><strong>Product Image:</strong></p>
                                             <div class="col-sm-2">
-                                            <img src="{{ asset('storage/Image/'.$request->product_image) }}" width="100">
+                                                <img src="{{ asset('storage/Image/'.$request->product_image) }}" width="100">
                                             </div>
                                             <p><strong>Weight Per Item (kg):</strong> {{ $request->weight_per_item }}</p>
                                             <p><strong>Weight Per Carton (kg):</strong> {{ $request->weight_per_carton }}</p>
@@ -56,13 +55,14 @@
     </div>
     <!-- /.row -->
 </div>
-
 @endsection
 
-@push('scripts')
-
+@section('scripts')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap4.min.js"></script>
 <script>
-    $(function () {
+    $(document).ready(function () {
         // Enable expandable tables
         $('[data-widget="expandable-table"]').ExpandableTable();
 
@@ -78,5 +78,4 @@
         });
     });
 </script>
-
-@endpush
+@endsection

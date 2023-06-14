@@ -77,9 +77,12 @@ Route::post('/cart_clear', [App\Http\Controllers\backend\CartController::class, 
     Route::get('/companies/{id}/edit', [App\Http\Controllers\backend\CompanyController::class, 'edit'])->name('company.edit');
     Route::put('/companies/{id}', [App\Http\Controllers\backend\CompanyController::class, 'update'])->name('company.update');
     Route::delete('/companies/{id}', [App\Http\Controllers\backend\CompanyController::class, 'destroy'])->name('company.destroy');
-
+    Route::get('/company_list', [App\Http\Controllers\backend\CompanyController::class, 'showAll'])->name('companylist');
 
     Route::get('/racks', [App\Http\Controllers\backend\RackController::class, 'RackList'])->name('rack.list'); 
     //Route::group(['middleware' => ['auth']], function () {
 
-
+    Route::get('/orders/{companyId}', [App\Http\Controllers\backend\OrderController::class, 'orderList'])->name('orderList');
+    Route::get('/invoice/{order_no}', [App\Http\Controllers\backend\OrderController::class, 'generateInvoice'])->name('backend.invoice.generate');
+    Route::get('/invoice/{order_no}', [App\Http\Controllers\backend\OrderController::class, 'show'])->name('orderShow');
+    Route::get('invoice/{id}/download', [App\Http\Controllers\backend\InvoiceController::class, 'download'])->name('invoice.download');

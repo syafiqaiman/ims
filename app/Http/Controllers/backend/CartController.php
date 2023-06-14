@@ -108,6 +108,20 @@ public function update(Request $request, $id)
         return redirect()->back();
     }
 
+    private function generatePONumber()
+    {
+        // Get the current timestamp
+        $timestamp = time();
+        
+        // Generate a unique identifier based on the timestamp
+        $identifier = substr($timestamp, -6); // Example: Use the last 6 digits of the timestamp
+        
+        // Construct the PO number with a prefix and the identifier
+        $po_number = 'PO-' . $identifier;
+    
+        // Return the PO number
+        return $po_number;
+    }
 
     public function assign(Request $request) 
     {
@@ -150,6 +164,7 @@ public function update(Request $request, $id)
         
         // Get the selected user ID
         $user_id = $request->input('user_id');
+        $order_no =$this-> generatePONumber(); // Replace with your logic to generate a unique order number
         
         // Store the assigned products and quantity in the pickers table
         foreach ($cart as $id => $item) {
@@ -159,6 +174,7 @@ public function update(Request $request, $id)
             $picker->rack_id = $product->rack_id;
             $picker->quantity = $item['quantity'];
             $picker->status = 'Pending'; 
+            $picker->order_no = $order_no; // Set the order number
             $picker->save();
         }
         

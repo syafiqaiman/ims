@@ -34,6 +34,7 @@ class PickerController extends Controller
         foreach ($pickers as $picker) {
             $product = Product::find($picker->product_id);
             $picker->product_name = $product->name;
+            $picker->company_id = $product->company_id;
             $rack_location = Rack::where('id', $product->rack_id)->first();
             $picker->location_code = $rack_location->location_code; // Get the location_code from the rack_location
             if ($picker->status !== 'Collected' && $picker->status !== 'Packing') {
@@ -75,6 +76,8 @@ public function confirmCollection(Request $request, $id, $quantity)
     $order->user_id = Auth::user()->id;
     $order->quantity = $picker->quantity;
     $order->rack_id = $picker->rack_id;
+    $order->order_no = $picker->order_no;
+    $order->company_id = $product->company_id;
     $order->save();
 
     // Redirect back with success message
