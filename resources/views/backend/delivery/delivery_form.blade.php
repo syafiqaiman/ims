@@ -8,6 +8,13 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6">
+
+                    <!-- Sender Name -->
+                    <div class="form-group">
+                        <label for="sender_name">Sender Name</label>
+                        <input type="text" class="form-control" id="sender_name" name="sender_name" placeholder="Enter sender's name">
+                    </div>
+
                     <!-- Sender Address -->
                     <div class="form-group">
                         <label for="sender_address">Sender Address</label>
@@ -20,6 +27,28 @@
                         <input type="text" class="form-control" id="sender_postcode" name="sender_postcode" placeholder="Enter sender postcode">
                     </div>
 
+                    <!-- Sender State -->
+                    <div class="form-group">
+                        <label for="sender_state">Sender State</label>
+                        <select class="form-control" id="sender_state" name="sender_state">
+                            <option value="Johor">Johor</option>
+                            <option value="Kedah">Kedah</option>
+                            <option value="Kelantan">Kelantan</option>
+                            <option value="Kuala Lumpur">Kuala Lumpur</option>
+                            <option value="Labuan">Labuan</option>
+                            <option value="Malacca">Malacca</option>
+                            <option value="Negeri Sembilan">Negeri Sembilan</option>
+                            <option value="Pahang">Pahang</option>
+                            <option value="Perak">Perak</option>
+                            <option value="Perlis">Perlis</option>
+                            <option value="Penang">Penang</option>
+                            <option value="Sabah">Sabah</option>
+                            <option value="Sarawak">Sarawak</option>
+                            <option value="Selangor">Selangor</option>
+                            <option value="Terengganu">Terengganu</option>
+                        </select>
+                    </div>
+
                     <!-- Sender Phone Number -->
                     <div class="form-group">
                         <label for="sender_phone">Sender Phone Number</label>
@@ -27,6 +56,13 @@
                     </div>
                 </div>
                 <div class="col-md-6">
+
+                    <!-- Receiver Name -->
+                    <div class="form-group">
+                        <label for="receiver_name">Receiver Name</label>
+                        <input type="text" class="form-control" id="receiver_name" name="receiver_name" placeholder="Enter receiver's name">
+                    </div>
+
                     <!-- Receiver Address -->
                     <div class="form-group">
                         <label for="receiver_address">Receiver Address</label>
@@ -37,6 +73,29 @@
                     <div class="form-group">
                         <label for="receiver_postcode">Receiver Postcode</label>
                         <input type="text" class="form-control" id="receiver_postcode" name="receiver_postcode" placeholder="Enter receiver postcode">
+                    </div>
+
+
+                    <!-- Receiver State -->
+                    <div class="form-group">
+                        <label for="receiver_state">Receiver State</label>
+                        <select class="form-control" id="receiver_state" name="receiver_state">
+                            <option value="Johor">Johor</option>
+                            <option value="Kedah">Kedah</option>
+                            <option value="Kelantan">Kelantan</option>
+                            <option value="Kuala Lumpur">Kuala Lumpur</option>
+                            <option value="Labuan">Labuan</option>
+                            <option value="Malacca">Malacca</option>
+                            <option value="Negeri Sembilan">Negeri Sembilan</option>
+                            <option value="Pahang">Pahang</option>
+                            <option value="Perak">Perak</option>
+                            <option value="Perlis">Perlis</option>
+                            <option value="Penang">Penang</option>
+                            <option value="Sabah">Sabah</option>
+                            <option value="Sarawak">Sarawak</option>
+                            <option value="Selangor">Selangor</option>
+                            <option value="Terengganu">Terengganu</option>
+                        </select>
                     </div>
 
                     <!-- Receiver Phone Number -->
@@ -77,21 +136,22 @@
                         </div>
                         <div class="modal-body">
                             <!-- Product Selection Form -->
-                            <form id="product_selection_form">
-                                <div class="form-group">
-                                    <label for="product_name">Product Name</label>
-                                    <select class="form-control" id="product_name" name="product_name">
-                                        <option value="Product 1">Product 1</option>
-                                        <option value="Product 2">Product 2</option>
-                                        <option value="Product 3">Product 3</option>
-                                        <!-- Add more product options here -->
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="quantity">Quantity</label>
-                                    <input type="number" class="form-control" id="quantity" name="quantity" placeholder="Enter quantity">
-                                </div>
-                            </form>
+                            <!-- Product Selection Form -->
+                        <form id="product_selection_form">
+                            <div class="form-group">
+                                <label for="product_name">Product Name</label>
+                                <select class="form-control" id="product_name" name="product_name">
+                                    @foreach ($products as $product)
+                                        <option value="{{ $product->product_name }}">{{ $product->product_name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="quantity">Quantity</label>
+                                <input type="number" class="form-control" id="quantity" name="quantity" placeholder="Enter quantity">
+                            </div>
+                        </form>
+
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
