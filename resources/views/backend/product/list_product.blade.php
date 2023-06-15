@@ -129,7 +129,7 @@
         $('[data-widget="expandable-table"]').ExpandableTable();
 
         // Initialize DataTable with search functionality
-        var table = $('#example1').DataTable({
+        var table = $('#example3').DataTable({
             "paging": true,
             "lengthChange": false,
             "searching": true,

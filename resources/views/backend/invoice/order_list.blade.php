@@ -114,7 +114,7 @@
     <div class="row">
         <div class="col-12">
             <button class="btn btn-primary" onclick="window.print()">Print Invoice</button>
-            <a href="{{ route('invoice.download', $orderGroup->first()->id) }}" class="btn btn-success">Download as PDF</a>
+            {{-- <a href="{{ route('invoice.download', $orderGroup->first()->id) }}" class="btn btn-success">Download as PDF</a> --}}
         </div>
     </div>
 @endsection

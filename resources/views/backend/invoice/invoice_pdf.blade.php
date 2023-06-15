@@ -76,10 +76,10 @@
                 <!-- accepted payments column -->
                 <div class="col-6">
                     <p class="lead">Payment Methods:</p>
-                    <img src="https://via.placeholder.com/100" alt="Visa">
-                    <img src="https://via.placeholder.com/100" alt="Mastercard">
-                    <img src="https://via.placeholder.com/100" alt="American Express">
-                    <img src="https://via.placeholder.com/100" alt="Paypal">
+                    <img src="{{ asset('backend/dist/img/credit/visa.png') }}" alt="Visa">
+                    <img src="{{ asset('backend/dist/img/credit/mastercard.png') }}" alt="Mastercard">
+                    <img src="{{ asset('backend/dist/img/credit/american-express.png') }}" alt="American Express">
+                    <img src="{{ asset('backend/dist/img/credit/paypal2.png') }}" alt="Paypal">
                     <p class="text-muted well well-sm shadow-none" style="margin-top: 10px;">
                         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tincidunt facilisis libero sed cursus.
                     </p>

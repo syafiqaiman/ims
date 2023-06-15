@@ -31,15 +31,15 @@ class InvoiceController extends Controller
     }
 
     public function download($id)
-    {
-        $orderGroup = Order::where('id', $id)->get();
-        $companyId = $orderGroup->first()->product->company_id;
-        $company = Company::find($companyId);
-    
-        $pdf = new \Barryvdh\DomPDF\PDF();
-        $pdf->loadView('backend.invoice.invoice_pdf', compact('orderGroup', 'company'));
+{
+    $orderGroup = Order::where('id', $id)->get();
+    $companyId = $orderGroup->first()->product->company_id;
+    $company = Company::find($companyId);
 
-        return $pdf->download('invoice.pdf');
-    }
+    $pdf = app(PDF::class)->loadView('backend.invoice.invoice_pdf', compact('orderGroup', 'company'));
+
+    return $pdf->download('invoice.pdf');
+}
+
     
 }
