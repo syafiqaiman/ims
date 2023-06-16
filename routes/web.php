@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\Company;
 
 
+
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -45,6 +47,7 @@ Route::get('/check_new_product/{id}/reject',[App\Http\Controllers\backend\Produc
 
 //Delivery
 Route::get('/delivery/delivery_form',[App\Http\Controllers\backend\DeliveryController::class,'deliveryFormCust'])->name('deliveryform');
+Route::post('/delivery/form_sent',[App\Http\Controllers\backend\DeliveryController::class,'storeDelivery'])->name('delivery.submit');
 
 
 

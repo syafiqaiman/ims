@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Dashboard</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -23,7 +24,6 @@
 </head>
 <body class="hold-transition sidebar-mini">
 
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <!-- Include AdminLTE JS -->
   <script src="https://cdn.jsdelivr.net/npm/adminlte@3.1.0/dist/js/adminlte.min.js"></script>
   <!-- Include your custom scripts -->
