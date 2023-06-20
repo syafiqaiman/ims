@@ -53,13 +53,13 @@ class DeliveryController extends Controller
             'receiver_postcode' => 'required',
             'receiver_state' => 'required',
             'receiver_phone' => 'required',
-            'product_name.*' => 'required',
+            'product_id.*' => 'required',
             'quantity.*' => 'required|numeric|min:1',
         ]);
-
+    
         // Generate a unique PO number for the order_no column
         $orderNo = $this->generatePONumber();
-
+    
         // Create a new delivery record
         $delivery = new Delivery;
         $delivery->order_no = $orderNo;
@@ -74,22 +74,20 @@ class DeliveryController extends Controller
         $delivery->receiver_state = $validatedData['receiver_state'];
         $delivery->receiver_phone = $validatedData['receiver_phone'];
         $delivery->save();
-
+    
         // Handle the product data
-        $products = $request->input('product_name', []);
+        $productIds = $request->input('product_id', []);
         $quantities = $request->input('quantity', []);
-
+    
         // Insert the product data into the pivot table (assuming a many-to-many relationship)
-        foreach ($products as $index => $product) {
-            // Find the product by name and get the corresponding product_id
-            $product = Product::where('product_name', $product)->first();
-            if ($product) {
-                $product_id = $product->id;
-                $delivery->products()->attach($product_id, ['quantity' => $quantities[$index]]);
-            }
+        foreach ($productIds as $index => $productId) {
+            $delivery->products()->attach($productId, ['quantity' => $quantities[$index]]);
         }
-
+    
         // Redirect or respond with a success message
         return redirect()->back()->with('success', 'Delivery information has been successfully saved.');
     }
+    
+    
+
 }

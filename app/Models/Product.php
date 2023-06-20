@@ -23,4 +23,9 @@ class Product extends Model
     {
         return $this->belongsTo(Company::class);
     }
+
+    public function deliveries()
+    {
+        return $this->belongsToMany(Delivery::class, 'delivery_product')->withPivot('quantity');
+    }
 }

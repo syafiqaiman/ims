@@ -26,6 +26,7 @@
                             <textarea class="form-control" id="sender_address" name="sender_address" rows="3" placeholder="Enter sender address"></textarea>
                         </div>
 
+
                         <!-- Sender Postcode -->
                         <div class="form-group">
                             <label for="sender_postcode">Sender Postcode</label>
@@ -111,114 +112,156 @@
                     </div>
                 </div>
 
-                <!-- Product Table -->
-                <div class="form-group">
-                    <label for="product_table">Products</label>
-                    <table class="table table-bordered" id="product_table">
-                        <thead>
-                            <tr>
-                                <th>Product Name</th>
-                                <th>Quantity</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+                               <!-- Product Table -->
+<div class="form-group">
+    <label for="product_table">Products</label>
+    <table class="table table-bordered" id="product_table">
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Empty tbody -->
+        </tbody>
+    </table>
+    <button type="button" class="btn btn-primary" id="add_product">Add Product</button>
+</div>
+
+<!-- Product Modal -->
+<div class="modal fade" id="product_modal" tabindex="-1" role="dialog" aria-labelledby="product_modal_label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="product_modal_label">Select Product</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Product Selection Form -->
+                <form id="product_selection_form">
+                    @csrf
+                    <div class="form-group">
+                        <label for="product_name">Product Name</label>
+                        <select class="form-control" id="product_name" name="product_name[]">
                             @foreach ($products as $product)
-                                <tr>
-                                    <td>{{ $product->product_name }}</td>
-                                    <td>
-                                        <input type="number" name="quantities[{{ $product->id }}]" value="{{ old('quantities.' . $product->id) }}" class="form-control">
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-danger btn-sm remove_product_row">Remove</button>
-                                    </td>
-                                </tr>
+                                <option value="{{ $product->id }}">{{ $product->product_name }}</option>
                             @endforeach
-                        </tbody>
-                    </table>
-                    <button type="button" class="btn btn-primary" id="add_product">Add Product</button>
-                </div>
-
-
-                <!-- Product Modal -->
-                <div class="modal fade" id="product_modal" tabindex="-1" role="dialog" aria-labelledby="product_modal_label" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="product_modal_label">Select Product</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <!-- Product Selection Form -->
-                                <form id="product_selection_form">
-                                    <div class="form-group">
-                                        <label for="product_name">Product Name</label>
-                                        <select class="form-control" id="product_name" name="product_name[]">
-                                            @foreach ($products as $product)
-                                                <option value="{{ $product->product_name }}">{{ $product->product_name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="quantity">Quantity</label>
-                                        <input type="number" class="form-control" id="quantity" name="quantity[]" placeholder="Enter quantity">
-                                    </div>
-                                </form>
-
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary" id="add_product_row">Add</button>
-                            </div>
-                        </div>
+                        </select>
                     </div>
-                </div>
+                    <div class="form-group">
+                        <label for="quantity">Quantity</label>
+                        <input type="number" class="form-control" id="quantity" name="quantity[]" placeholder="Enter quantity">
+                    </div>
+                </form>
 
-                <!-- Submit Button -->
-                <button class="btn btn-primary" id="submit_delivery">Submit</button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="add_product_row">Add</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Submit Button -->
+<button class="btn btn-primary" id="submit_delivery">Submit</button>
+
             </form>
         </div>
     </div>
 
 @endsection
-
 @push('scripts')
-            <script>
-                $(document).ready(function() {
-            // Show product modal
-            $('#add_product').click(function() {
-                $('#product_modal').modal('show');
-            });
+<script>
+    $(document).ready(function() {
+    // Show product modal
+    $('#add_product').click(function() {
+        $('#product_modal').modal('show');
+    });
 
-            // Add product row to the table
-            $('#add_product_row').click(function() {
-                // Add the product row to the table without refreshing the page
-                var product_name = $('#product_name').val();
-                var quantity = $('#quantity').val();
+    // Add product row to the table
+    $('#add_product_row').click(function() {
+        // Add the product row to the table without refreshing the page
+        var product_id = $('#product_name').val();
+        var product_name = $('#product_name option:selected').text();
+        var quantity = $('#quantity').val();
 
-                var newRow = '<tr>' +
-                    '<td>' + product_name + '</td>' +
-                    '<td>' + quantity + '</td>' +
-                    '<td><button class="btn btn-danger btn-sm remove_product_row">Remove</button></td>' +
-                    '</tr>';
+        var newRow = '<tr>' +
+            '<td><input type="hidden" name="product_id[]" value="' + product_id + '">' + product_name + '</td>' +
+            '<td><input type="hidden" name="quantity[]" value="' + quantity + '">' + quantity + '</td>' +
+            '<td><button class="btn btn-danger btn-sm remove_product_row">Remove</button></td>' +
+            '</tr>';
 
-                $('#product_table tbody').append(newRow);
+        $('#product_table tbody').append(newRow);
 
-                // Clear the modal form
-                $('#product_selection_form')[0].reset();
+        // Clear the modal form
+        $('#product_selection_form')[0].reset();
 
-                // Close the modal
-                $('#product_modal').modal('hide');
-            });
+        // Close the modal
+        $('#product_modal').modal('hide');
+    });
 
-            // Remove product row from the table
-            $(document).on('click', '.remove_product_row', function() {
-                $(this).closest('tr').remove();
-            });
+    // Remove product row from the table
+    $(document).on('click', '.remove_product_row', function() {
+        $(this).closest('tr').remove();
+    });
 
+    // Submit delivery form
+    $('#submit_delivery').click(function() {
+        // Trigger form submission
+        $('#delivery_form').submit();
+    });
+});
+
+</script>
+@endpush
+
+{{-- @push('scripts')
+<script>
+    $(document).ready(function() {
+        // Show product modal
+        $('#add_product').click(function() {
+            $('#product_modal').modal('show');
         });
 
-    </script>
-@endpush
+        // Add product row to the table
+        $('#add_product_row').click(function() {
+            // Add the product row to the table without refreshing the page
+            var product_name = $('#product_name').val();
+            var quantity = $('#quantity').val();
+
+            var newRow = '<tr>' +
+                '<td>' + product_name + '</td>' +
+                '<td>' + quantity + '</td>' +
+                '<td><button class="btn btn-danger btn-sm remove_product_row">Remove</button></td>' +
+                '</tr>';
+
+            $('#product_table tbody').append(newRow);
+
+            // Clear the modal form
+            $('#product_selection_form')[0].reset();
+
+            // Close the modal
+            $('#product_modal').modal('hide');
+        });
+
+        // Remove product row from the table
+        $(document).on('click', '.remove_product_row', function() {
+            $(this).closest('tr').remove();
+        });
+
+        // Clear the product table on form submit
+        $('#submit_delivery').click(function(e) {
+            e.preventDefault();
+            $('#product_table tbody').empty();
+            $(this).closest('form').submit();
+        });
+
+</script>
+@endpush --}}
+
+
