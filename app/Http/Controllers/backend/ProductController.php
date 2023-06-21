@@ -403,6 +403,7 @@ public function SendRequestProduct(Request $request)
     // Insert data into the restock_request table
     DB::table('restock_request')->insert([
         'total_weight' => $total_weight,
+        'total_quantity' => $total_quantity,
         'product_id' => $request->product_id,
         'rack_id' => $request->rack_id,
         'status' => 'Under Review',
