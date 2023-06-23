@@ -26,6 +26,7 @@
 
   <!-- Include AdminLTE JS -->
   <script src="https://cdn.jsdelivr.net/npm/adminlte@3.1.0/dist/js/adminlte.min.js"></script>
+  
   <!-- Include your custom scripts -->
   @stack('scripts')
 <div class="wrapper">
