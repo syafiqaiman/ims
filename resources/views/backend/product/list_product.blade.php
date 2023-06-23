@@ -8,16 +8,13 @@
             <div class="card-header info">
                 <h3 class="card-title">Product List</h3>
                 <div class="card-tools">
-                    <form class="form-inline ml-3" id="searchForm">
-                        <div class="input-group input-group-sm">
-                            <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search" id="searchInput">
+                        <div class="input-group">
+                            <input class="form-control" type="text" placeholder="Search" aria-label="Search" id="searchInput">
                             <div class="input-group-append">
-                                <button class="btn btn-navbar" type="submit">
-                                    <i class="fas fa-search"></i>
+                                <button class="btn btn-primary" id="searchButton">Search
                                 </button>
                             </div>
                         </div>
-                    </form>
                 </div>
             </div>
             <!-- /.card-header -->
@@ -60,7 +57,7 @@
                             </td>
                             @endif
                         </tr>
-                        <tr class="expandable-body">
+                        <tr class="expandable-body d-none">
                             <td colspan="9">
                                 <div class="row">
                                     <div class="col-md-3">
@@ -70,79 +67,102 @@
                                         {{ $row->product_desc }}
                                     </div>
                                 </div>
-                                @if (Auth::user()->role ==
-1 || Auth::user()->role == 2)
-<div class="row">
-<div class="col-md-3">
-<strong>Location Code:</strong>
-</div>
-<div class="col-md-9">
-{{ $row->location_code }}
-</div>
-</div>
-@endif
-<div class="row">
-<div class="col-md-3">
-<strong>Weight per Carton:</strong>
-</div>
-<div class="col-md-9">
-{{ $row->weight_per_carton }}
-</div>
-</div>
-<div class="row">
-<div class="col-md-3">
-<strong>Weight per Item:</strong>
-</div>
-<div class="col-md-9">
-{{ $row->weight_per_item }}
-</div>
-</div>
-@if (Auth::user()->role == 1 || Auth::user()->role == 2)
-<div class="row">
-<div class="col-md-3">
-<strong>Date To Be Stored:</strong>
-</div>
-<div class="col-md-9">
-{{ $row->date_to_be_stored }}
-</div>
-</div>
-@endif
-</td>
-</tr>
-@endforeach
-</tbody>
-</table>
-</div>
-<!-- /.card-body -->
-</div>
-<!-- /.card -->
+                                @if (Auth::user()->role == 1 || Auth::user()->role == 2)
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <strong>Location Code:</strong>
+                                    </div>
+                                    <div class="col-md-9">
+                                        {{ $row->location_code }}
+                                    </div>
+                                </div>
+                                @endif
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <strong>Weight per Carton:</strong>
+                                    </div>
+                                    <div class="col-md-9">
+                                        {{ $row->weight_per_carton }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <strong>Weight per Item:</strong>
+                                    </div>
+                                    <div class="col-md-9">
+                                        {{ $row->weight_per_item }}
+                                    </div>
+                                </div>
+                                @if (Auth::user()->role == 1 || Auth::user()->role == 2)
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <strong>Date To Be Stored:</strong>
+                                    </div>
+                                    <div class="col-md-9">
+                                        {{ $row->date_to_be_stored }}
+                                    </div>
+                                </div>
+                                @endif
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
 </div>
 
-</div>
 @endsection
+
 
 @push('scripts')
 
 <script>
-    $(function () {
-        // Enable expandable tables
-        $('[data-widget="expandable-table"]').ExpandableTable();
+    document.addEventListener('DOMContentLoaded', function() {
+        var searchInput = document.getElementById('searchInput');
+        var searchForm = document.getElementById('searchButton');
+        var table = document.getElementById('example1');
+        var rows = table.getElementsByTagName('tr');
 
-        // Initialize DataTable with search functionality
-        var table = $('#example3').DataTable({
-            "paging": true,
-            "lengthChange": false,
-            "searching": true,
-            "ordering": true,
-            "info": true,
-            "autoWidth": false,
-            "responsive": true
+        searchForm.addEventListener('click', function(e) {
+            e.preventDefault();
+            searchTable();
         });
 
-        // Apply search functionality to the table based on input value
-        $('#searchInput').on('input', function () {
-            table.search($(this).val()).draw();
-        });
+        function searchTable() {
+            var searchText = searchInput.value.toLowerCase();
+            var userRole = {{ Auth::user()->role }};
+
+            for (var i = 1; i < rows.length; i++) {
+                var idCell = rows[i].getElementsByTagName('td')[0];
+                var idText = idCell.textContent.toLowerCase();
+
+                var productNameCell = rows[i].getElementsByTagName('td')[3];
+                var productNameText = productNameCell.textContent.toLowerCase();
+
+                var rackLocationCell = rows[i].getElementsByTagName('td')[2];
+                var rackLocationText = rackLocationCell.textContent.toLowerCase();
+
+                var isVisible = false;
+
+                if (userRole === 1 && rackLocationText.includes(searchText)) {
+                    isVisible = true;
+                } else if (userRole === 3 && (idText.includes(searchText) || productNameText.includes(searchText))) {
+                    isVisible = true;
+                }
+
+                if (isVisible) {
+                    rows[i].style.display = '';
+                    rows[i].nextElementSibling.style.display = '';
+                } else {
+                    rows[i].style.display = 'none';
+                    rows[i].nextElementSibling.style.display = 'none';
+                }
+            }
+        }
     });
 </script>
 @endpush

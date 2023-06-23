@@ -8,6 +8,16 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="searchInput" placeholder="Search...">
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary" id="searchButton">Search</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <table id="example1" class="table table-bordered table-striped">
                         <thead>
                             <tr>
@@ -15,9 +25,6 @@
                                 <th>Company</th>
                                 <th>Product Name</th>
                                 <th>Weight (KG)</th>
-                                {{-- @if (Auth::user()->role == 1)
-                                    <th>Action</th>
-                                @endif --}}
                             </tr>
                         </thead>
                         <tbody>
@@ -33,11 +40,9 @@
                                         <td>{{ $row->company_name }}</td>
                                         <td>{{ $row->product_name }}</td>
                                         <td>{{ $row->occupied }}/200</td>
-
                                     </tr>
                                 @endforeach
                             @endforeach
-
                         </tbody>
                     </table>
                 </div>
@@ -47,4 +52,38 @@
         </div>
     </div>
 
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    var searchInput = document.getElementById('searchInput');
+    var searchButton = document.getElementById('searchButton');
+    var table = document.getElementById('example1');
+    var rows = table.getElementsByTagName('tr');
+
+    searchButton.addEventListener('click', function() {
+        var searchText = searchInput.value.toLowerCase();
+
+        for (var i = 1; i < rows.length; i++) {
+            var rackLocationCell = rows[i].getElementsByTagName('td')[0];
+            var rackLocationText = rackLocationCell.textContent.toLowerCase();
+
+            var companyCell = rows[i].getElementsByTagName('td')[1];
+            var companyText = companyCell.textContent.toLowerCase();
+
+            var productNameCell = rows[i].getElementsByTagName('td')[2];
+            var productNameText = productNameCell.textContent.toLowerCase();
+
+            var isVisible = rackLocationText.includes(searchText) || companyText.includes(searchText) || productNameText.includes(searchText);
+
+            if (isVisible) {
+                rows[i].style.display = '';
+            } else {
+                rows[i].style.display = 'none';
+            }
+        }
+    });
+});
+
+
+    </script>
+    
 @endsection
