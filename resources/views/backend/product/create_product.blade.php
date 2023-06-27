@@ -63,6 +63,16 @@
 </div>
 
 <div class="form-group">
+    <label for="product_price">Product Price</label>
+    <input type="text" name="product_price" class="form-control @error('product_price') is-invalid @enderror" id="product_price" placeholder="Enter Product Price">
+    @error('product_price')
+    <span class="invalid-feedback" role="alert">
+        <strong>{{ $message }}</strong>
+    </span>
+    @enderror
+</div>
+
+<div class="form-group">
   <label for="exampleInputEmail1">Product Description</label>
   <input type="text" name="product_desc"  class="form-control @error('title') is-invalid @enderror"
    id="exampleInputEmail1" placeholder="Enter Product Description">

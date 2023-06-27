@@ -45,7 +45,15 @@
                     @enderror
                   </div>
 
-
+                  <div class="form-group">
+                    <label for="product_desc">Product Price</label>
+                    <textarea name="product_price" class="form-control @error('product_desc') is-invalid @enderror" id="product_price" placeholder="Product Price">{{$edit->product_price}}</textarea>
+                    @error('product_desc')
+                      <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                      </span>
+                    @enderror
+                </div>
         
                   <div class="form-group">
                       <label for="product_desc">Product Description</label>

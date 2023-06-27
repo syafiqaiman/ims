@@ -139,6 +139,7 @@ $remaining_capacity = $rack_capacity - $occupied_weight;
         'product_dimensions' => 'required|string|max:255',
         'date_to_be_stored' => 'required|date',
         'carton_quantity' => 'required|integer',
+        'product_price' => 'required|numeric',
         'item_per_carton' => 'required|integer',
         'product_image' => 'required|image|max:2048',
         'rack_id' => 'required'
@@ -155,6 +156,7 @@ $remaining_capacity = $rack_capacity - $occupied_weight;
         'product_desc' => $request->product_desc,
         'item_per_carton' => $request->item_per_carton,
         'carton_quantity' => $request->carton_quantity,
+        'product_price' => $request->product_price,
         'weight_per_item' => $request->weight_per_item,
         'weight_per_carton' => $request->weight_per_carton,
         'product_dimensions' => $request->product_dimensions,
@@ -229,7 +231,7 @@ if ($remaining_capacity < $total_weight) {
     {
         $edit = DB::table('products')
             ->join('companies', 'products.company_id', '=', 'companies.id')
-            ->select('products.id', 'products.company_id', 'companies.id AS company_id', 'companies.company_name', 'product_name', 'product_desc', 'product_image', 'product_dimensions','date_to_be_stored', 'weight_per_item', 'weight_per_carton')
+            ->select('products.id', 'products.company_id', 'companies.id AS company_id', 'companies.company_name', 'product_name', 'product_desc', 'product_image', 'product_dimensions','date_to_be_stored', 'weight_per_item', 'weight_per_carton','product_price')
             ->where('products.id', $id)
             ->first();
     
@@ -247,6 +249,7 @@ public function ProductUpdate(Request $request, $id)
         'product_desc' => 'required|string',
         'weight_per_item' => 'required|numeric',
         'weight_per_carton' => 'required|numeric',
+        'product_price' => 'required|numeric',
         'product_dimensions' => 'required|string|max:255',
         'date_to_be_stored' => 'required|date',
         'product_image' => 'image|max:2048'
@@ -259,6 +262,7 @@ public function ProductUpdate(Request $request, $id)
         'product_desc' => $request->product_desc,
         'weight_per_item' => $request->weight_per_item,
         'weight_per_carton' => $request->weight_per_carton,
+        'product_price' => $request->product_price,
         'product_dimensions' => $request->product_dimensions,
         'date_to_be_stored' => $request->date_to_be_stored,
         'updated_at' => now(),
