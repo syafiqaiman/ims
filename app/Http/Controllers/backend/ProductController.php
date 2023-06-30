@@ -445,7 +445,7 @@ public function reviewRestockRequest()
     return view('backend.product.review_restock_request', compact('restock'));
 }
 
-public function approveRequest($id)
+public function approveRequest($id) //for restock request view admin
 {
     $restock = Restock::findOrFail($id);
 
@@ -461,7 +461,7 @@ public function approveRequest($id)
 }
 
 
-public function RemoveRequest($id)
+public function RemoveRequest($id) //for restock request view admin
 {
 
     $restock = Restock::findOrFail($id);
@@ -477,6 +477,25 @@ public function RemoveRequest($id)
     return redirect()->back()->with($notification);
 }
 
+public function removeRequestRestockCust($id)
+{
+    // Find the request by ID
+    $request = Restock::find($id);
+
+    if (!$request) {
+        return redirect()->back()->with('error', 'Request not found.');
+    }
+
+    // Check if the request status is "Rejected"
+    if ($request->status !== 'Rejected') {
+        return redirect()->back()->with('error', 'Only rejected requests can be removed.');
+    }
+
+    // Delete the request from the database
+    $request->delete();
+
+    return redirect()->back()->with('success', 'Request removed successfully.');
+}
 
 //customer add new product
 

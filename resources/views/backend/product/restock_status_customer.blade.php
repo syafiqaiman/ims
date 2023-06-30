@@ -14,6 +14,7 @@
                 <tr>
                     <th>Product</th>
                     <th>Status</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -29,9 +30,14 @@
                             <button class="btn btn-danger">Rejected</button>
                         @endif
                     </td>
+                    <td>
+                        @if ($request->status === 'Rejected')
+                            <a href="{{ route('removeRejectedRequest', ['id' => $request->id]) }}" class="btn btn-danger">Remove</a>
+                        @endif
+                    </td>                    
                 </tr>
                 <tr class="expandable-body">
-                    <td colspan="2">
+                    <td colspan="3">
                         <p><strong>Description:</strong> {{$request->product_desc}}</p>
                         <p><strong>Weight to be Restock:</strong> {{$request->total_weight}} kg</p>
                     </td>
@@ -56,7 +62,8 @@
             "responsive": true,
             "columnDefs": [
                 { "className": "expand-control", "orderable": false, "targets": 0 },
-                { "className": "expand-content", "orderable": false, "targets": 1 }
+                { "className": "expand-content", "orderable": false, "targets": 1 },
+                { "orderable": false, "targets": 2 }
             ],
             "order": [[1, 'asc']]
         });
@@ -66,6 +73,11 @@
             $(this).toggleClass('open');
         });
     });
+
+    function removeRow(button) {
+        const row = button.closest('tr');
+        row.remove();
+    }
 </script>
 
 @endsection
