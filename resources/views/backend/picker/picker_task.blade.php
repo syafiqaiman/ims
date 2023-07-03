@@ -1,6 +1,7 @@
 @extends('backend.layouts.app')
 
 @section('content')
+<title>Task List</title>
 <div class="container">
     <div class="row">
         <div class="col-12">

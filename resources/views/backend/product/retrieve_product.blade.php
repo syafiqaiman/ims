@@ -1,7 +1,7 @@
 @extends('backend.layouts.app')
 
 @section('content')
-
+<title>Incoming Requested Products</title>
 <div class="card">
     <div class="card-header">
         <h3 class="card-title">New Product Request</h3>

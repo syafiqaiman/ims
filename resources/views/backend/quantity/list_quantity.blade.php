@@ -1,7 +1,7 @@
 @extends('backend.layouts.app')
 
 @section('content')
-
+<title>Product Stock Level</title>
 <div class="card">
     <div class="card-header">
         <strong>Product Stock Level</strong>

@@ -1,6 +1,6 @@
 @extends('backend.layouts.app')
 @section('content')
-
+<title>Create Company</title>
 <div class="card-body">
     <div class="row">
 

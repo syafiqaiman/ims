@@ -2,7 +2,7 @@
 
 
 @section('content')
-
+<title>Assign Product Pickup</title>
 <!-- Product List -->
 <div class="row">
   <div class="col-md-8">

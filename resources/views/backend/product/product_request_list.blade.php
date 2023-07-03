@@ -1,7 +1,7 @@
 @extends('backend.layouts.app')
 
 @section('content')
-
+<title>Product Request List</title>
 <div class="card">
     <div class="card-header">
         <strong>New Product By Customer</strong>

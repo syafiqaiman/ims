@@ -1,7 +1,7 @@
 @extends('backend.layouts.app')
 
 @section('content')
-
+<title>Restock Status</title>
 <div class="card">
     <div class="card-header">
         <h3 class="card-title">Restock Requests</h3>

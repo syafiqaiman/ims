@@ -1,5 +1,6 @@
 @extends('backend.layouts.app')
 @section('content')
+<title>Company Detail</title>
 @foreach($companies as $company)
 <div class="col-12">
     <div class="card">

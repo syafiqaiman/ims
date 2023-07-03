@@ -1,5 +1,6 @@
 @extends('backend.layouts.app')
 @section('content')
+<title>Dashboard</title>
     <div class="container-fluid">
     
     <div class="row">

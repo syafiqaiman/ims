@@ -1,5 +1,6 @@
 @extends('backend.layouts.app')
 @section('content')
+<title>Request Product Form</title>
 <form role="form" action="{{URL::to('/request_product')}}" method="post" enctype="multipart/form-data">
   @csrf
   <div class="card card-default">

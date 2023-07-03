@@ -1,6 +1,7 @@
 @extends('backend.layouts.app')
 
 @section('content')
+<title>Company List</title>
     <div class="card">
         <div class="card-header">
             <h3 class="card-title">Companies</h3>

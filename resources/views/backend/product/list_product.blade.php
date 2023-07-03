@@ -1,6 +1,7 @@
 @extends('backend.layouts.app')
 
 @section('content')
+<title>Product List</title>
     <div class="row">
         <div class="col-md-12">
             <div class="card card-primary">

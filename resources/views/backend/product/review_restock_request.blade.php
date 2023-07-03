@@ -1,6 +1,7 @@
 @extends('backend.layouts.app')
 
 @section('content')
+<title>Review Restock Request</title>
 <div class="card-body">
     <div class="row">
         <div class="col-12">

@@ -3,6 +3,7 @@
 @extends('backend.layouts.app')
 
 @section('content')
+<title>Invoice</title>
     <div class="invoice p-3 mb-3">
              <!-- title row -->
              <div class="row">

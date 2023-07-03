@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Dashboard</title>
+
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
   <!-- Google Font: Source Sans Pro -->
