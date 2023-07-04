@@ -58,31 +58,37 @@ class PickerController extends Controller
 
 
 
-public function confirmCollection(Request $request, $id, $quantity)
-{
-    // Get the picker
-    $picker = Picker::find($id);
-
-    // Update the status to "Collected"
-    $picker->status = "Collected";
-    $picker->save();
-
-    // Find the associated product
-    $product = Product::find($picker->product_id);
-
-    // Create a new order
-    $order = new Order();
-    $order->product()->associate($product);
-    $order->user_id = Auth::user()->id;
-    $order->quantity = $picker->quantity;
-    $order->rack_id = $picker->rack_id;
-    $order->order_no = $picker->order_no;
-    $order->company_id = $product->company_id;
-    $order->save();
-
-    // Redirect back with success message
-    return redirect()->back()->with('success', 'Product collected and order created successfully.');
-}
+    public function confirmCollection(Request $request, $id, $quantity)
+    {
+        // Get the picker
+        $picker = Picker::find($id);
+    
+        // Update the status and save the report and remark
+        $picker->status = $request->status;
+        $picker->report = $request->status;
+        $picker->remark = $request->remark;
+        $picker->save();
+    
+        // Check if the report is "Completed"
+        if ($request->status === 'Completed') {
+            // Find the associated product
+            $product = Product::find($picker->product_id);
+    
+            // Create a new order
+            $order = new Order();
+            $order->product()->associate($product);
+            $order->user_id = Auth::user()->id;
+            $order->quantity = $picker->quantity;
+            $order->rack_id = $picker->rack_id;
+            $order->order_no = $picker->order_no;
+            $order->company_id = $product->company_id;
+            $order->save();
+        }
+    
+        // Redirect back with success message
+        return redirect()->back()->with('success', 'Report updated successfully.');
+    }
+    
 
 
 public function history()

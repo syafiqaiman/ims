@@ -51,17 +51,47 @@
                                 @if($picker->status == 'Collected')
                                     <span class="badge bg-success">{{ $picker->status }}</span>
                                 @elseif($picker->status == 'Pending')
-                                    <form action="{{ route('picker.confirm', ['id' => $picker->id, 'quantity' => $picker->quantity]) }}" method="POST">
-                                        @csrf
-                                        <button type="submit" class="btn btn-primary btn-sm btn-collect collect-btn">Collect</button>
-                                    </form>                                    
+                                    <!-- Button trigger modal -->
+                                    <button type="button" class="btn btn-primary btn-sm btn-collect" data-toggle="modal" data-target="#collectModal{{ $picker->id }}">Collect</button>
+                                    
+                                    <!-- Collect Modal -->
+                                    <div class="modal fade" id="collectModal{{ $picker->id }}" tabindex="-1" role="dialog" aria-labelledby="collectModalLabel{{ $picker->id }}" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="collectModalLabel{{ $picker->id }}">Collect Product</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <form action="{{ route('picker.confirm', ['id' => $picker->id, 'quantity' => $picker->quantity]) }}" method="POST">
+                                                    @csrf
+                                                    <div class="modal-body">
+                                                        <div class="form-group">
+                                                            <label for="status{{ $picker->id }}">Report:</label>
+                                                            <select class="form-control" id="status{{ $picker->id }}" name="status">
+                                                                <option value="Completed">Completed</option>
+                                                                <option value="Insufficient">Insufficient</option>
+                                                                <option value="Damage">Damage</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="remark{{ $picker->id }}">Remark:</label>
+                                                            <textarea class="form-control" id="remark{{ $picker->id }}" name="remark" rows="3"></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                        <button type="submit" class="btn btn-primary">Proceed</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
                                 @else
                                     <span class="badge bg-primary">Collected</span>
                                 @endif
                                 </td>
-                                
-                                
-                                
                             </tr>
                             @endforeach
                         </tbody>                        
@@ -75,7 +105,5 @@
         </div>
     </div>
 </div>
-
-    
 
 @endsection

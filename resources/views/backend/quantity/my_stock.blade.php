@@ -38,7 +38,7 @@
                         <span class="badge bg-{{ $labelClass }}">{{ round($progress) }}%</span>
                     </td>
                     <td>
-                        <a href="{{ URL::to('/restock_form/'.$quantity->id) }}" class="btn btn-sm btn-info">Restock</a>
+                        <a href="{{ URL::to('/restock_form/'.$quantity->id) }}" class="btn btn-sm btn-info">Reorder</a>
                     </td>
                 </tr>
                 <tr class="expandable-body">
