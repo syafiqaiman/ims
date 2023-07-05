@@ -42,8 +42,23 @@ class QuantityController extends Controller
         ->select('products.id', 'companies.company_name', 'products.product_name','products.product_desc','products.weight_per_item','products.weight_per_carton',   'quantities.total_quantity', 'quantities.remaining_quantity')
         ->get();
 
-    return view('backend.quantity.my_stock', compact('quantities'));
+    // Calculate the stock level
+    $stockLevel = false;
+    foreach ($quantities as $quantity) {
+        $progress = ($quantity->remaining_quantity / $quantity->total_quantity) * 100;
+        if ($progress <= 30) {
+            $stockLevel = true;
+            break;
+        }
+    }
+
+    return view('backend.quantity.my_stock', compact('quantities', 'stockLevel'));
 }
+
+    
+    
+    
+    
 
 
 }

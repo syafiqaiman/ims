@@ -8,6 +8,15 @@
     </div>
        
     <div class="card-body">
+
+        @if($stockLevel)
+        <div class="alert alert-warning alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <h5><i class="icon fas fa-exclamation-triangle"></i> Alert!</h5>
+            Warning stock level is low, please reorder.
+        </div>
+        @endif
+        
         <table id="example1" class="table">
             <thead>
                 <tr>
@@ -82,6 +91,12 @@
     $(function () {
         // Enable expandable tables
         $('[data-widget="expandable-table"]').ExpandableTable();
+
+        // Check stock level and display alert if necessary
+        var stockLevel = <?php echo json_encode($stockLevel); ?>;
+        if (stockLevel <= 30) {
+            $('.alert-stock-level').show();
+        }
     });
 </script>
 @endpush
