@@ -100,3 +100,6 @@ Route::get('/invoice/{order_no}', [OrderController::class, 'show'])->name('order
 
 // Invoice
 Route::get('invoice/{id}/download', [InvoiceController::class, 'download'])->name('invoice.download');
+
+// Floor
+Route::get('/floors', [App\Http\Controllers\backend\FloorController::class, 'index'])->name('floor.index');       // Get listing of the floor list

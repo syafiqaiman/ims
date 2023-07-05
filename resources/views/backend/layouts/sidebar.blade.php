@@ -155,6 +155,15 @@
             </a>
           </li>
           <li class="nav-item">
+            <a href="{{URL::to('/floors')}}" class="nav-link">
+              <i class="nav-icon fas fa-th"></i>
+              <p>
+                Floor List
+                <!-- <span class="right badge badge-danger">New</span> -->
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
             <a href="{{URL::to('/company_list')}}" class="nav-link">
               <i class="nav-icon fas fa-th"></i>
               <p>
