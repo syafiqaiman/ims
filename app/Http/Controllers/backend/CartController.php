@@ -70,43 +70,57 @@ public function addToCart(Request $request, $id)
 
     // Get the quantity to be deducted based on the input
     $quantity = $validatedData['quantity'];
-    $num_cartons = floor($quantity / $product->item_per_carton);
+    $num_cartons = ceil($quantity / $product->item_per_carton); // Use ceil instead of floor
     $num_items = $quantity % $product->item_per_carton;
     $quantity_deducted = $num_cartons * $product->item_per_carton + $num_items;
     
-    // Check if the quantity is available
-    if ($product->remaining_quantity > $quantity_deducted) {
-    return redirect()->back()->with('error', 'Not enough stock!');
-    }
+    // ...
 
-    
-    // Add the item to the cart
+    // Check if the product already exists in the cart
     $cart = session()->get('cart', []);
-    $cart[$product->id] = [
-        'name' => $product->product_name,
-        'quantity' => $quantity,
-        'rack' => $rack->rack_id,
-        'image' => $product->product_image
-    ];
-    session()->put('cart', $cart);
+    $existingCartItem = $cart[$id] ?? null;
+    
+    if ($existingCartItem) {
+        // Update the quantity if the product already exists in the cart
+        $existingQuantity = $existingCartItem['quantity'];
+        $newQuantity = $existingQuantity + $quantity;
+        
+        $cart[$id]['quantity'] = $newQuantity;
+        session()->put('cart', $cart); // Update the cart in the session
+    } else {
+        // Add the item to the cart if it doesn't already exist
+        $cart[$id] = [
+            'id' => $id,
+            'name' => $product->product_name,
+            'quantity' => $quantity,
+            'rack' => $rack->rack_id,
+            'image' => $product->product_image
+        ];
+        
+        session()->put('cart', $cart); // Update the cart in the session
+    }
     
     return redirect()->back()->with('success', 'Product added to cart!');
 }
 
 
+
+
+
 public function update(Request $request, $id)
-    {
-        $quantity = $request->input('quantity');
-        $cart = session()->get('cart', []);
+{
+    $quantity = $request->input('quantity');
+    $cart = session()->get('cart', []);
 
-        if (isset($cart[$id])) {
-            $cart[$id]['quantity'] = $quantity;
-            session()->put('cart', $cart);
-            session()->flash('success', 'Cart updated successfully!');
-        }
-
-        return redirect()->back();
+    if (isset($cart[$id])) {
+        $cart[$id]['quantity'] = $quantity;
+        session()->put('cart', $cart);
+        session()->flash('success', 'Cart updated successfully!');
     }
+
+    return redirect()->back();
+}
+
 
     private function generatePONumber()
     {
@@ -127,66 +141,65 @@ public function update(Request $request, $id)
     {
         // Get the cart items
         $cart = session()->get('cart', []);
-            // Get the selected user ID
-            $user_id = $request->input('user_id');
-            $order_no = $this->generatePONumber(); // Replace with your logic to generate a unique order number
-            if (empty($user_id)) {
-                return redirect()->back()->with('error', 'Please select a picker!');
+        
+        // Get the selected user ID
+        $user_id = $request->input('user_id');
+        $order_no = $this->generatePONumber(); // Replace with your logic to generate a unique order number
+        
+        if (empty($user_id)) {
+            return redirect()->back()->with('error', 'Please select a picker!');
+        }
+        
+        // Deduct the items from the remaining quantity and update the product and quantity
+        foreach ($cart as $id => $item) {
+            $quantity_to_deduct = $item['quantity'];
+            
+            $quantity = Quantity::where('product_id', $id)->firstOrFail();
+            $product = Product::findOrFail($quantity->product_id);
+            $num_cartons = floor($quantity_to_deduct / $product->item_per_carton);
+            $num_items = $quantity_to_deduct % $product->item_per_carton;
+            $quantity_deducted = $num_cartons * $product->item_per_carton + $num_items;
+            
+            // Check if the quantity is available
+            if ($quantity->remaining_quantity <= $quantity_deducted) {
+                return redirect()->back()->with('error', 'Not enough stock!');
             }
-    // Deduct the items from the remaining quantity and update the product and quantity
-foreach ($cart as $id => $item) {
-    $quantity_to_deduct = $item['quantity'];
-
-    $quantity = Quantity::where('product_id', $id)->firstOrFail();
-    $product = Product::findOrFail($quantity->product_id);
-    $num_cartons = floor($quantity_to_deduct / $product->item_per_carton);
-    $num_items = $quantity_to_deduct % $product->item_per_carton;
-    $quantity_deducted = $num_cartons * $product->item_per_carton + $num_items;
-
-    // Check if the quantity is available
-    if ($quantity->remaining_quantity < $quantity_deducted) {
-        return redirect()->back()->with('error', 'Not enough stock!');
-    }
-
-    $quantity->remaining_quantity -= $quantity_deducted;
-    $quantity->sold_carton_quantity += $num_cartons;
-    $quantity->sold_item_quantity += $num_cartons * $product->item_per_carton + $num_items; // Include the calculation here
-    $quantity->save();
-
-    // Calculate the total weight of the items and deduct it from the rack's occupied amount
-
-    $total_weight = $product->weight_per_item * $quantity_deducted;
-    $rack = Rack::where('id', $product->rack_id)->firstOrFail();
-    $rack->occupied = max(0, $rack->occupied - $total_weight);
-    $rack->save();
-
-    $weight = Weight::where('product_id', $product->id)->firstOrFail();
-    $weight->weight_of_product -= $total_weight;
-    $weight->save();
-}
-    
-
-    
+            
+            $quantity->remaining_quantity -= $quantity_deducted;
+            $quantity->sold_carton_quantity += $num_cartons;
+            $quantity->sold_item_quantity += $num_items; // Remove the calculation here
+            $quantity->save();
+            
+            // ...
+            
+            // Calculate the total weight of the items and deduct it from the rack's occupied amount
+            $total_weight = $product->weight_per_item * $quantity_deducted;
+            $rack = Rack::where('id', $product->rack_id)->firstOrFail();
+            $rack->occupied = max(0, $rack->occupied - $total_weight);
+            $rack->save();
+            
+            $weight = Weight::where('product_id', $product->id)->firstOrFail();
+            $weight->weight_of_product -= $total_weight;
+            $weight->save();
+        }
+        
         // Store the assigned products and quantity in the pickers table
         foreach ($cart as $id => $item) {
             $picker = new Picker();
             $picker->user_id = $user_id;
             $picker->product_id = $id;
-            $picker->rack_id = $product->rack_id;
+            $picker->rack_id = $product->rack_id; // Make sure to adjust this if necessary
             $picker->quantity = $item['quantity'];
             $picker->status = 'Pending';
             $picker->order_no = $order_no; // Set the order number
             $picker->save();
         }
-    
+        
         // Clear the cart
         session()->forget('cart');
-    
+        
         return redirect()->back()->with('success', 'Order placed and products assigned successfully!');
     }
-    
-    
-
     
 
 

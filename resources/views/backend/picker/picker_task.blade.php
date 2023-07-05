@@ -72,7 +72,7 @@
                                                             <select class="form-control" id="status{{ $picker->id }}" name="status">
                                                                 <option value="Completed">Completed</option>
                                                                 <option value="Insufficient">Insufficient</option>
-                                                                <option value="Damage">Damage</option>
+                                                                <option value="Damaged">Damaged</option>
                                                             </select>
                                                         </div>
                                                         <div class="form-group">

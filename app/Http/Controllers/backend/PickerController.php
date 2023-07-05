@@ -57,20 +57,19 @@ class PickerController extends Controller
     
 
 
-
     public function confirmCollection(Request $request, $id, $quantity)
     {
         // Get the picker
         $picker = Picker::find($id);
     
         // Update the status and save the report and remark
-        $picker->status = $request->status;
-        $picker->report = $request->status;
+        $picker->status = ($request->report === 'Insufficient' || $request->report === 'Damaged') ? 'Reassign' : 'Collected';
+        $picker->report = $request->report;
         $picker->remark = $request->remark;
         $picker->save();
     
         // Check if the report is "Completed"
-        if ($request->status === 'Completed') {
+        if ($request->report === 'Completed') {
             // Find the associated product
             $product = Product::find($picker->product_id);
     
@@ -89,6 +88,8 @@ class PickerController extends Controller
         return redirect()->back()->with('success', 'Report updated successfully.');
     }
     
+    
+
 
 
 public function history()
