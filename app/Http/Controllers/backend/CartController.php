@@ -161,7 +161,7 @@ public function update(Request $request, $id)
             $quantity_deducted = $num_cartons * $product->item_per_carton + $num_items;
             
             // Check if the quantity is available
-            if ($quantity->remaining_quantity <= $quantity_deducted) {
+            if ($quantity->remaining_quantity < $quantity_deducted) {
                 return redirect()->back()->with('error', 'Not enough stock!');
             }
             
@@ -200,6 +200,7 @@ public function update(Request $request, $id)
         
         return redirect()->back()->with('success', 'Order placed and products assigned successfully!');
     }
+    
     
 
 
