@@ -461,23 +461,23 @@ public function approveRequest($id) //for restock request view admin
 }
 
 
-public function RemoveRequest($id) //for restock request view admin
-{
+// public function RemoveRequest($id) //for restock request view admin
+// {
 
-    $restock = Restock::findOrFail($id);
+//     $restock = Restock::findOrFail($id);
 
-    // Update the status to "Rejected"
-    $restock->status = 'Rejected';
-    $restock->save();
+//     // Update the status to "Rejected"
+//     $restock->status = 'Rejected';
+//     $restock->save();
 
-    $notification = array(
-        'message' => 'Request Rejected Successfully',
-        'alert-type' => 'success'
-    );
-    return redirect()->back()->with($notification);
-}
+//     $notification = array(
+//         'message' => 'Request Rejected Successfully',
+//         'alert-type' => 'success'
+//     );
+//     return redirect()->back()->with($notification);
+// }
 
-public function removeRequestRestockCust($id)
+public function CancelReorderRequestCust($id)
 {
     // Find the request by ID
     $request = Restock::find($id);
@@ -486,9 +486,9 @@ public function removeRequestRestockCust($id)
         return redirect()->back()->with('error', 'Request not found.');
     }
 
-    // Check if the request status is "Rejected"
-    if ($request->status !== 'Rejected') {
-        return redirect()->back()->with('error', 'Only rejected requests can be removed.');
+    // Check if the request status is "Under Review"
+    if ($request->status !== 'Under Review') {
+        return redirect()->back()->with('error', 'Error.');
     }
 
     // Delete the request from the database

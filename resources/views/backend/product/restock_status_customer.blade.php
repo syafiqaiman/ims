@@ -26,13 +26,13 @@
                             <button class="btn btn-info">Under Review</button>
                         @elseif ($request->status === 'Approved')
                             <button class="btn btn-success">Approved</button>
-                        @elseif ($request->status === 'Rejected')
-                            <button class="btn btn-danger">Rejected</button>
+                        {{-- @elseif ($request->status === 'Rejected')
+                            <button class="btn btn-danger">Rejected</button> --}}
                         @endif
                     </td>
                     <td>
-                        @if ($request->status === 'Rejected')
-                            <a href="{{ route('removeRejectedRequest', ['id' => $request->id]) }}" class="btn btn-danger">Remove</a>
+                        @if ($request->status === 'Under Review')
+                            <a href="{{ route('cancelReorderRequest', ['id' => $request->id]) }}" class="btn btn-danger">Cancel Reorder</a>
                         @endif
                     </td>                    
                 </tr>

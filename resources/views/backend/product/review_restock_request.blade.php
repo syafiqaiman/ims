@@ -31,7 +31,7 @@
                                         <td>{{ $request->total_weight }}</td>
                                         <td>
                                             <a href="{{ URL::to('approve_request/'.$request->id) }}" class="btn btn-success">Approve</a>
-                                            <a href="{{ URL::to('remove_request/'.$request->id) }}" class="btn btn-danger">Reject</a>
+                                            {{-- <a href="{{ URL::to('remove_request/'.$request->id) }}" class="btn btn-danger">Reject</a> --}}
                                         </td>
                                     </tr>
                                     <tr class="expandable-body">

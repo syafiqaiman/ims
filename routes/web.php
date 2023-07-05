@@ -55,7 +55,7 @@ Route::get('/product_request_list', [ProductController::class, 'viewRequestProdu
 Route::get('/check_new_product', [ProductController::class, 'adminCheckNewProductRequest'])->name('checknewproduct');
 Route::post('/check_new_product/{id}/approve', [ProductController::class, 'approveProductRequest'])->name('approveProductRequest');
 Route::get('/check_new_product/{id}/reject', [ProductController::class, 'rejectProductRequest'])->name('rejectProductRequest');
-Route::get('/remove-rejected-request/{id}', [ProductController::class, 'removeRequestRestockCust'])->name('removeRejectedRequest');
+Route::get('/cancel-reorder-request/{id}', [ProductController::class, 'CancelReorderRequestCust'])->name('cancelReorderRequest');
 
 // Delivery
 Route::get('/delivery/delivery_form', [DeliveryController::class, 'deliveryFormCust'])->name('deliveryform');
