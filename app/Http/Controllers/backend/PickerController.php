@@ -125,8 +125,8 @@ public function AdminView()
     $pickers = DB::table('pickers')
         ->join('users', 'pickers.user_id', '=', 'users.id')
         ->join('products', 'pickers.product_id', '=', 'products.id')
-        ->select('users.name as picker_name', 'products.product_name', 'pickers.quantity', 'pickers.status', 'pickers.created_at', 'pickers.updated_at')
-        ->groupBy('picker_name', 'products.product_name', 'pickers.quantity', 'pickers.status', 'pickers.created_at', 'pickers.updated_at')
+        ->select('users.name as picker_name', 'products.product_name', 'pickers.quantity', 'pickers.status', 'pickers.report', 'pickers.remark', 'pickers.created_at', 'pickers.updated_at')
+        ->groupBy('picker_name', 'products.product_name', 'pickers.quantity', 'pickers.status','pickers.report', 'pickers.remark', 'pickers.created_at', 'pickers.updated_at')
         ->get();
 
     return view('backend.picker.picker_status_view', [

@@ -68,8 +68,8 @@
                                                     @csrf
                                                     <div class="modal-body">
                                                         <div class="form-group">
-                                                            <label for="status{{ $picker->id }}">Report:</label>
-                                                            <select class="form-control" id="status{{ $picker->id }}" name="status">
+                                                            <label for="report{{ $picker->id }}">Report:</label>
+                                                            <select class="form-control" id="status{{ $picker->id }}" name="report">
                                                                 <option value="Completed">Completed</option>
                                                                 <option value="Insufficient">Insufficient</option>
                                                                 <option value="Damaged">Damaged</option>

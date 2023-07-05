@@ -115,7 +115,7 @@
                                 <tbody>
                                     @foreach($pickers->groupBy('picker_name') as $pickerName => $groupedPickers)
                                         @php
-                                            $completedPickers = $groupedPickers->where('status', 'Completed');
+                                            $completedPickers = $groupedPickers->where('report', 'Completed');
                                         @endphp
                                         @if($completedPickers->count() > 0)
                                             <tr data-widget="expandable-table" aria-expanded="false">
@@ -138,6 +138,7 @@
                                                                     <th>Quantity</th>
                                                                     <th>Date of Pick Up</th>
                                                                     <th>Status</th>
+                                                                    <th>Remark</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
@@ -147,8 +148,9 @@
                                                                         <td>{{ $picker->quantity }}</td>
                                                                         <td>{{ $picker->updated_at }}</td>
                                                                         <td>
-                                                                            <span class="badge bg-success">{{ $picker->status }}</span>
+                                                                            <span class="badge bg-success">{{ $picker->report }}</span>
                                                                         </td>
+                                                                        <td>{{ $picker->remark }}</td>
                                                                     </tr>
                                                                 @endforeach
                                                             </tbody>
@@ -189,7 +191,7 @@
                                 <tbody>
                                     @foreach($pickers->groupBy('picker_name') as $pickerName => $groupedPickers)
                                         @php
-                                            $completedPickers = $groupedPickers->where('status', 'Insufficient');
+                                            $completedPickers = $groupedPickers->where('report', 'Insufficient');
                                         @endphp
                                         @if($completedPickers->count() > 0)
                                             <tr data-widget="expandable-table" aria-expanded="false">
@@ -212,6 +214,7 @@
                                                                     <th>Quantity</th>
                                                                     <th>Date of Pick Up</th>
                                                                     <th>Status</th>
+                                                                    <th>Remark</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
@@ -221,8 +224,9 @@
                                                                         <td>{{ $picker->quantity }}</td>
                                                                         <td>{{ $picker->updated_at }}</td>
                                                                         <td>
-                                                                            <span class="badge bg-warning">{{ $picker->status }}</span>
+                                                                            <span class="badge bg-warning">{{ $picker->report }}</span>
                                                                         </td>
+                                                                        <td>{{ $picker->remark }}</td>
                                                                     </tr>
                                                                 @endforeach
                                                             </tbody>
@@ -263,7 +267,7 @@
                                 <tbody>
                                     @foreach($pickers->groupBy('picker_name') as $pickerName => $groupedPickers)
                                         @php
-                                            $completedPickers = $groupedPickers->where('status', 'Damaged');
+                                            $completedPickers = $groupedPickers->where('report', 'Damaged');
                                         @endphp
                                         @if($completedPickers->count() > 0)
                                             <tr data-widget="expandable-table" aria-expanded="false">
@@ -286,6 +290,7 @@
                                                                     <th>Quantity</th>
                                                                     <th>Date of Pick Up</th>
                                                                     <th>Status</th>
+                                                                    <th>Remark</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
@@ -295,8 +300,9 @@
                                                                         <td>{{ $picker->quantity }}</td>
                                                                         <td>{{ $picker->updated_at }}</td>
                                                                         <td>
-                                                                            <span class="badge bg-warning">{{ $picker->status }}</span>
+                                                                            <span class="badge bg-danger">{{ $picker->report }}</span>
                                                                         </td>
+                                                                        <td>{{ $picker->remark }}</td>
                                                                     </tr>
                                                                 @endforeach
                                                             </tbody>
