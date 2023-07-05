@@ -12,6 +12,7 @@ use App\Models\Product;
 use App\Models\Company;
 use App\Models\User;
 use App\Models\Rack;
+use App\Models\Floor;
 use App\Models\Restock;
 use App\Models\ProductRequest;
 
@@ -81,7 +82,13 @@ class ProductController extends Controller
     {
         // Get all companies
         $companies = Company::all();
+
+        // Get all racks
         $racks = Rack::all();
+
+        // Get all floors
+        $floors = Floor::all();
+
         // Get the selected company's ID
         $company_id = $request->input('company');
 
@@ -96,7 +103,7 @@ class ProductController extends Controller
         $allProducts = DB::table('products')->get();
 
         // Return the view with the companies, users, and products
-        return view('backend.product.create_product', compact('companies', 'users', 'allProducts', 'racks'));
+        return view('backend.product.create_product', compact('companies', 'users', 'allProducts', 'racks', 'floors'));
     }
 
 
@@ -141,8 +148,7 @@ class ProductController extends Controller
             'carton_quantity' => 'required|integer',
             'product_price' => 'required|numeric',
             'item_per_carton' => 'required|integer',
-            'product_image' => 'required|image|max:2048',
-            'rack_id' => 'required'
+            //'product_image' => 'required|image|max:2048'
         ]);
 
         $company = DB::table('companies')
@@ -161,6 +167,7 @@ class ProductController extends Controller
             'weight_per_carton' => $request->weight_per_carton,
             'product_dimensions' => $request->product_dimensions,
             'rack_id' => $request->rack_id,
+            'floor_id' => $request->floor_id,
             'date_to_be_stored' => $request->date_to_be_stored,
             'created_at' => now(),
             'updated_at' => now(),
