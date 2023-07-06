@@ -19,6 +19,11 @@ class Product extends Model
         return $this->belongsTo(Rack::class);
     }
 
+    public function floor()
+    {
+        return $this->belongsTo(Floor::class);
+    }
+
     public function company()
     {
         return $this->belongsTo(Company::class);
