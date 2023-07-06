@@ -117,31 +117,46 @@ class ProductController extends Controller
         $rack_id = $request->rack_id;
         $floor_id = $request->floor_id;
 
-        // Check if the total weight exceeds the limit of 200
-        if ($total_weight > 200) {
-            return redirect()->back()->with('error', 'Total weight exceeds limit of 200. Please adjust your inputs.')->withInput();
-        }
+        if ($rack_id === null) 
+        {
+            // Check if the total weight exceeds the limit of 200
+            if ($total_weight > 200) {
+                return redirect()->back()->with('error', 'Total weight exceeds limit of 200. Please adjust your inputs.')->withInput();
+            }
 
-        // Get the rack capacity, occupied weight, floor capacity, and occupied weight
-        $rack_data = DB::table('rack_locations')
-            ->where('id', $rack_id)
-            ->select('capacity', 'occupied')
-            ->first();
-
-        $rack_capacity = $rack_data->capacity;
-        $occupied_weight = $rack_data->occupied;
-
-        $floor_data = DB::table('floor_locations')
+            $floor_data = DB::table('floor_locations')
             ->where('id', $floor_id)
             ->select('capacity', 'occupied')
             ->first();
 
-        $floor_capacity = $floor_data->capacity;
-        $occupied_weight_floor = $floor_data->occupied;
+            $floor_capacity = $floor_data->capacity;
+            $occupied_weight_floor = $floor_data->occupied;
 
-        // Calculate the remaining capacity for rack and floor
-        $remaining_capacity_rack = $rack_capacity - $occupied_weight;
-        $remaining_capacity_floor = $floor_capacity - $occupied_weight_floor;
+            // Calculate the remaining capacity for floor
+            $remaining_capacity_floor = $floor_capacity - $occupied_weight_floor;
+
+        } else if ($floor_id === null)
+        {
+            // Check if the total weight exceeds the limit of 200
+            if ($total_weight > 200) {
+                return redirect()->back()->with('error', 'Total weight exceeds limit of 200. Please adjust your inputs.')->withInput();
+            }
+
+            // Get the rack capacity, occupied weight, floor capacity, and occupied weight
+            $rack_data = DB::table('rack_locations')
+            ->where('id', $rack_id)
+            ->select('capacity', 'occupied')
+            ->first();
+
+            $rack_capacity = $rack_data->capacity;
+            $occupied_weight = $rack_data->occupied;
+
+            // Calculate the remaining capacity for rack 
+            $remaining_capacity_rack = $rack_capacity - $occupied_weight;
+        } else 
+        {
+            return redirect()->back()->with('error', 'Please select at least one storage location.')->withInput();
+        }
 
         $validatedData = $request->validate([
             'company_id' => 'required',
@@ -193,13 +208,50 @@ class ProductController extends Controller
         }
 
         // Check if the remaining capacity is less than the weight of the new product
-        if ($remaining_capacity_rack < $total_weight && $remaining_capacity_floor < $total_weight) {
-            return redirect()->back()->with('error', 'Rack and floor capacities exceeded. Remaining rack capacity: ' . $remaining_capacity_rack . '. Remaining floor capacity: ' . $remaining_capacity_floor . '. Please adjust your inputs.')->withInput();
-        } elseif ($remaining_capacity_rack < $total_weight) {
-            return redirect()->back()->with('error', 'Rack capacity exceeded. Remaining capacity: ' . $remaining_capacity_rack . '. Please adjust your inputs.')->withInput();
-        } elseif ($remaining_capacity_floor < $total_weight) {
-            return redirect()->back()->with('error', 'Floor capacity exceeded. Remaining capacity: ' . $remaining_capacity_floor . '. Please adjust your inputs.')->withInput();
-        } else {
+        if ($rack_id === null)
+        {
+            if ($remaining_capacity_floor < $total_weight) { return redirect()->back()->with('error', 'Floor capacity exceeded. Remaining capacity: ' . $remaining_capacity_floor . '. Please adjust your inputs.')->withInput(); }
+
+            // Insert data into the products table
+            $product_id = DB::table('products')->insertGetId($data);
+
+            // Insert data into the quantity table
+            DB::table('quantities')->insert([
+                'product_id' => $product_id,
+                'total_quantity' => $total_quantity,
+                'sold_carton_quantity' => 0,
+                'sold_item_quantity' => 0,
+                'remaining_quantity' => $total_quantity,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            // Insert data into the weights table
+            DB::table('weights')->insert([
+                'product_id' => $product_id,
+                'weight_of_product' => $total_weight,
+                'rack_id' => $data['rack_id'],
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            // Get the total weight of products on the current floor
+            $total_weight_in_floor = DB::table('weights')
+            ->join('products', 'weights.product_id', '=', 'products.id')
+            ->where('products.floor_id', $floor_id)
+            ->sum('weight_of_product');
+    
+            // Update floor_locations table with the occupied weight
+            DB::table('floor_locations')
+                ->where('id', $floor_id)
+                ->update(['occupied' => $total_weight_in_floor]);
+
+            return redirect()->route('product.index')->with('success', 'Product added successfully');
+
+        } else if ($floor_id === null)
+        {
+            if ($remaining_capacity_rack < $total_weight) { return redirect()->back()->with('error', 'Rack capacity exceeded. Remaining capacity: ' . $remaining_capacity_rack . '. Please adjust your inputs.')->withInput(); }
+
             // Insert data into the products table
             $product_id = DB::table('products')->insertGetId($data);
 
@@ -234,19 +286,68 @@ class ProductController extends Controller
                     ->where('id', $rack_id)
                     ->update(['occupied' => $total_weight_in_rack]);
 
-            // Get the total weight of products on the current floor
-            $total_weight_in_floor = DB::table('weights')
-                    ->join('products', 'weights.product_id', '=', 'products.id')
-                    ->where('products.floor_id', $floor_id)
-                    ->sum('weight_of_product');
-
-            // Update floor_locations table with the occupied weight
-            DB::table('floor_locations')
-                    ->where('id', $floor_id)
-                    ->update(['occupied' => $total_weight_in_floor]);
-
             return redirect()->route('product.index')->with('success', 'Product added successfully');
+
+        } else
+        {
+            return redirect()->route('product.index')->with('error', 'Product added unsuccessfully');   
         }
+
+        // // Check if the remaining capacity is less than the weight of the new product
+        // if ($remaining_capacity_rack < $total_weight && $remaining_capacity_floor < $total_weight) {
+        //     return redirect()->back()->with('error', 'Rack and floor capacities exceeded. Remaining rack capacity: ' . $remaining_capacity_rack . '. Remaining floor capacity: ' . $remaining_capacity_floor . '. Please adjust your inputs.')->withInput();
+        // } elseif ($remaining_capacity_rack < $total_weight) {
+        //     return redirect()->back()->with('error', 'Rack capacity exceeded. Remaining capacity: ' . $remaining_capacity_rack . '. Please adjust your inputs.')->withInput();
+        // } elseif ($remaining_capacity_floor < $total_weight) {
+        //     return redirect()->back()->with('error', 'Floor capacity exceeded. Remaining capacity: ' . $remaining_capacity_floor . '. Please adjust your inputs.')->withInput();
+        // } else {
+        //     // Insert data into the products table
+        //     $product_id = DB::table('products')->insertGetId($data);
+
+        //     // Insert data into the quantity table
+        //     DB::table('quantities')->insert([
+        //         'product_id' => $product_id,
+        //         'total_quantity' => $total_quantity,
+        //         'sold_carton_quantity' => 0,
+        //         'sold_item_quantity' => 0,
+        //         'remaining_quantity' => $total_quantity,
+        //         'created_at' => now(),
+        //         'updated_at' => now(),
+        //     ]);
+
+        //     // Insert data into the weights table
+        //     DB::table('weights')->insert([
+        //         'product_id' => $product_id,
+        //         'weight_of_product' => $total_weight,
+        //         'rack_id' => $data['rack_id'],
+        //         'created_at' => now(),
+        //         'updated_at' => now(),
+        //     ]);
+
+        //     // Get the total weight of products in the current rack
+        //     $total_weight_in_rack = DB::table('weights')
+        //             ->join('products', 'weights.product_id', '=', 'products.id')
+        //             ->where('products.rack_id', $rack_id)
+        //             ->sum('weight_of_product');
+
+        //     // Update rack_locations table with the occupied weight
+        //     DB::table('rack_locations')
+        //             ->where('id', $rack_id)
+        //             ->update(['occupied' => $total_weight_in_rack]);
+
+        //     // Get the total weight of products on the current floor
+        //     $total_weight_in_floor = DB::table('weights')
+        //             ->join('products', 'weights.product_id', '=', 'products.id')
+        //             ->where('products.floor_id', $floor_id)
+        //             ->sum('weight_of_product');
+
+        //     // Update floor_locations table with the occupied weight
+        //     DB::table('floor_locations')
+        //             ->where('id', $floor_id)
+        //             ->update(['occupied' => $total_weight_in_floor]);
+
+        //     return redirect()->route('product.index')->with('success', 'Product added successfully');
+        // }
     }
 
     public function ProductEdit($id)
@@ -323,73 +424,42 @@ class ProductController extends Controller
         $rack = $product->rack;
         $rackId = $rack->id;
 
-        $newOccupied = DB::table('weights')
+        $floor = $product->floor;
+        $floorId = $floor->id;
+
+        $newOccupiedRack = DB::table('weights')
             ->join('rack_locations', 'rack_locations.id', '=', 'weights.rack_id')
             ->where('rack_locations.id', '=', $rackId)
             ->where('weights.product_id', '!=', $id) // exclude the product being deleted
             ->sum('weights.weight_of_product');
 
+        $newOccupiedFloor = DB::table('weights')
+            ->join('floor_locations', 'floor_locations.id', '=', 'weights.floor_id')
+            ->where('floor_locations.id', '=', $floorId)
+            ->where('weights.product_id', '!=', $id) // exclude the product being deleted
+            ->sum('weights.weight_of_product');
 
         DB::table('rack_locations')
             ->where('id', '=', $rackId)
-            ->update(['occupied' => $newOccupied]);
+            ->update(['occupied' => $newOccupiedRack]);
 
+        DB::table('floor_locations')
+            ->where('id', '=', $floorId)
+            ->update(['occupied' => $newOccupiedFloor]);
 
         if ($product->delete()) {
-            $notification = array(
+            $notification = [
                 'message' => 'Product Deleted Successfully',
                 'alert-type' => 'success'
-            );
+            ];
             return redirect()->back()->with($notification);
         } else {
-            $notification = array(
+            $notification = [
                 'message' => 'Error',
                 'alert-type' => 'error'
-            );
+            ];
             return redirect()->back()->with($notification);
         }
-
-        // $product = Product::findOrFail($id);
-
-        // $rack = $product->rack;
-        // $rackId = $rack->id;
-
-        // $floor = $product->floor;
-        // $floorId = $floor->id;
-
-        // $newOccupiedRack = DB::table('weights')
-        //     ->join('rack_locations', 'rack_locations.id', '=', 'weights.rack_id')
-        //     ->where('rack_locations.id', '=', $rackId)
-        //     ->where('weights.product_id', '!=', $id) // exclude the product being deleted
-        //     ->sum('weights.weight_of_product');
-
-        // $newOccupiedFloor = DB::table('weights')
-        //     ->join('floor_locations', 'floor_locations.id', '=', 'weights.floor_id')
-        //     ->where('floor_locations.id', '=', $floorId)
-        //     ->where('weights.product_id', '!=', $id) // exclude the product being deleted
-        //     ->sum('weights.weight_of_product');
-
-        // DB::table('rack_locations')
-        //     ->where('id', '=', $rackId)
-        //     ->update(['occupied' => $newOccupiedRack]);
-
-        // DB::table('floor_locations')
-        //     ->where('id', '=', $floorId)
-        //     ->update(['occupied' => $newOccupiedFloor]);
-
-        // if ($product->delete()) {
-        //     $notification = [
-        //         'message' => 'Product Deleted Successfully',
-        //         'alert-type' => 'success'
-        //     ];
-        //     return redirect()->back()->with($notification);
-        // } else {
-        //     $notification = [
-        //         'message' => 'Error',
-        //         'alert-type' => 'error'
-        //     ];
-        //     return redirect()->back()->with($notification);
-        // }
     }
 
 
