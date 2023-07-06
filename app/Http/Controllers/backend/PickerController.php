@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Picker;
 use App\Models\Product;
+use App\Models\Quantity;
+use App\Models\Weight;
 use App\Models\Order;
 use App\Models\Rack;
 use Illuminate\Support\Facades\Auth;
@@ -24,7 +26,7 @@ class PickerController extends Controller
     {
         $user = Auth::user();
         $pickers = Picker::where('user_id', $user->id)
-                          ->whereIn('status', ['Collected', 'Pending'])
+                          ->whereIn('status', ['Collected', 'Pending', 'Reracking'])
                           ->orderBy('created_at', 'desc')
                           ->get();
     
@@ -55,6 +57,7 @@ class PickerController extends Controller
     
     
     
+    
 
 
     public function confirmCollection(Request $request, $id, $quantity)
@@ -62,11 +65,12 @@ class PickerController extends Controller
         // Get the picker
         $picker = Picker::find($id);
     
-        // Update the status and save the report and remark
+            // Update the status, report, and remark
         $picker->status = ($request->report === 'Insufficient' || $request->report === 'Damaged') ? 'Reassign' : 'Collected';
         $picker->report = $request->report;
         $picker->remark = $request->remark;
         $picker->save();
+
     
         // Check if the report is "Completed"
         if ($request->report === 'Completed') {
@@ -123,18 +127,79 @@ public function AdminView()
     $user = Auth::user();
     
     $pickers = DB::table('pickers')
-        ->join('users', 'pickers.user_id', '=', 'users.id')
-        ->join('products', 'pickers.product_id', '=', 'products.id')
-        ->select('users.name as picker_name', 'products.product_name', 'pickers.quantity', 'pickers.status', 'pickers.report', 'pickers.remark', 'pickers.created_at', 'pickers.updated_at')
-        ->groupBy('picker_name', 'products.product_name', 'pickers.quantity', 'pickers.status','pickers.report', 'pickers.remark', 'pickers.created_at', 'pickers.updated_at')
-        ->get();
+    ->join('users', 'pickers.user_id', '=', 'users.id')
+    ->join('products', 'pickers.product_id', '=', 'products.id')
+    ->select('pickers.id', 'pickers.user_id',  'users.name as picker_name', 'products.product_name', 'pickers.quantity', 'pickers.status', 'pickers.report', 'pickers.remark', 'pickers.created_at', 'pickers.updated_at')
+    ->groupBy('pickers.id', 'pickers.user_id', 'picker_name', 'products.product_name', 'pickers.quantity', 'pickers.status','pickers.report', 'pickers.remark', 'pickers.created_at', 'pickers.updated_at')
+    ->get();
+
+
 
     return view('backend.picker.picker_status_view', [
         'pickers' => $pickers,
     ]);
 }
 
+public function rerackProductPicker($pickerId)
+{
+    // Find the associated picker
+    $picker = Picker::where('id', $pickerId)
+                     ->where('user_id', Auth::user()->id)
+                     ->first();
 
+    if ($picker) {
+
+        // Set the picker status to "Reracked"
+        $picker->status = 'Reracked';
+        $picker->report = 'Rerack';
+        $picker->save();
+
+        // Redirect back with success message
+        return redirect()->back()->with('success', 'Product Reracked');
+    }
+    
+    // Redirect back with error message if picker not found or not associated with the logged-in user
+    return redirect()->back()->with('error', 'Picker not found.');
+}
+
+
+public function rerackProductAdmin($pickerId)
+{
+    // Find the associated picker
+    $picker = Picker::find($pickerId);
+
+    if ($picker) {
+        // Find the associated product
+        $product = Product::find($picker->product_id);
+
+        // Update the quantity in the quantities table
+        $quantity = Quantity::where('product_id', $product->id)->first();
+        $quantity->remaining_quantity += $picker->quantity;
+        $quantity->sold_item_quantity -= $picker->quantity;
+        $quantity->save();
+
+        // Update the weight in the weights table
+        $weight = Weight::where('product_id', $product->id)->first();
+        $weight->weight_of_product += $product->weight_per_item * $picker->quantity;
+        $weight->save();
+
+         // Update the occupied_weight in the rack_locations table
+        $rackLocation = Rack::where('id', $product->rack_id)->first();
+        $rackLocation->occupied += $product->weight_per_item * $picker->quantity;
+        $rackLocation->save();
+         
+        // Set the picker status to "Reracked"
+        $picker->status = 'Reracking';
+        $picker->report = 'Rerack';
+        $picker->save();
+
+        // Redirect back with success message
+        return redirect()->back()->with('success', 'Picker will be notified.');
+    }
+    
+    // Redirect back with error message if picker not found
+    return redirect()->back()->with('error', 'Picker not found.');
+}
 
 
 }

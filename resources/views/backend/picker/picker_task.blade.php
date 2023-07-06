@@ -41,8 +41,10 @@
                                 <td>
                                     @if($picker->status == 'Collected')
                                     <span class="badge bg-success">{{ $picker->status }}</span>
-                                @elseif($picker->status == 'Pending')
+                                @elseif($picker->status == 'Pending' )
                                     <span class="badge bg-warning">{{ $picker->status }}</span>
+                                    @elseif($picker->status == 'Reracking' )
+                                    <span class="badge bg-warning">Please rerack</span>
                                 @else
                                     <span class="badge bg-danger">{{ $picker->status }}</span>
                                 @endif
@@ -68,11 +70,15 @@
                                                     @csrf
                                                     <div class="modal-body">
                                                         <div class="form-group">
+                                                           Here's the continuation of the modified code:
+
+```php
                                                             <label for="report{{ $picker->id }}">Report:</label>
                                                             <select class="form-control" id="status{{ $picker->id }}" name="report">
                                                                 <option value="Completed">Completed</option>
                                                                 <option value="Insufficient">Insufficient</option>
                                                                 <option value="Damaged">Damaged</option>
+                                                                <option value="Rerack">Rerack</option>
                                                             </select>
                                                         </div>
                                                         <div class="form-group">
@@ -83,6 +89,32 @@
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                                         <button type="submit" class="btn btn-primary">Proceed</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @elseif($picker->status == 'Reracking')
+                                    <button type="button" class="btn btn-dark btn-sm btn-rerack" data-toggle="modal" data-target="#rerackModal{{ $picker->id }}">Rerack</button>
+                                    
+                                    <!-- Rerack Modal -->
+                                    <div class="modal fade" id="rerackModal{{ $picker->id }}" tabindex="-1" role="dialog" aria-labelledby="rerackModalLabel{{ $picker->id }}" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="rerackModalLabel{{ $picker->id }}">Rerack Product</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <form action="{{ route('rerackProductPicker', ['pickerId' => $picker->id]) }}" method="POST">
+                                                    @csrf
+                                                    <div class="modal-body">
+                                                        <p>Are you sure you want to rerack this product?</p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                                        <button type="submit" class="btn btn-dark">Rerack</button>
                                                     </div>
                                                 </form>
                                             </div>

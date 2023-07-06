@@ -80,7 +80,8 @@ Route::get('picker_task', [PickerController::class, 'PickerTaskList'])->name('pi
 Route::post('/picker/confirm-collection/{id}/{quantity}', [PickerController::class, 'confirmCollection'])->name('picker.confirm');
 Route::get('/picker/history',  [PickerController::class, 'history'])->name('picker.history');
 Route::get('/picker_status',  [PickerController::class, 'AdminView'])->name('picker.viewstatus');
-
+Route::post('/rerack-product/{pickerId}', [PickerController::class, 'rerackProductAdmin'])->name('rerackProductAdmin');
+Route::post('/rerack-product-picker/{pickerId}', [PickerController::class, 'rerackProductPicker'])->name('rerackProductPicker');
 // Cart
 Route::get('cart_index', [CartController::class, 'ItemList'])->name('quantity.index');
 Route::get('/cart_view', [CartController::class, 'ItemList'])->name('quantitycart');

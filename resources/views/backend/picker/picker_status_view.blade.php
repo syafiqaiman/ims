@@ -69,12 +69,14 @@
                                                                         <td>
                                                                             @if($picker->status == 'Collected')
                                                                                 <span class="badge bg-success">{{ $picker->status }}</span>
-                                                                            @elseif($picker->status == 'Pending')
+                                                                            @elseif($picker->status == 'Pending' || $picker->status == 'Reracking')
                                                                                 <span class="badge bg-warning">{{ $picker->status }}</span>
                                                                             @elseif($picker->status == 'Packing')
                                                                                 <span class="badge bg-info">{{ $picker->status }}</span>
+                                                                            @elseif($picker->status == 'Reracked')
+                                                                                <span class="badge bg-dark">{{ $picker->status }}</span>
                                                                             @else
-                                                                                <span class="badge bg-danger">{{ $picker->status }}</span>
+                                                                                <span class="badge bg-primary">{{ $picker->status }}</span>
                                                                             @endif
                                                                         </td>
                                                                     </tr>
@@ -93,7 +95,7 @@
                 <div class="tab-pane fade" id="completed" role="tabpanel" aria-labelledby="completed-tab">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Picker Status</h3>
+                            <h3 class="card-title">Picker Report</h3>
                             <div class="card-tools">
                                 <div class="input-group input-group-sm" style="width: 150px;">
                                     <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
@@ -137,7 +139,7 @@
                                                                     <th>Product Name</th>
                                                                     <th>Quantity</th>
                                                                     <th>Date of Pick Up</th>
-                                                                    <th>Status</th>
+                                                                    <th>Report</th>
                                                                     <th>Remark</th>
                                                                 </tr>
                                                             </thead>
@@ -169,7 +171,7 @@
                 <div class="tab-pane fade" id="insufficient" role="tabpanel" aria-labelledby="insufficient-tab">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Picker Status</h3>
+                            <h3 class="card-title">Picker Report</h3>
                             <div class="card-tools">
                                 <div class="input-group input-group-sm" style="width: 150px;">
                                     <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
@@ -213,8 +215,9 @@
                                                                     <th>Product Name</th>
                                                                     <th>Quantity</th>
                                                                     <th>Date of Pick Up</th>
-                                                                    <th>Status</th>
+                                                                    <th>Report</th>
                                                                     <th>Remark</th>
+                                                                    <th>Action</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
@@ -227,6 +230,12 @@
                                                                             <span class="badge bg-warning">{{ $picker->report }}</span>
                                                                         </td>
                                                                         <td>{{ $picker->remark }}</td>
+                                                                        <td>
+                                                                            <form action="{{ route('rerackProductAdmin', ['pickerId' => $picker->id]) }}" method="POST">
+                                                                                @csrf
+                                                                                <button type="submit" class="btn btn-primary btn-sm">Rerack</button>
+                                                                            </form>
+                                                                        </td>                                                                                                                                                                                                       
                                                                     </tr>
                                                                 @endforeach
                                                             </tbody>
@@ -245,7 +254,7 @@
                 <div class="tab-pane fade" id="damaged" role="tabpanel" aria-labelledby="damaged-tab">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Picker Status</h3>
+                            <h3 class="card-title">Picker Report</h3>
                             <div class="card-tools">
                                 <div class="input-group input-group-sm" style="width: 150px;">
                                     <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
@@ -289,7 +298,7 @@
                                                                     <th>Product Name</th>
                                                                     <th>Quantity</th>
                                                                     <th>Date of Pick Up</th>
-                                                                    <th>Status</th>
+                                                                    <th>Report</th>
                                                                     <th>Remark</th>
                                                                 </tr>
                                                             </thead>
