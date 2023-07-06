@@ -348,6 +348,48 @@ class ProductController extends Controller
             );
             return redirect()->back()->with($notification);
         }
+
+        // $product = Product::findOrFail($id);
+
+        // $rack = $product->rack;
+        // $rackId = $rack->id;
+
+        // $floor = $product->floor;
+        // $floorId = $floor->id;
+
+        // $newOccupiedRack = DB::table('weights')
+        //     ->join('rack_locations', 'rack_locations.id', '=', 'weights.rack_id')
+        //     ->where('rack_locations.id', '=', $rackId)
+        //     ->where('weights.product_id', '!=', $id) // exclude the product being deleted
+        //     ->sum('weights.weight_of_product');
+
+        // $newOccupiedFloor = DB::table('weights')
+        //     ->join('floor_locations', 'floor_locations.id', '=', 'weights.floor_id')
+        //     ->where('floor_locations.id', '=', $floorId)
+        //     ->where('weights.product_id', '!=', $id) // exclude the product being deleted
+        //     ->sum('weights.weight_of_product');
+
+        // DB::table('rack_locations')
+        //     ->where('id', '=', $rackId)
+        //     ->update(['occupied' => $newOccupiedRack]);
+
+        // DB::table('floor_locations')
+        //     ->where('id', '=', $floorId)
+        //     ->update(['occupied' => $newOccupiedFloor]);
+
+        // if ($product->delete()) {
+        //     $notification = [
+        //         'message' => 'Product Deleted Successfully',
+        //         'alert-type' => 'success'
+        //     ];
+        //     return redirect()->back()->with($notification);
+        // } else {
+        //     $notification = [
+        //         'message' => 'Error',
+        //         'alert-type' => 'error'
+        //     ];
+        //     return redirect()->back()->with($notification);
+        // }
     }
 
 
