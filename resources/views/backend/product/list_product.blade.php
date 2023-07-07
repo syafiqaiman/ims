@@ -27,6 +27,7 @@
                                 <th>Company</th>
                                 @if (Auth::user()->role == 1 || Auth::user()->role == 2)
                                     <th>Rack Location</th>
+                                    <th>Floor Location</th>
                                 @endif
                                 <th>Product Name</th>
                                 <th>Qty</th>
@@ -43,7 +44,8 @@
                                     <td>{{ $row->id }}</td>
                                     <td>{{ $row->company_name }}</td>
                                     @if (Auth::user()->role == 1 || Auth::user()->role == 2)
-                                        <td>{{ $row->location_code }}</td>
+                                        <td>{{ $row->location_code ?? '-'}}</td>
+                                        <td>{{ $row->location_codes ?? '-'}}</td>
                                     @endif
                                     <td>{{ $row->product_name }}</td>
                                     <td>{{ $row->remaining_quantity }}</td>
