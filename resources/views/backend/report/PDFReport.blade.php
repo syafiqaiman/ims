@@ -75,15 +75,16 @@
                 </div>
             </div>
             <div class="table-responsive-sm">
+                <h3>Items in inventory</h3>
                 <table class="table table-striped">
                     <thead>
                         <tr>
                             <th class="center">#</th>
                             <th>Item</th>
                             <th>Description</th>
-                            <th class="right">Price</th>
-                            <th class="center">Quantity on hand</th>
-                            <th class="right">Total</th>
+                            <th class="right">Price per unit</th>
+                            <th class="center">Stock count</th>
+                            <th class="right">Stock value</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -94,11 +95,23 @@
                             <td class="left">{{ $row->product_desc }}</td>
                             <td class="right">RM {{ $row->product_price }}</td>
                             <td class="center">{{ $row->total_quantity }}</td>
-                            <td class="right">RM {{ $row->total_quantity * $row->product_price }}</td>
+                            <td class="right">RM {{ $row->total_quantity *$row->product_price }}</td>
                         </tr>
                         @endforeach
                     </tbody>
                 </table>
+            </div>
+            <div class="row mb-2"> 
+                <h3>Beginning of month inventory count: {{ $beginningInventory }} unit</h3>
+            </div>
+            <div class="row mb-2">
+                <h3>End of month inventory count: {{ $endingInventory }} unit</h3>
+            </div>
+            <div class="row mb-2">
+                <h4>Total Sales Volume: RM {{ $totalSalesVolume }}</h4>
+            </div>
+            <div class="row mb-2">
+                <h4>Revenue: RM {{ $totalRevenue }}</h4>
             </div>
             <div class="row">
                 <div class="col-lg-4 col-sm-5">
