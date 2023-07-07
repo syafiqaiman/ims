@@ -103,3 +103,6 @@ Route::get('invoice/{id}/download', [InvoiceController::class, 'download'])->nam
 
 // Floor
 Route::get('/floors', [App\Http\Controllers\backend\FloorController::class, 'index'])->name('floor.index');       // Get listing of the floor list
+
+// PDF Report Monthly
+Route::get('/report', [App\Http\Controllers\backend\PDFReportController::class, 'index'])->name('report.index');
