@@ -23,6 +23,7 @@
                     <table class="table table-hover text-nowrap">
                         <thead>
                             <tr>
+                                <th>Order No.</th>
                                 <th>Rack Location</th>
                                 <th>Product Name</th>
                                 <th>Quantity</th>
@@ -34,6 +35,7 @@
                         <tbody>
                             @foreach($pickers as $picker)
                             <tr>
+                                <td>{{ $picker->order_no }}</td>
                                 <td>{{ $picker->location_code }}</td>
                                 <td>{{ $picker->product->product_name }}</td>
                                 <td>{{ $picker->quantity }}</td>
@@ -43,7 +45,7 @@
                                     <span class="badge bg-success">{{ $picker->status }}</span>
                                 @elseif($picker->status == 'Pending' )
                                     <span class="badge bg-warning">{{ $picker->status }}</span>
-                                    @elseif($picker->status == 'Reracking' )
+                                @elseif($picker->status == 'Reracking' )
                                     <span class="badge bg-warning">Please rerack</span>
                                 @else
                                     <span class="badge bg-danger">{{ $picker->status }}</span>
@@ -70,15 +72,11 @@
                                                     @csrf
                                                     <div class="modal-body">
                                                         <div class="form-group">
-                                                           Here's the continuation of the modified code:
-
-```php
                                                             <label for="report{{ $picker->id }}">Report:</label>
                                                             <select class="form-control" id="status{{ $picker->id }}" name="report">
                                                                 <option value="Completed">Completed</option>
                                                                 <option value="Insufficient">Insufficient</option>
                                                                 <option value="Damaged">Damaged</option>
-                                                                <option value="Rerack">Rerack</option>
                                                             </select>
                                                         </div>
                                                         <div class="form-group">
@@ -115,6 +113,32 @@
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                                                         <button type="submit" class="btn btn-dark">Rerack</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @elseif($picker->status == 'Disposing')
+                                    <button type="button" class="btn btn-danger btn-sm btn-dispose" data-toggle="modal" data-target="#disposeModal{{ $picker->id }}">Dispose</button>
+                                    
+                                    <!-- Dispose Modal -->
+                                    <div class="modal fade" id="disposeModal{{ $picker->id }}" tabindex="-1" role="dialog" aria-labelledby="disposeModalLabel{{ $picker->id }}" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="disposeModalLabel{{ $picker->id }}">Dispose Damaged Product</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <form action="{{ route('disposeProductPicker', ['pickerId' => $picker->id]) }}" method="POST">
+                                                    @csrf
+                                                    <div class="modal-body">
+                                                        <p>Are you sure you want to dispose of this damaged product?</p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                                        <button type="submit" class="btn btn-danger">Dispose</button>
                                                     </div>
                                                 </form>
                                             </div>

@@ -15,6 +15,7 @@ use App\Http\Controllers\backend\CompanyController;
 use App\Http\Controllers\backend\RackController;
 use App\Http\Controllers\backend\OrderController;
 use App\Http\Controllers\backend\InvoiceController;
+use App\Http\Controllers\SidebarController;
 
 
 
@@ -82,6 +83,11 @@ Route::get('/picker/history',  [PickerController::class, 'history'])->name('pick
 Route::get('/picker_status',  [PickerController::class, 'AdminView'])->name('picker.viewstatus');
 Route::post('/rerack-product/{pickerId}', [PickerController::class, 'rerackProductAdmin'])->name('rerackProductAdmin');
 Route::post('/rerack-product-picker/{pickerId}', [PickerController::class, 'rerackProductPicker'])->name('rerackProductPicker');
+Route::post('/dispose-product/{pickerId}', [PickerController::class, 'disposeProductAdmin'])->name('disposeProductAdmin');
+Route::post('/dispose-product-picker/{pickerId}', [PickerController::class, 'disposeProductPicker'])->name('disposeProductPicker');
+Route::get('/picker-tasks-count', [SidebarController::class, 'getCountPickerTasks'])->name('picker_tasks_count');
+
+
 // Cart
 Route::get('cart_index', [CartController::class, 'ItemList'])->name('quantity.index');
 Route::get('/cart_view', [CartController::class, 'ItemList'])->name('quantitycart');

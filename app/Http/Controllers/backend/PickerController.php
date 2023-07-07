@@ -26,7 +26,7 @@ class PickerController extends Controller
     {
         $user = Auth::user();
         $pickers = Picker::where('user_id', $user->id)
-                          ->whereIn('status', ['Collected', 'Pending', 'Reracking'])
+                          ->whereIn('status', ['Collected', 'Pending', 'Reracking', 'Disposing'])
                           ->orderBy('created_at', 'desc')
                           ->get();
     
@@ -39,6 +39,10 @@ class PickerController extends Controller
             $picker->company_id = $product->company_id;
             $rack_location = Rack::where('id', $product->rack_id)->first();
             $picker->location_code = $rack_location->location_code; // Get the location_code from the rack_location
+    
+            // Access the order_no from the pickers table
+            $picker->order_no = $picker->order_no;
+    
             if ($picker->status !== 'Collected' && $picker->status !== 'Packing') {
                 $allCollected = false; // Set to false if any picker is not collected
                 if ($picker->status === 'Pending') {
@@ -53,7 +57,6 @@ class PickerController extends Controller
             'hasPending' => $hasPending, // Pass the variable to the view
         ]);
     }
-    
     
     
     
@@ -155,7 +158,7 @@ public function rerackProductPicker($pickerId)
         $picker->save();
 
         // Redirect back with success message
-        return redirect()->back()->with('success', 'Product Reracked');
+        return redirect()->back()->with('success', 'Product has been reracked');
     }
     
     // Redirect back with error message if picker not found or not associated with the logged-in user
@@ -201,5 +204,48 @@ public function rerackProductAdmin($pickerId)
     return redirect()->back()->with('error', 'Picker not found.');
 }
 
+public function disposeProductAdmin($pickerId)
+{
+    // Find the associated picker
+    $picker = Picker::find($pickerId);
+
+    if ($picker) {
+        // Find the associated product
+        $product = Product::find($picker->product_id);
+         
+        // Set the picker status to "Reracked"
+        $picker->status = 'Disposing';
+        $picker->report = 'Dispose';
+        $picker->save();
+
+        // Redirect back with success message
+        return redirect()->back()->with('success', 'Picker will be notified.');
+    }
+    
+    // Redirect back with error message if picker not found
+    return redirect()->back()->with('error', 'Picker not found.');
+}
+
+public function disposeProductPicker($pickerId)
+{
+    // Find the associated picker
+    $picker = Picker::where('id', $pickerId)
+                     ->where('user_id', Auth::user()->id)
+                     ->first();
+
+    if ($picker) {
+
+        // Set the picker status to "Reracked"
+        $picker->status = 'Disposed';
+        $picker->report = 'Dispose';
+        $picker->save();
+
+        // Redirect back with success message
+        return redirect()->back()->with('success', 'Product has been disposed');
+    }
+    
+    // Redirect back with error message if picker not found or not associated with the logged-in user
+    return redirect()->back()->with('error', 'Picker not found.');
+}
 
 }

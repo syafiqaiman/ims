@@ -75,6 +75,8 @@
                                                                                 <span class="badge bg-info">{{ $picker->status }}</span>
                                                                             @elseif($picker->status == 'Reracked')
                                                                                 <span class="badge bg-dark">{{ $picker->status }}</span>
+                                                                            @elseif($picker->status == 'Disposed')
+                                                                                <span class="badge bg-danger">{{ $picker->status }}</span>
                                                                             @else
                                                                                 <span class="badge bg-primary">{{ $picker->status }}</span>
                                                                             @endif
@@ -300,6 +302,7 @@
                                                                     <th>Date of Pick Up</th>
                                                                     <th>Report</th>
                                                                     <th>Remark</th>
+                                                                    <th>Action</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
@@ -312,6 +315,12 @@
                                                                             <span class="badge bg-danger">{{ $picker->report }}</span>
                                                                         </td>
                                                                         <td>{{ $picker->remark }}</td>
+                                                                        <td>
+                                                                            <form action="{{ route('disposeProductAdmin', ['pickerId' => $picker->id]) }}" method="POST">
+                                                                                @csrf
+                                                                                <button type="submit" class="btn btn-primary btn-sm">Dispose</button>
+                                                                            </form>
+                                                                        </td>   
                                                                     </tr>
                                                                 @endforeach
                                                             </tbody>

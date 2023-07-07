@@ -178,16 +178,18 @@
 
 
 @if (Auth::user()->role == 2 )
-
+@php
+  $sidebarController = new App\Http\Controllers\SidebarController();
+@endphp
 
           <li class="nav-item">
-            <a href="{{URL::to('/picker_task')}}" class="nav-link">
-              <i class="nav-icon fas fa-th"></i>
-              <p>
-                Picker Task
-                {{-- <span class="right badge badge-danger">0</span> --}}
-              </p>
-            </a>
+              <a href="{{URL::to('/picker_task')}}" class="nav-link">
+                  <i class="nav-icon fas fa-th"></i>
+                  <p>
+                      Picker Task
+                      <span class="right badge badge-danger" id="picker-tasks-count">{{ $sidebarController->getCountPickerTasks() }}</span>
+                  </p>
+              </a>
           </li>
 
           <li class="nav-item">
@@ -260,16 +262,7 @@
     </p>
   </a>
 </li>
-<li class="nav-item">
-  <a href="{{URL::to('/add_company')}}" class="nav-link">
-    <i class="nav-icon fas fa-th"></i>
-    <p>
-      Assign Delivery (future feature)
-      <!-- <span class="right badge badge-danger">New</span> -->
-      
-    </p>
-  </a>
-</li>
+
 <li class="nav-item">
   <a href="{{URL::to('/detail_company')}}" class="nav-link">
     <i class="nav-icon fas fa-th"></i>

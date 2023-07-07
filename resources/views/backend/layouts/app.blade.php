@@ -5,7 +5,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function() {
+        // Function to fetch and update the picker tasks count
+        function updatePickerTasksCount() {
+            $.ajax({
+                url: "{{ route('picker_tasks_count') }}",
+                type: "GET",
+                success: function(response) {
+                    // Update the count in the sidebar
+                    $('#picker-tasks-count').text(response);
+                },
+                error: function(xhr, status, error) {
+                    console.log(error);
+                }
+            });
+        }
 
+        // Call the function initially
+        updatePickerTasksCount();
+
+        // Call the function every 10 seconds
+        setInterval(updatePickerTasksCount, 10000);
+    });
+</script>
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome Icons -->
