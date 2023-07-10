@@ -70,22 +70,50 @@ class PDFReportController extends Controller
 
             // Retrieve the ending inventory count
             $endingInventory = DB::table('quantities')
-                ->whereDate('created_at', '<=', now()->endOfMonth())
-                ->orderByDesc('created_at')
-                ->value('total_quantity');
+            ->whereDate('created_at', '<=', now()->endOfMonth())
+            ->orderByDesc('created_at')
+            ->value('total_quantity');
 
-            // // Retrieve the order by ID
-            // $order = Order::findOrFail($orderId);
+            // Get the total capacity of the warehouse
+            $totalCapacity = DB::table('rack_locations')->sum('capacity');
 
-            // // Get the timestamps for order placement and delivery
-            // $orderPlacementTime = $order->created_at;
-            // $orderDeliveryTime = $order->updated_at;
+            // Get the current occupied capacity of the warehouse
+            $occupiedCapacity = DB::table('rack_locations')->sum('occupied');
 
-            // // Calculate the order cycle time
-            // $orderCycleTime = $orderPlacementTime->diffInDays($orderDeliveryTime);
+            // Calculate the utilization rate
+            $utilizationRate = ($occupiedCapacity / $totalCapacity) * 100;
+
+            // Round the utilization rate to two decimal places
+            $utilizationRate = round($utilizationRate, 2);
+
+            // Retrieve the number of orders fulfilled during the month
+            $ordersFulfilled = DB::table('orders')
+            ->where('user_id', $user->id)
+            ->whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])
+            ->count();
+
+            // Retrieve the top-selling products based on inventory movement
+            $topSellingProducts = DB::table('products')
+            ->join('quantities', 'products.id', '=', 'quantities.product_id')
+            ->select('products.product_name', 'quantities.sold_carton_quantity', 'quantities.sold_item_quantity')
+            ->where('products.user_id', $user->id)
+            ->orderByRaw('(quantities.sold_carton_quantity + quantities.sold_item_quantity) DESC')
+            ->take(1) // Adjust the number as per your requirement
+            ->get()
+            ->toArray(); // Convert the collection to an array
+
+            // Retrieve the low-selling products based on inventory movement
+            $lowSellingProducts = DB::table('products')
+            ->join('quantities', 'products.id', '=', 'quantities.product_id')
+            ->select('products.product_name', 'quantities.sold_carton_quantity', 'quantities.sold_item_quantity')
+            ->where('products.user_id', $user->id)
+            ->orderByRaw('(quantities.sold_carton_quantity + quantities.sold_item_quantity) ASC')
+            ->take(1) // Adjust the number as per your requirement
+            ->get()
+            ->toArray(); // Convert the collection to an array
         }
 
-        return view('backend.report.PDFReport', compact('data', 'totalSalesVolume', 'totalRevenue', 'beginningInventory', 'endingInventory'));
+        return view('backend.report.PDFReport', compact('data', 'totalSalesVolume', 'totalRevenue', 'beginningInventory', 'endingInventory', 'occupiedCapacity', 'totalCapacity', 'utilizationRate', 'ordersFulfilled', 'topSellingProducts', 'lowSellingProducts'));
 
 
         //$pdf = PDF::loadView('backend.report.PDFReport', compact('data'));
