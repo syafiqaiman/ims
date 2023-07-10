@@ -39,6 +39,7 @@
                     </td>
                     <td>
                         <a href="{{ URL::to('/restock_form/'.$quantity->id) }}" class="btn btn-sm btn-info">Restock</a>
+                        <a href="{{ URL::to('/product-report/'.$quantity->id) }}" class="btn btn-sm btn-danger">Report</a>
                     </td>
                 </tr>
                 <tr class="expandable-body">

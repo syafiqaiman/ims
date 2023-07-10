@@ -106,3 +106,6 @@ Route::get('/floors', [App\Http\Controllers\backend\FloorController::class, 'ind
 
 // PDF Report Monthly
 Route::get('/report', [App\Http\Controllers\backend\PDFReportController::class, 'index'])->name('report.index');
+
+// Product Report Monthly
+Route::get('/product-report/{id}', [App\Http\Controllers\backend\ProductReportController::class, 'index'])->name('product-report.index');
