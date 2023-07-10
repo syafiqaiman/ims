@@ -16,6 +16,7 @@ use App\Http\Controllers\backend\RackController;
 use App\Http\Controllers\backend\OrderController;
 use App\Http\Controllers\backend\InvoiceController;
 use App\Http\Controllers\SidebarController;
+use App\Http\Controllers\backend\ReturnStockController;
 
 
 
@@ -61,6 +62,9 @@ Route::get('/cancel-reorder-request/{id}', [ProductController::class, 'CancelReo
 // Delivery
 Route::get('/delivery/delivery_form', [DeliveryController::class, 'deliveryFormCust'])->name('deliveryform');
 Route::post('/delivery/form_sent', [DeliveryController::class, 'storeDelivery'])->name('delivery.submit');
+
+//Return Stock
+Route::get('return-stock-form', [ReturnStockController::class, 'CustReturnStockForm'])->name('returnstockform');
 
 // Company
 Route::get('/company/getUsers', [CompanyController::class, 'getUsers'])->name('company.getUsers');
