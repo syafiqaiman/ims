@@ -100,5 +100,19 @@ public function storeReturnStock(Request $request)
     return redirect()->back()->with('success', 'Return stock information has been successfully saved.');
 }
 
+public function returnStockList()
+{
 
+    
+    if (auth()->user()->role == 1) {
+        $returnStockList = ReturnStock::all();
+    } else {
+        $returnStockList = ReturnStock::where('user_id', auth()->user()->id)->get();
+    }
+
+    $returnStockList->load('products:product_name');
+
+    
+    return view('backend.return_stock.return_stock_status_cust', compact('returnStockList'));
+}
 }

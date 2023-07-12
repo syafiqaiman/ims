@@ -25,4 +25,6 @@ class ReturnStock extends Model
         return $this->belongsToMany(Product::class, 'return_stock_pivot')
             ->withPivot('quantity', 'remark', 'status');
     }
+
+
 }
