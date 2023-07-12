@@ -65,6 +65,7 @@ Route::post('/delivery/form_sent', [DeliveryController::class, 'storeDelivery'])
 
 //Return Stock
 Route::get('return-stock-form', [ReturnStockController::class, 'CustReturnStockForm'])->name('returnstockform');
+Route::post('return-stock-submit', [ReturnStockController::class, 'storeReturnStock'])->name('return-stock.store');
 
 // Company
 Route::get('/company/getUsers', [CompanyController::class, 'getUsers'])->name('company.getUsers');

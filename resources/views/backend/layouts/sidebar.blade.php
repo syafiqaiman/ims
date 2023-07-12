@@ -245,10 +245,10 @@
   </a>
 </li>
 <li class="nav-item">
-  <a href="{{URL::to('/add_company')}}" class="nav-link">
+  <a href="{{URL::to('/return-stock-form')}}" class="nav-link">
     <i class="nav-icon fas fa-th"></i>
     <p>
-      Product Pick Up (future feature)
+      Return Order Form
       <!-- <span class="right badge badge-danger">New</span> -->
     </p>
   </a>
