@@ -58,18 +58,29 @@
                 </div>
             </div>
             <div class="card-body">
-                <div class="row mb-2">
-                    <h3> Total units sold: {{ $totalUnitsSold }} </h3> 
-                </div>
-                <div class="row mb-2">
-                    <h3> Revenue: RM {{ $revenue }} </h3> 
-                </div>
-                <div class="row mb-2">
-                    <h3> Beginning inventory: {{ $beginningInventory }} units</h3> 
-                </div>
-                <div class="row mb-2">
-                    <h3> Ending inventory: {{ $endingInventory }} units</h3> 
-                </div>
+                <table class="table table-striped">
+                    <tr>
+                        <th>Total units sold </th>
+                        <td>{{ $totalUnitsSold }} units</td>
+                    </tr>
+                    <tr>
+                        <th>Revenue generated </th>
+                        <td>RM {{ $revenue }}</td>
+                    </tr>
+                    <tr>
+                        <th>Inventory at the beginning of the month </th>
+                        <td>{{ $beginningInventory }} units</td>
+                    </tr>
+                    <tr>
+                        <th>Inventory at the end of the month </th>
+                        <td>{{ $endingInventory }} units</td>
+                    </tr>
+                    <tr>
+                        <th>Total customers purchased the product this month </th>
+                        <td>{{ $totalCustomers }} people</td>
+                    </tr>
+                </table>
+            </div>
             <div class="card-footer bg-white">
                 <p class="mb-0">ARKOD SMART LOGITECH SDN BHD (1396015-V)</p>
             </div>

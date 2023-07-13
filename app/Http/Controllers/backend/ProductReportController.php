@@ -72,7 +72,14 @@ class ProductReportController extends Controller
         ->value('remaining_quantity');
         } 
 
-        return view('backend.report.Product-Report', compact('totalUnitsSold', 'revenue', 'beginningInventory', 'endingInventory'));
+        // Query the database to calculate the number of unique customers who purchased the product during the month
+        $totalCustomers = Order::where('product_id', $productId)
+            ->whereMonth('created_at', $currentMonth)
+            ->whereYear('created_at', $currentYear)
+            ->distinct('user_id')
+            ->count('user_id');
+
+        return view('backend.report.Product-Report', compact('totalUnitsSold', 'revenue', 'beginningInventory', 'endingInventory', 'totalCustomers'));
 
         //$pdf = PDF::loadView('backend.report.Product-Report', compact(''));
 

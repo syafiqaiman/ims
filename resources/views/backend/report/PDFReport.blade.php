@@ -60,14 +60,6 @@
 
             <div class="card-body">
                 <div class="row mb-4">
-                    {{-- <div class="col-sm-6">
-                    <h5 class="mb-3">From:</h5>
-                    <h3 class="text-dark mb-1">Tejinder Singh</h3>
-                    <div>29, Singla Street</div>
-                    <div>Sikeston, New Delhi 110034</div>
-                    <div>Email: contact@bbbootstrap.com</div>
-                    <div>Phone: +91 9897 989 989</div>
-                </div> --}} {{-- This line is excluded due to unecessary info, please include if necessary --}}
                     <div class="col-sm-6">
                         <h5 class="mb-3">To:</h5>
                         <h3 class="text-dark mb-1">{{ $data->first()->company_name }}</h3>
@@ -103,69 +95,67 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="row mb-2">
-                    <h3>Beginning of month inventory count: {{ $beginningInventory }} unit</h3>
-                </div>
-                <div class="row mb-2">
-                    <h3>End of month inventory count: {{ $endingInventory }} unit</h3>
-                </div>
-                <div class="row mb-2">
-                    <h3>Number of orders fulfilled during the month: {{ $ordersFulfilled }} unit</h3>
-                </div>
-                <div class="row mb-2">
-                    <h3>Warehouse capacity utilization rate: {{ $utilizationRate }} %</h3>
-                </div>
-                <div class="row mb-2">
-                    <!-- Display the top-selling products -->
-                    @if (!empty($topSellingProducts))
-                        <h3>Top Selling Products:</h3>
-                        <ul>
-                            @foreach ($topSellingProducts as $product)
-                                <li>{{ $product->product_name }} - Cartons: {{ $product->sold_carton_quantity }}, Items:
-                                    {{ $product->sold_item_quantity }}</li>
-                            @endforeach
-                        </ul>
-                    @else
-                        <p>No top-selling products found.</p>
-                    @endif
-                </div>
-                <div class="row mb-2">
-                    <!-- Display the low-selling products -->
-                    @if (!empty($lowSellingProducts))
-                        <h3>Low Selling Products:</h3>
-                        <ul>
-                            @foreach ($lowSellingProducts as $product)
-                                <li>{{ $product->product_name }} - Cartons: {{ $product->sold_carton_quantity }}, Items:
-                                    {{ $product->sold_item_quantity }}</li>
-                            @endforeach
-                        </ul>
-                    @else
-                        <p>No low-selling products found.</p>
-                    @endif
-                </div>
-                <div class="row mb-2">
-                    <h4>Total Sales Volume: {{ $totalSalesVolume }} units sold</h4>
-                </div>
-                <div class="row mb-2">
-                    <h4>Revenue: RM {{ $totalRevenue }}</h4>
-                </div>
-                <div class="row">
-                    <div class="col-lg-4 col-sm-5">
-                    </div>
-                    <div class="col-lg-4 col-sm-5 ml-auto">
-                        <table class="table table-clear">
-                            <tbody>
-                                {{-- <tr>
-                                <td class="left">
-                                    <strong class="text-dark">Total</strong>
-                                </td>
-                                <td class="right">
-                                    <strong class="text-dark">RM 20,744.00</strong>
-                                </td>
-                            </tr> --}}
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="table-responsive-sm">
+                    <h3>Report Details</h3>
+                    <table class="table table-striped">
+                        <tr>
+                            <th>Beginning of month inventory count </th>
+                            <td>{{ $beginningInventory }} units</td>
+                        </tr>
+                        <tr>
+                            <th>End of month inventory count </th>
+                            <td>{{ $endingInventory }} units</td>
+                        </tr>
+                        <tr>
+                            <th>Warehouse capacity utilization rate </th>
+                            <td>{{ $utilizationRate }} %</td>
+                        </tr>
+                        <tr>
+                            <th>Number of orders fulfilled during the month </th>
+                            <td>{{ $ordersFulfilled }} units</td>
+                        </tr>
+                        <tr>
+                            <th>Top selling products </th>
+                            <td>
+                                @if (!empty($topSellingProducts))
+                                    <ul>
+                                        @foreach ($topSellingProducts as $product)
+                                            <li>{{ $product->product_name }} - Cartons:
+                                                {{ $product->sold_carton_quantity }}, Items:
+                                                {{ $product->sold_item_quantity }}</li>
+                                        @endforeach
+                                    </ul>
+                                @else
+                                    <p>No top-selling products found.</p>
+                                @endif
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Least selling products </th>
+                            <td>
+                                <!-- Display the low-selling products -->
+                                @if (!empty($lowSellingProducts))
+                                    <ul>
+                                        @foreach ($lowSellingProducts as $product)
+                                            <li>{{ $product->product_name }} - Cartons:
+                                                {{ $product->sold_carton_quantity }}, Items:
+                                                {{ $product->sold_item_quantity }}</li>
+                                        @endforeach
+                                    </ul>
+                                @else
+                                    <p>No low-selling products found.</p>
+                                @endif
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Total Sales Volume </th>
+                            <td>{{ $totalSalesVolume }} units sold this month</td>
+                        </tr>
+                        <tr>
+                            <th>Revenue generated </th>
+                            <td>RM {{ $totalRevenue }}</td>
+                        </tr>
+                    </table>
                 </div>
             </div>
             <div class="card-footer bg-white">
