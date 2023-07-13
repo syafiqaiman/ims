@@ -134,7 +134,7 @@
                         <p class="text-right mb-0" style="font-family: Arial; font-size: 8px;">Created on: {{ now()->format('Y-m-d') }}
                         </p>
                     </div>
-                    <p class="text-black" style="font-size: 12px;">01.07.2023 - 30.07.2023</p>
+                    <p class="text-black" style="font-size: 12px;">{{ $startDate->format('Y-m-d') }} - {{ $endDate->format('Y-m-d') }}</p>
                 </div>
 
                 {{-- TABLE --}}
@@ -225,9 +225,9 @@
                             <td style="font-size: 14px;">{{ $totalSalesVolume }} units sold this month</td>
                         </tr>
                         <tr>
-                            <th style="font-size: 14px;">Revenue generated </th>
+                            {{-- <th style="font-size: 14px;">Revenue generated </th>
                             <td style="font-size: 14px;">RM {{ $totalRevenue }}</td>
-                        </tr>
+                        </tr> --}} {{-- Discarded because we dont know the customer actual price --}}
                     </table>
 
                     <p class="end-of-statement">End of Statement</p>

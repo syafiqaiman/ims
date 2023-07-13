@@ -76,8 +76,8 @@
                         <td>{{ $endingInventory }} units</td>
                     </tr>
                     <tr>
-                        <th>Total customers purchased the product this month </th>
-                        <td>{{ $totalCustomers }} people</td>
+                        <th>Total return for the product this month </th>
+                        <td>{{ $totalCustomers }} units</td>
                     </tr>
                 </table>
             </div>
