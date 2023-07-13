@@ -13,8 +13,9 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="company_id">My Company</label>
-                            <select name="company_id" id="company_id" class="form-control select2 select2-hidden-accessible"
-                                style="width: 100%;" data-select2-id="1" tabindex="-1" aria-hidden="true">
+                            <select name="company_id" id="company_id"
+                                class="form-control select2 select2-hidden-accessible" style="width: 100%;"
+                                data-select2-id="1" tabindex="-1" aria-hidden="true">
                                 <option value="">Select Company Name</option>
                                 @foreach($companies as $company)
                                     <option value="{{ $company->id }}"
@@ -32,7 +33,8 @@
 
                         <div class="form-group">
                             <label for="address">Address</label>
-                            <input type="text" name="address" class="form-control @error('address') is-invalid @enderror"
+                            <input type="text" name="address"
+                                class="form-control @error('address') is-invalid @enderror"
                                 id="address" placeholder="Enter Address">
                             @error('address')
                                 <span class="invalid-feedback" role="alert">
@@ -44,8 +46,8 @@
                         <div class="form-group">
                             <label for="phone">Phone number</label>
                             <input type="text" name="phone_number"
-                                class="form-control @error('phone_number') is-invalid @enderror" id="phone_number"
-                                placeholder="Enter Phone Number">
+                                class="form-control @error('phone_number') is-invalid @enderror"
+                                id="phone_number" placeholder="Enter Phone Number">
                             @error('phone_number')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
@@ -55,7 +57,8 @@
 
                         <div class="form-group">
                             <label for="email">Email</label>
-                            <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
+                            <input type="email" name="email"
+                                class="form-control @error('email') is-invalid @enderror"
                                 id="email" placeholder="Enter Email">
                             @error('email')
                                 <span class="invalid-feedback" role="alert">
@@ -74,8 +77,8 @@
                             <tr>
                                 <th>Product Name</th>
                                 <th>Quantity</th>
+                                <th>Status</th>
                                 <th>Remark</th>
-                                <th>Status</th> <!-- New field -->
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -115,7 +118,7 @@
                                         <input type="number" class="form-control" id="quantity" name="quantity[]"
                                             placeholder="Enter quantity">
                                     </div>
-                                    <div class="form-group"> <!-- New field -->
+                                    <div class="form-group">
                                         <label for="status">Status:</label>
                                         <select class="form-control" id="status" name="status[]">
                                             <option value="Dispose">Dispose</option>
@@ -123,12 +126,12 @@
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <label for="remark">Reason:</label>
-                                        <textarea class="form-control" id="remark" name="remark[]"></textarea>
+                                        <label for="remark">Remark:</label>
+                                        <select class="form-control" id="remark" name="remark[]">
+                                            <option value="">Select Remark</option>
+                                        </select>
                                     </div>
-                                    
                                 </form>
-
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -155,20 +158,39 @@
                 $('#product_modal').modal('show');
             });
 
+            // Handle status change event
+            $('#status').change(function () {
+                var selectedStatus = $(this).val();
+                var remarkDropdown = $('#remark');
+
+                // Clear previous options
+                remarkDropdown.empty();
+
+                // Add options based on selected status
+                if (selectedStatus === 'Dispose') {
+                    remarkDropdown.append('<option value="Expired">Expired</option>');
+                    remarkDropdown.append('<option value="Damaged">Damaged</option>');
+                    remarkDropdown.append('<option value="Broken">Broken</option>');
+                } else if (selectedStatus === 'Refurbish') {
+                    remarkDropdown.append('<option value="Repackage">Repackage</option>');
+                    remarkDropdown.append('<option value="Rerack">Rerack</option>');
+                }
+            });
+
             // Add product row to the table
             $('#add_product_row').click(function () {
                 // Add the product row to the table without refreshing the page
                 var product_id = $('#product_name').val();
                 var product_name = $('#product_name option:selected').text();
                 var quantity = $('#quantity').val();
+                var status = $('#status').val();
                 var remark = $('#remark').val();
-                var status = $('#status').val(); // Get the selected status
 
                 var newRow = '<tr>' +
                     '<td><input type="hidden" name="product_id[]" value="' + product_id + '">' + product_name + '</td>' +
                     '<td><input type="hidden" name="quantity[]" value="' + quantity + '">' + quantity + '</td>' +
+                    '<td><input type="hidden" name="status[]" value="' + status + '">' + status + '</td>' +
                     '<td><input type="hidden" name="remark[]" value="' + remark + '">' + remark + '</td>' +
-                    '<td><input type="hidden" name="status[]" value="' + status + '">' + status + '</td>' + // Add the status field
                     '<td><button class="btn btn-danger btn-sm remove_product_row">Remove</button></td>' +
                     '</tr>';
 

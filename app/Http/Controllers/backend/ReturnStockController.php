@@ -115,4 +115,20 @@ public function returnStockList()
     
     return view('backend.return_stock.return_stock_status_cust', compact('returnStockList'));
 }
+
+public function returnStockListAdmin()
+{
+
+    
+    if (auth()->user()->role == 1) {
+        $returnStockList = ReturnStock::all();
+    } else {
+        $returnStockList = ReturnStock::where('user_id', auth()->user()->id)->get();
+    }
+
+    $returnStockList->load('products:product_name');
+
+    
+    return view('backend.return_stock.receive_return_stock_admin', compact('returnStockList'));
+}
 }

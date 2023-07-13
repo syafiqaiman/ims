@@ -254,6 +254,15 @@
   </a>
 </li>
 <li class="nav-item">
+  <a href="{{URL::to('/return-stock-status')}}" class="nav-link">
+    <i class="nav-icon fas fa-th"></i>
+    <p>
+      Return Order Status
+      <!-- <span class="right badge badge-danger">New</span> -->
+    </p>
+  </a>
+</li>
+<li class="nav-item">
   <a href="{{URL::to('/delivery/delivery_form')}}" class="nav-link">
     <i class="nav-icon fas fa-th"></i>
     <p>
