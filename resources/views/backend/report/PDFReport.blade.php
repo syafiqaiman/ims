@@ -21,7 +21,8 @@
 
         .card-header {
             background-color: #fff;
-            border-bottom: 1px solid #e6e6f2;
+            border-bottom: none;
+            /* Remove the border */
         }
 
         h3 {
@@ -39,84 +40,156 @@
         .text-dark {
             color: #3d405c !important;
         }
+
+        table.table-striped tbody tr {
+            border-bottom: 1px solid #D48E15;
+        }
+
+        .d-flex {
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-right: 10px;
+        }
+
+        .text-container {
+            text-align: left;
+        }
+
+        .logo-container {
+            text-align: left !important;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .left {
+            text-align: left;
+        }
+
+        .right {
+            text-align: right;
+        }
+
+        .strong {
+            font-weight: bold;
+        }
+
+        .end-of-statement {
+            font-size: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* height: 50px */
+        }
     </style>
 
     <div class="offset-xl-2 col-xl-8 col-lg-12 col-md-12 col-sm-12 col-12 padding">
         <div class="card">
-            <div class="card-header p-4">
-                <a class="pt-2 d-inline-block" data-abc="true" style="color: #D48E15;">ARKOD SMART LOGITECH SDN BHD
-                    (1396015-V)</a>
-                <div class="float-right">
-                    <p class="text-right" style="font-family: Arial; font-size: 8px;">
-                        <span class="text-muted">www.arkod.com.my</span><br>
-                        GF LOT 1451, SECTION 66, KTLD, JALAN KELULI<br>
-                        BINTAWA INDUSTRIAL ESTATE<br>
-                        93450 KUCHING SARAWAK<br>
-                        sales@arkod.com.my<br>
-                        (6012) 323 - 1698
-                    </p>
+            <div class="card-header p-4" style="padding-bottom: 0 !important; padding-left: 22px;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex flex-column align-items-start">
+                        <div class="image-container">
+                            <img src="{{ asset('public/Image/Arkod.jpg') }}" alt="ARKOD"
+                                style="width: 31.68mm; height: 6.97mm;">
+                        </div>
+                        <div class="text-container">
+                            <a class="pt-2 d-inline-block" data-abc="true"
+                                style="color: #D48E15; font-weight: bold; font-size: 10px; padding-bottom: 22px; ">ARKOD
+                                SMART LOGITECH SDN BHD (1396015-V)</a>
+                        </div>
+                    </div>
+                    <div class="float-right">
+                        <p class="text-right"
+                            style="font-family: Arial; font-size: 8px; margin-bottom:0; padding-top: 46px">
+                            <span class="text-muted">www.arkod.com.my</span><br>
+                            GF LOT 1451, SECTION 66, KTLD, JALAN KELULI<br>
+                            BINTAWA INDUSTRIAL ESTATE<br>
+                            93450 KUCHING SARAWAK<br>
+                            sales@arkod.com.my<br>
+                            (6012) 323 - 1698
+                        </p>
+                    </div>
                 </div>
             </div>
 
-            <div class="card-body">
-                <div class="row mb-4">
-                    <div class="col-sm-6">
-                        <h5 class="mb-3">To:</h5>
-                        <h3 class="text-dark mb-1">{{ $data->first()->company_name }}</h3>
-                        <div>{{ $data->first()->address }}</div>
-                        <div>Email: {{ $data->first()->email }}</div>
-                        <div>Phone: {{ $data->first()->phone_number }}</div>
-                    </div>
+            <div class="card-body" style="padding-top: 0 !important;">
+                <div class="card-header p-4" style="padding: 0 !important;">
+                    <a class="pt-2 d-inline-block" data-abc="true"
+                        style="color: #D48E15; font-weight: bold; padding-top:0 !important;">{{ $data->first()->company_name }}</a>
+                    <p class="text-left" style="font-family: Arial; font-size: 8px;">
+                        {{ $data->first()->address }}<br>
+                        Email: {{ $data->first()->email }}<br>
+                        Phone No.: {{ $data->first()->phone_number }}
+                    </p>
                 </div>
+
+                <div class="card-header p-4" style="padding: 0 !important;">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="m-0" style="font-size: 14px; color: #D48E15;">MONTHLY REPORT</h5>
+                        <p class="text-right mb-0" style="font-family: Arial; font-size: 8px;">Created on: {{ now()->format('Y-m-d') }}
+                        </p>
+                    </div>
+                    <p class="text-black" style="font-size: 12px;">01.07.2023 - 30.07.2023</p>
+                </div>
+
+                {{-- TABLE --}}
                 <div class="table-responsive-sm">
-                    <h3>Items in inventory</h3>
-                    <table class="table table-striped">
+                    <table class="table table-striped" style="border-collapse: collapse; border-spacing: 0;">
                         <thead>
                             <tr>
-                                <th class="center">#</th>
-                                <th>Item</th>
-                                <th>Description</th>
-                                <th class="right">Price per unit</th>
-                                <th class="center">Stock count</th>
-                                <th class="right">Stock value</th>
+                                <th class="center" style="color: #D48E15; font-size: 8px; padding: 2px;">#</th>
+                                <th style="color: #D48E15; font-size: 8px; padding: 2px;">Item</th>
+                                <th style="color: #D48E15; font-size: 8px; padding: 2px; width: 40%;">Description</th>
+                                <th class="right" style="color: #D48E15; font-size: 8px; padding: 2px; width: 15%;">Price
+                                </th>
+                                <th class="center" style="color: #D48E15; font-size: 8px; padding: 2px; width: 15%;">
+                                    Quantity on Hand</th>
+                                <th class="right" style="color: #D48E15; font-size: 8px; padding: 2px;">Stock Value</th>
                             </tr>
                         </thead>
+
                         <tbody>
                             @foreach ($data as $row)
                                 <tr>
-                                    <td class="center">{{ $row->id }}</td>
-                                    <td class="left strong">{{ $row->product_name }}</td>
-                                    <td class="left">{{ $row->product_desc }}</td>
-                                    <td class="right">RM {{ $row->product_price }}</td>
-                                    <td class="center">{{ $row->total_quantity }}</td>
-                                    <td class="right">RM {{ $row->total_quantity * $row->product_price }}</td>
+                                    <td class="center" style="font-size: 8px;">{{ $row->id }}</td>
+                                    <td class="left strong" style="font-size: 8px;">{{ $row->product_name }}</td>
+                                    <td class="left" style="font-size: 8px;">{{ $row->product_desc }}</td>
+                                    <td class="right" style="font-size: 8px;">RM {{ $row->product_price }}</td>
+                                    <td class="center" style="font-size: 8px;">{{ $row->total_quantity }}</td>
+                                    <td class="right" style="font-size: 8px;">RM
+                                        {{ $row->total_quantity * $row->product_price }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
+
                     </table>
-                </div>
-                <div class="table-responsive-sm">
-                    <h3>Report Details</h3>
-                    <table class="table table-striped">
+
+                    <table class="table " style="border-collapse: collapse; border-spacing: 0;">
+                        <h5 class="m-0" style="font-size: 14px; color: #D48E15;">REPORT DETAILS</h5>
                         <tr>
-                            <th>Beginning of month inventory count </th>
-                            <td>{{ $beginningInventory }} units</td>
+                            <th style="font-size: 14px;">Beginning of month inventory count </th>
+                            <td style="font-size: 14px;">{{ $beginningInventory }} units</td>
                         </tr>
                         <tr>
-                            <th>End of month inventory count </th>
-                            <td>{{ $endingInventory }} units</td>
+                            <th style="font-size: 14px;">End of month inventory count </th>
+                            <td style="font-size: 14px;">{{ $endingInventory }} units</td>
                         </tr>
                         <tr>
-                            <th>Warehouse capacity utilization rate </th>
-                            <td>{{ $utilizationRate }} %</td>
+                            <th style="font-size: 14px;">Warehouse capacity utilization rate </th>
+                            <td style="font-size: 14px;">{{ $utilizationRate }} %</td>
                         </tr>
                         <tr>
-                            <th>Number of orders fulfilled during the month </th>
-                            <td>{{ $ordersFulfilled }} units</td>
+                            <th style="font-size: 14px;">Number of orders fulfilled during the month </th>
+                            <td style="font-size: 14px;">{{ $ordersFulfilled }} units</td>
                         </tr>
                         <tr>
-                            <th>Top selling products </th>
-                            <td>
+                            <th style="font-size: 14px;">Top selling products </th>
+                            <td style="font-size: 14px;">
                                 @if (!empty($topSellingProducts))
                                     <ul>
                                         @foreach ($topSellingProducts as $product)
@@ -131,8 +204,8 @@
                             </td>
                         </tr>
                         <tr>
-                            <th>Least selling products </th>
-                            <td>
+                            <th style="font-size: 14px;">Least selling products </th>
+                            <td style="font-size: 14px;">
                                 <!-- Display the low-selling products -->
                                 @if (!empty($lowSellingProducts))
                                     <ul>
@@ -148,19 +221,26 @@
                             </td>
                         </tr>
                         <tr>
-                            <th>Total Sales Volume </th>
-                            <td>{{ $totalSalesVolume }} units sold this month</td>
+                            <th style="font-size: 14px;">Total Sales Volume </th>
+                            <td style="font-size: 14px;">{{ $totalSalesVolume }} units sold this month</td>
                         </tr>
                         <tr>
-                            <th>Revenue generated </th>
-                            <td>RM {{ $totalRevenue }}</td>
+                            <th style="font-size: 14px;">Revenue generated </th>
+                            <td style="font-size: 14px;">RM {{ $totalRevenue }}</td>
                         </tr>
                     </table>
+
+                    <p class="end-of-statement">End of Statement</p>
+
                 </div>
+
             </div>
+            {{-- FOOTER         --}}
             <div class="card-footer bg-white">
-                <p class="mb-0">ARKOD SMART LOGITECH SDN BHD (1396015-V)</p>
+                <p class="text-center mb-0" style="font-weight: bold; color: black; font-size: 8px;">ARKOD SMART LOGITECH
+                    SDN BHD</p>
             </div>
+
         </div>
     </div>
 
