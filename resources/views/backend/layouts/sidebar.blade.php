@@ -342,7 +342,7 @@
 <a href="{{ route('logout') }}"
 onclick="event.preventDefault();
 document.getElementById('logout-form').submit();" class="nav-link">
-<i class="nav-icon fas fa-sign"></i>
+<i class="nav-icon fas fa-arrow-left"></i>
   <p> Logout
    <!-- <span class="right badge badge-danger">New</span> -->
   </p>
