@@ -4,6 +4,7 @@ namespace App\Http\Controllers\backend;
 use App\Http\Controllers\Controller;
 use App\Models\Company;
 use App\Models\Product;
+use App\Models\Picker;
 use App\Models\ReturnStock;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -116,19 +117,59 @@ public function returnStockList()
     return view('backend.return_stock.return_stock_status_cust', compact('returnStockList'));
 }
 
+
 public function returnStockListAdmin()
 {
-
-    
     if (auth()->user()->role == 1) {
         $returnStockList = ReturnStock::all();
+        $pickers = DB::table('pickers')->get();
+        $users = DB::table('users')->get();
     } else {
         $returnStockList = ReturnStock::where('user_id', auth()->user()->id)->get();
     }
 
     $returnStockList->load('products:product_name');
-
     
-    return view('backend.return_stock.receive_return_stock_admin', compact('returnStockList'));
+    return view('backend.return_stock.receive_return_stock_admin', compact('returnStockList', 'users', 'pickers'));
 }
+
+
+public function assignTask(Request $request)
+{
+    $validatedData = $request->validate([
+        'user_id' => 'required',
+        'return_no' => 'required',
+        'product_id' => 'required|array',
+        'quantity' => 'required|array',
+        'status' => 'required|array',
+        'remark' => 'required|array'
+    ]);
+
+    $userId = $validatedData['user_id'];
+    $returnNo = $validatedData['return_no'];
+    $productIds = $validatedData['product_id'];
+    $quantities = $validatedData['quantity'];
+    $statuses = $validatedData['status'];
+    $remarks = $validatedData['remark'];
+
+    $pickerData = [];
+    foreach ($productIds as $index => $productId) {
+        $pickerData[] = [
+            'user_id' => $userId,
+            'order_no' => $returnNo,
+            'product_id' => $productId,
+            'quantity' => $quantities[$index],
+            'status' => $statuses[$index],
+            'remark' => $remarks[$index]
+        ];
+    }
+
+    Picker::insert($pickerData);
+
+    // Perform any other necessary actions
+
+    return redirect()->back()->with('success', 'Task assigned successfully.');
+}
+
+
 }

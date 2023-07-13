@@ -13,6 +13,7 @@
                     <tr>
                         <th>Return No.</th>
                         <th>View The Detail of Returned Product</th>
+                        <th>Handle by</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -21,6 +22,14 @@
                             <td>{{ $returnStock->return_no }}</td>
                             <td>
                                 <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#statusModal{{ $returnStock->id }}">View Request</button>
+                            </td>
+                            <td>
+                                @php
+                                    $picker = $pickers->where('order_no', $returnStock->return_no)->first();
+                                @endphp
+                                @if($picker)
+                                    {{ $users->where('id', $picker->user_id)->first()->name }}
+                                @endif
                             </td>
                         </tr>
                     @endforeach
@@ -55,16 +64,17 @@
                             <tbody>
                                 @foreach($returnStock->products as $product)
                                 <tr>
-                                    <td>{{ $product->product_name }}</td>
+                                    @php
+                                        $productData = \App\Models\Product::find($product->pivot->product_id);
+                                    @endphp
+                                    <td>{{ $productData->product_name }}</td>
                                     <td>{{ $product->pivot->quantity }}</td>
                                     <td class="@if ($product->pivot->status === 'Refurbish' || $product->pivot->status === 'Dispose') bg-warning  color-palette @else bg-success color-palette @endif">
-
-                                            {{ $product->pivot->status }}
-
+                                        {{ $product->pivot->status }}
                                     </td>
                                     <td>{{ $product->pivot->remark }}</td>
                                 </tr>
-                            @endforeach
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -88,20 +98,34 @@
                     </div>
                     <div class="modal-body">
                         <!-- Add picker selection form here -->
-                        <form>
+                        <form id="assignTaskForm{{ $returnStock->id }}" action="{{ route('assign.RO.task') }}" method="POST">
+                            @csrf
                             <div class="form-group">
                                 <label for="picker">Select Picker:</label>
-                                <select class="form-control" id="picker" name="picker">
-                                    <option value="picker1">Picker 1</option>
-                                    <option value="picker2">Picker 2</option>
-                                    <option value="picker3">Picker 3</option>
-                                    <!-- Add more options as needed -->
+                                <select name="user_id" class="form-control">
+                                    <option value="">Select Picker</option>
+                                    @foreach ($users as $user)
+                                        @if ($user->role == 2)
+                                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                        @endif
+                                    @endforeach
                                 </select>
                             </div>
+                            <input type="hidden" name="return_stock_id" value="{{ $returnStock->id }}">
+                            <input type="hidden" name="return_no" value="{{ $returnStock->return_no }}">
+                            @foreach ($returnStock->products as $product)
+                                @php
+                                    $productData = \App\Models\Product::find($product->pivot->product_id);
+                                @endphp
+                                <input type="hidden" name="product_id[]" value="{{ $productData->id }}">
+                                <input type="hidden" name="quantity[]" value="{{ $product->pivot->quantity }}">
+                                <input type="hidden" name="status[]" value="{{ $product->pivot->status }}">
+                                <input type="hidden" name="remark[]" value="{{ $product->pivot->remark }}">
+                            @endforeach
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary">Assign Task</button>
+                        <button type="submit" form="assignTaskForm{{ $returnStock->id }}" class="btn btn-primary">Assign Task</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                     </div>
                 </div>

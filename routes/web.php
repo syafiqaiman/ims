@@ -68,7 +68,7 @@ Route::get('return-stock-form', [ReturnStockController::class, 'CustReturnStockF
 Route::post('return-stock-submit', [ReturnStockController::class, 'storeReturnStock'])->name('return-stock.store');
 Route::get('return-stock-status', [ReturnStockController::class, 'returnStockList'])->name('returnstockstatus');
 Route::get('receive-return-stock', [ReturnStockController::class, 'returnStockListAdmin'])->name('receivereturnstock');
-
+Route::post('assign-task-ro', [ReturnStockController::class, 'assignTask'])->name('assign.RO.task');
 
 // Company
 Route::get('/company/getUsers', [CompanyController::class, 'getUsers'])->name('company.getUsers');
