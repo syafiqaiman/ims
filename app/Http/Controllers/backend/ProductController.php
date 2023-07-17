@@ -713,6 +713,9 @@ class ProductController extends Controller
         $total_weight = $total_quantity * $productRequest->weight_per_item;
 
         // Set the rack and floor id from user's form input
+        $rack_id = $request->rack_id;
+        $floor_id = $request->floor_id;
+
         $rack_id = $request->input('hidden_rack_id');
         $floor_id = $request->input('hidden_floor_id');
 

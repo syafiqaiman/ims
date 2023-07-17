@@ -48,7 +48,7 @@ Route::post('/send_request_restock', [ProductController::class, 'SendRequestProd
 Route::get('/request_restock_status', [ProductController::class, 'showRestockRequests'])->name('showstatus');
 Route::get('/review_request', [ProductController::class, 'reviewRestockRequest'])->name('reviewrequest');
 Route::get('remove_request/{id}', [ProductController::class, 'RemoveRequest']);
-Route::get('approve_request/{id}', [ProductController::class, 'approveRequest']);
+Route::get('approve_request/{id}', [ProductController::class, 'approveRequest'])->name('approverequest');
 Route::get('/customer_add_product', [ProductController::class, 'CustomerAddProductForm'])->name('customerproductadd');
 Route::post('/request_product', [ProductController::class, 'storeProductRequest'])->name('productrequest');
 Route::get('/product_request_list', [ProductController::class, 'viewRequestProductList'])->name('viewrequestproduct');
