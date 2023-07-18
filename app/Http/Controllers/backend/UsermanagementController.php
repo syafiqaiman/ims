@@ -65,25 +65,19 @@ return view('backend.user.create_User',compact('all'));
         return view('backend.user.edit_User', compact('edit'));     
     }
 
-        public function UserUpdate(Request $request,$id)
+    public function UserUpdate(Request $request, $id)
     {
-      
-        DB::table('users')->where('id', $id)->first();        
         $data = array();
         $data['role'] = $request->role;
+        $data['name'] = $request->name;
+    
         $update = DB::table('users')->where('id', $id)->update($data);
-
-        if ($update) 
-    {
-            
-            return Redirect()->route('user.index')->with('success','User Updated successfully!');                     
-    }
-        else
-    {
-        
-        return Redirect()->route('user.index')->with('error','Something is Wrong!');    
-    }
-     
+    
+        if ($update) {
+            return redirect()->route('user.index')->with('success', 'User updated successfully!');
+        } else {
+            return redirect()->route('user.index')->with('error', 'Something went wrong!');
+        }
     }
 
 public function UserDelete ($id)
