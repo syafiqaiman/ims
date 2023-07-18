@@ -30,7 +30,7 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 // User management
-Route::get('user_list', [UsermanagementController::class, 'UserList'])->name('user.index');
+Route::get('/user_list', [UsermanagementController::class, 'UserList'])->name('user.index');
 Route::get('/edit_user/{id}', [UsermanagementController::class, 'UserEdit']);
 Route::post('/update_user/{id}', [UsermanagementController::class, 'UserUpdate']);
 Route::get('/delete_user/{id}', [UsermanagementController::class, 'UserDelete']);
