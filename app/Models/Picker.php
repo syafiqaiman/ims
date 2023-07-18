@@ -9,9 +9,14 @@ class Picker extends Model
 {
     use HasFactory;
 
+    public function returnStock()
+    {
+        return $this->belongsTo(ReturnStock::class);
+    }
+
     public function product()
-{
-    return $this->belongsTo(Product::class);
+    {
+        return $this->belongsTo(Product::class);
+    }
 }
 
-}

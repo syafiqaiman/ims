@@ -16,13 +16,26 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($returnStockList as $returnStock)
+                    @php
+                        $previousReturnNo = null;
+                    @endphp
+                    @foreach($pickers as $picker)
+                        @php
+                            $currentReturnNo = $picker->returnStock->return_no;
+                        @endphp
                         <tr>
-                            <td>{{ $returnStock->return_no }}</td>
+                            @if ($currentReturnNo != $previousReturnNo)
+                                <td rowspan="{{ $pickers->where('returnStock.return_no', $currentReturnNo)->count() }}">
+                                    {{ $currentReturnNo }}
+                                </td>
+                            @endif
                             <td>
-                                <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#statusModal{{ $returnStock->id }}">View Status</button>
+                                <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#statusModal{{ $picker->returnStock->return_no }}">View Status</button>
                             </td>
                         </tr>
+                        @php
+                            $previousReturnNo = $currentReturnNo;
+                        @endphp
                     @endforeach
                 </tbody>
             </table>
@@ -31,60 +44,57 @@
     </div>
     <!-- /.card -->
 
-    @foreach($returnStockList as $returnStock)
-        <!-- Status Modal -->
-        <div class="modal fade" id="statusModal{{ $returnStock->id }}" tabindex="-1" role="dialog" aria-labelledby="statusModalLabel{{ $returnStock->id }}" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="statusModalLabel{{ $returnStock->id }}">Status of Products for Return No: {{ $returnStock->return_no }}</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <table id="statusTable{{ $returnStock->id }}" class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Product</th>
-                                    <th>Qty</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($returnStock->products as $product)
-                                <tr>
-                                    <td>{{ $product->product_name }}</td>
-                                    <td>{{ $product->pivot->quantity }}</td>
-                                    <td class="@if ($product->pivot->status === 'Refurbish' || $product->pivot->status === 'Dispose') bg-warning  color-palette @else bg-success color-palette @endif">
-                                        @if ($product->pivot->status === 'Refurbish' || $product->pivot->status === 'Dispose')
-                                            In Process
-                                        @else
-                                            {{ $product->pivot->status }}
-                                        @endif
-                                    </td>
-                                </tr>
-                            @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
+    @foreach($pickers as $picker)
+    <!-- Status Modal -->
+    <div class="modal fade" id="statusModal{{ $picker->returnStock->return_no }}" tabindex="-1" role="dialog" aria-labelledby="statusModalLabel{{ $picker->returnStock->return_no }}" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="statusModalLabel{{ $picker->returnStock->return_no }}">Status of Products for Return No: {{ $picker->returnStock->return_no }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table id="statusTable{{ $picker->returnStock->return_no }}" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Quantity</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($picker->returnStock->products as $product)
+                            <tr>
+                                <td>{{ $product->product_name }}</td>
+                                <td>{{ $product->pivot->quantity }}</td>
+                                <td>
+                                    @if ($product->pivot->status == 'Disposed' || $product->pivot->status == 'Refurbished')
+                                        <span class="badge bg-success">{{ $product->pivot->status }}</span>
+                                    @else
+                                        <span class="badge bg-warning">In Process</span>
+                                    @endif
+                                </td>                                
+                            </tr>
+                        @endforeach                        
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
+    </div>
     @endforeach
 
     @push('scripts')
         <script>
             $(function () {
-                // Initialize DataTables
-                $('#return-stock-table').DataTable();
-
                 // Initialize DataTables for each status modal
-                @foreach($returnStockList as $returnStock)
-                    $('#statusTable{{ $returnStock->id }}').DataTable();
+                @foreach($pickers as $picker)
+                    $('#statusTable{{ $picker->returnStock->return_no }}').DataTable();
                 @endforeach
             });
         </script>

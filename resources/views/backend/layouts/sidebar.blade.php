@@ -100,7 +100,7 @@
 
     <li class="nav-item">
       <a href="#" class="nav-link">
-        <i class="nav-icon fas fa-tree"></i>
+        <i class="nav-icon fas fa-male"></i>
         <p>
           PICKER
           <i class="right fas fa-angle-left"></i>
@@ -193,6 +193,16 @@
                   </p>
               </a>
           </li>
+
+          <li class="nav-item">
+            <a href="{{URL::to('/return-order-task')}}" class="nav-link">
+                <i class="nav-icon fas fa-truck"></i>
+                <p>
+                    Return Order Task
+                    <span class="right badge badge-danger" id="picker-return-count">{{ $sidebarController->getCountPickerReturn() }}</span>
+                </p>
+            </a>
+        </li>
 
           <li class="nav-item">
             <a href="{{URL::to('/picker/history')}}" class="nav-link">

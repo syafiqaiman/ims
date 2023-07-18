@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Company;
 use App\Models\Product;
 use App\Models\Picker;
+use App\Models\User;
 use App\Models\ReturnStock;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -101,21 +102,18 @@ public function storeReturnStock(Request $request)
     return redirect()->back()->with('success', 'Return stock information has been successfully saved.');
 }
 
+
 public function returnStockList()
 {
+    $userId = auth()->user()->id;
 
-    
-    if (auth()->user()->role == 1) {
-        $returnStockList = ReturnStock::all();
-    } else {
-        $returnStockList = ReturnStock::where('user_id', auth()->user()->id)->get();
-    }
+    $returnStockList = ReturnStock::where('user_id', $userId)->get();
+    $pickers = Picker::whereIn('return_stock_id', $returnStockList->pluck('id'))->with('returnStock.products')->get();
 
-    $returnStockList->load('products:product_name');
-
-    
-    return view('backend.return_stock.return_stock_status_cust', compact('returnStockList'));
+    return view('backend.return_stock.return_stock_status_cust', compact('pickers'));
 }
+
+
 
 
 public function returnStockListAdmin()
@@ -138,7 +136,7 @@ public function assignTask(Request $request)
 {
     $validatedData = $request->validate([
         'user_id' => 'required',
-        'return_no' => 'required',
+        'return_stock_id' => 'required',
         'product_id' => 'required|array',
         'quantity' => 'required|array',
         'status' => 'required|array',
@@ -146,7 +144,7 @@ public function assignTask(Request $request)
     ]);
 
     $userId = $validatedData['user_id'];
-    $returnNo = $validatedData['return_no'];
+    $returnStockId = $validatedData['return_stock_id'];
     $productIds = $validatedData['product_id'];
     $quantities = $validatedData['quantity'];
     $statuses = $validatedData['status'];
@@ -156,7 +154,7 @@ public function assignTask(Request $request)
     foreach ($productIds as $index => $productId) {
         $pickerData[] = [
             'user_id' => $userId,
-            'order_no' => $returnNo,
+            'return_stock_id' => $returnStockId,
             'product_id' => $productId,
             'quantity' => $quantities[$index],
             'status' => $statuses[$index],
@@ -170,6 +168,8 @@ public function assignTask(Request $request)
 
     return redirect()->back()->with('success', 'Task assigned successfully.');
 }
+
+
 
 
 }

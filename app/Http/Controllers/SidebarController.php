@@ -16,4 +16,12 @@ class SidebarController extends Controller
     return $count;
 
     }
+
+    public function getCountPickerReturn()
+    {
+        $count = Picker::whereIn('status', ['Refurbish', 'Dispose'])
+            ->count();
+    
+        return $count;
+    }
 }

@@ -94,6 +94,9 @@ Route::post('/rerack-product-picker/{pickerId}', [PickerController::class, 'rera
 Route::post('/dispose-product/{pickerId}', [PickerController::class, 'disposeProductAdmin'])->name('disposeProductAdmin');
 Route::post('/dispose-product-picker/{pickerId}', [PickerController::class, 'disposeProductPicker'])->name('disposeProductPicker');
 Route::get('/picker-tasks-count', [SidebarController::class, 'getCountPickerTasks'])->name('picker_tasks_count');
+Route::get('/picker-return-count', [SidebarController::class, 'getCountPickerReturn'])->name('picker_return_count');
+Route::get('/return-order-task', [PickerController::class, 'returnOrderTask'])->name('return_stock_task');
+Route::post('/refurbish-product-task/{pickerId}', [PickerController::class, 'refurbishedProduct'])->name('refurbishedProduct');
 
 
 // Cart

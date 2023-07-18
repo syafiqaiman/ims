@@ -10,8 +10,10 @@
                      <div class="col-md-8">
             <!-- general form elements -->
             <div class="card card-primary">
+              <div class="card bg-warning">
               <div class="card-header">
                 <h3 class="card-title">Add Product</h3>
+              </div>
               </div>
               <!-- /.card-header -->
               <!-- form start -->
@@ -184,7 +186,7 @@
                 <!-- /.card-body -->
 
                 <div class="card-footer">
-                  <button type="submit" class="btn btn-primary">Submit</button>
+                  <button type="submit" class="btn btn-warning">Submit</button>
                 </div>
               </form>
             </div>

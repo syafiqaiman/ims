@@ -248,4 +248,62 @@ public function disposeProductPicker($pickerId)
     return redirect()->back()->with('error', 'Picker not found.');
 }
 
+public function returnOrderTask()
+{
+    $pickers = Picker::with(['product' => function ($query) {
+        $query->select('id', 'rack_id');
+    }])
+    ->with(['product.rack' => function ($query) {
+        $query->select('id', 'location_code');
+    }])
+    ->whereIn('status', ['Dispose', 'Refurbish'])
+    ->whereNotNull('return_stock_id')
+    ->join('return_stock', 'pickers.return_stock_id', '=', 'return_stock.id')
+    ->select('pickers.*', 'return_stock.return_no AS return_no')
+    ->get();
+
+    return view('backend.picker.return_stock_task', compact('pickers'));
+}
+
+
+
+
+public function refurbishedProduct($pickerId)
+{
+    $picker = Picker::findOrFail($pickerId);
+
+    if ($picker) {
+        $product = $picker->product;
+        $rackLocation = $product->rack->location;
+
+        // Update the quantity in the quantities table
+        $quantity = Quantity::where('product_id', $product->id)->first();
+        $quantity->remaining_quantity += $picker->quantity;
+        $quantity->sold_item_quantity -= $picker->quantity;
+        $quantity->save();
+
+        // Update the weight in the weights table
+        $weight = Weight::where('product_id', $product->id)->first();
+        $weight->weight_of_product += $product->weight_per_item * $picker->quantity;
+        $weight->save();
+
+        // Update the occupied_weight in the rack_locations table
+        $rack = Rack::where('id', $product->rack_id)->first();
+        $rack->occupied += $product->weight_per_item * $picker->quantity;
+        $rack->save();
+
+        // Set the picker status to "Reracked"
+        $picker->status = 'Refurbished';
+        $picker->report = 'Product is in rack';
+        $picker->save();
+
+        // Redirect back with success message
+        return redirect()->back()->with('success', 'Product successfully reracked.');
+    }
+
+    // Redirect back with error message if picker not found
+    return redirect()->back()->with('error', 'Picker not found.');
+}
+
+
 }

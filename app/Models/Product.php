@@ -26,6 +26,17 @@ class Product extends Model
 
     public function deliveries()
     {
-        return $this->belongsToMany(Delivery::class, 'delivery_product')->withPivot('quantity');
+        return $this->belongsToMany(Delivery::class, 'delivery_product');
     }
+
+    public function pickers()
+    {
+        return $this->hasMany(Picker::class);
+    }
+
+    public function returnStocks()
+    {
+        return $this->belongsToMany(ReturnStock::class, 'pickers');
+    }
+
 }

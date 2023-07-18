@@ -20,11 +20,14 @@ class ReturnStock extends Model
         'return_no',
     ];
 
-    public function products()
+    public function pickers()
     {
-        return $this->belongsToMany(Product::class, 'return_stock_pivot')
-            ->withPivot('quantity', 'remark', 'status');
+        return $this->hasMany(Picker::class);
     }
 
-
+    public function products()
+    {
+        return $this->belongsToMany(Product::class, 'pickers')
+            ->withPivot('status', 'quantity');
+    }
 }
