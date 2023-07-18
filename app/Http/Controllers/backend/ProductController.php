@@ -711,7 +711,7 @@ class ProductController extends Controller
         // Calculate the total quantity and total weight
         $total_quantity = $productRequest->carton_quantity * $productRequest->item_per_carton;
         $total_weight = $total_quantity * $productRequest->weight_per_item;
-
+        
         // Set the rack and floor id from user's form input
         // $rack_id = $request->rack_id;
         // $floor_id = $request->floor_id;
