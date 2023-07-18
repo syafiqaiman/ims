@@ -1,13 +1,11 @@
 @extends('backend.layouts.app')
-
 @section('content')
+<title>Delivery Form</title>
     <div class="card">
         <div class="card-header">
             <h3 class="card-title">Delivery Form</h3>
         </div>
-        <form method="POST" action="{{ URL::to('/delivery/form_sent') }}">
-
-
+        <form method="POST" action="{{ URL::to('/delivery/form_sent') }}" id="delivery_form">
             @csrf
         <div class="card-body">
             
@@ -219,49 +217,5 @@
 
 </script>
 @endpush
-
-{{-- @push('scripts')
-<script>
-    $(document).ready(function() {
-        // Show product modal
-        $('#add_product').click(function() {
-            $('#product_modal').modal('show');
-        });
-
-        // Add product row to the table
-        $('#add_product_row').click(function() {
-            // Add the product row to the table without refreshing the page
-            var product_name = $('#product_name').val();
-            var quantity = $('#quantity').val();
-
-            var newRow = '<tr>' +
-                '<td>' + product_name + '</td>' +
-                '<td>' + quantity + '</td>' +
-                '<td><button class="btn btn-danger btn-sm remove_product_row">Remove</button></td>' +
-                '</tr>';
-
-            $('#product_table tbody').append(newRow);
-
-            // Clear the modal form
-            $('#product_selection_form')[0].reset();
-
-            // Close the modal
-            $('#product_modal').modal('hide');
-        });
-
-        // Remove product row from the table
-        $(document).on('click', '.remove_product_row', function() {
-            $(this).closest('tr').remove();
-        });
-
-        // Clear the product table on form submit
-        $('#submit_delivery').click(function(e) {
-            e.preventDefault();
-            $('#product_table tbody').empty();
-            $(this).closest('form').submit();
-        });
-
-</script>
-@endpush --}}
 
 

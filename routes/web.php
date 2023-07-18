@@ -60,7 +60,7 @@ Route::get('/check_new_product/{id}/reject', [ProductController::class, 'rejectP
 Route::get('/cancel-reorder-request/{id}', [ProductController::class, 'CancelReorderRequestCust'])->name('cancelReorderRequest');
 
 // Delivery
-Route::get('/delivery/delivery_form', [DeliveryController::class, 'deliveryFormCust'])->name('deliveryform');
+Route::get('/delivery_form', [DeliveryController::class, 'deliveryFormCust'])->name('deliveryform');
 Route::post('/delivery/form_sent', [DeliveryController::class, 'storeDelivery'])->name('delivery.submit');
 
 //Return Stock

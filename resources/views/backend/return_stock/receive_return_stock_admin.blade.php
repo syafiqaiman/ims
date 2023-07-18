@@ -8,6 +8,16 @@
         </div>
         <!-- /.card-header -->
         <div class="card-body">
+            <div class="row mb-3">
+                <div class="col">
+                    <div class="input-group">
+                        <input type="text" id="return-no-search" class="form-control" placeholder="Search by Return No">
+                        <div class="input-group-append">
+                            <button type="button" id="search-btn" class="btn btn-primary"><i class="fas fa-search"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <table id="return-stock-table" class="table table-bordered table-hover">
                 <thead>
                     <tr>
@@ -25,10 +35,11 @@
                             </td>
                             <td>
                                 @php
-                                    $picker = $pickers->where('order_no', $returnStock->return_no)->first();
+                                    $picker = $pickers->where('return_stock_id', $returnStock->id)->first();
+                                    $pickerUser = $picker ? $users->where('id', $picker->user_id)->first() : null;
                                 @endphp
-                                @if($picker)
-                                    {{ $users->where('id', $picker->user_id)->first()->name }}
+                                @if($pickerUser)
+                                    {{ $pickerUser->name }}
                                 @endif
                             </td>
                         </tr>
@@ -79,7 +90,13 @@
                         </table>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#pickerModal{{ $returnStock->id }}">Send Task To Picker</button>
+                        @if ($returnStock->products->every(function ($product) {
+                            return in_array($product->pivot->status, ['Disposed', 'Refurbished']);
+                        }))
+                            <button type="button" class="btn btn-primary" disabled data-toggle="modal" data-target="#pickerModal{{ $returnStock->id }}">Send Task To Picker</button>
+                        @else
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#pickerModal{{ $returnStock->id }}">Send Task To Picker</button>
+                        @endif
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     </div>
                 </div>
@@ -135,9 +152,25 @@
 
     @push('scripts')
         <script>
-            $(function () {
+            $(document).ready(function() {
                 // Initialize DataTables
                 $('#return-stock-table').DataTable();
+
+                // Search by Return No
+                $('#search-btn').on('click', function() {
+                    var searchValue = $('#return-no-search').val().trim().toLowerCase();
+                    if (searchValue !== '') {
+                        $('#return-stock-table tbody tr').hide();
+                        $('#return-stock-table tbody td:first-child').each(function() {
+                            var returnNo = $(this).text().toLowerCase();
+                            if (returnNo.includes(searchValue)) {
+                                $(this).closest('tr').show();
+                            }
+                        });
+                    } else {
+                        $('#return-stock-table tbody tr').show();
+                    }
+                });
 
                 // Initialize DataTables for each status modal
                 @foreach($returnStockList as $returnStock)

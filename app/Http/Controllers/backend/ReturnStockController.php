@@ -118,18 +118,15 @@ public function returnStockList()
 
 public function returnStockListAdmin()
 {
-    if (auth()->user()->role == 1) {
-        $returnStockList = ReturnStock::all();
-        $pickers = DB::table('pickers')->get();
-        $users = DB::table('users')->get();
-    } else {
-        $returnStockList = ReturnStock::where('user_id', auth()->user()->id)->get();
-    }
 
-    $returnStockList->load('products:product_name');
-    
+        $pickers = Picker::all();
+        $returnStockList = ReturnStock::with('products')->get();
+        $users = User::all();
+   
     return view('backend.return_stock.receive_return_stock_admin', compact('returnStockList', 'users', 'pickers'));
 }
+
+
 
 
 public function assignTask(Request $request)

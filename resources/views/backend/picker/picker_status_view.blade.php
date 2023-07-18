@@ -1,5 +1,4 @@
 @extends('backend.layouts.app')
-
 @section('content')
 <title>Picker Status</title>
 <div class="container">

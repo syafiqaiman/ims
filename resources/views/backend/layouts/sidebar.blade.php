@@ -313,8 +313,9 @@
 
   </ul>
 </li>
+
 <li class="nav-item">
-  <a href="{{URL::to('/delivery/delivery_form')}}" class="nav-link">
+  <a href="{{URL::to('/delivery_form')}}" class="nav-link">
     <i class="nav-icon fas fa-edit"></i>
     <p>
       Delivery Form (future feature)
