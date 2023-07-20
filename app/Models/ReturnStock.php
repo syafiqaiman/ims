@@ -18,6 +18,7 @@ class ReturnStock extends Model
         'phone_number',
         'email',
         'return_no',
+        'receive_status'
     ];
 
     public function pickers()
@@ -27,7 +28,15 @@ class ReturnStock extends Model
 
     public function products()
     {
-        return $this->belongsToMany(Product::class, 'pickers')
-            ->withPivot('status', 'quantity');
+        return $this->belongsToMany(Product::class, 'return_stock_pivot')
+                    ->withPivot('status', 'quantity', 'remark')
+                    ->when($this->receive_status === 'Received', function ($query) {
+                        // If receive_status is 'Received', include the 'status' from 'pickers' table
+                        $query->leftJoin('pickers', function ($join) {
+                            $join->on('return_stock_pivot.product_id', '=', 'pickers.product_id')
+                                 ->where('pickers.return_stock_id', $this->id);
+                        })
+                        ->select('products.*', 'pickers.status as pivot_status');
+                    });
     }
 }

@@ -23,22 +23,21 @@
                         @php
                             $currentReturnNo = $picker->returnStock->return_no;
                         @endphp
-                        <tr>
-                            @if ($currentReturnNo != $previousReturnNo)
-                                <td rowspan="{{ $pickers->where('returnStock.return_no', $currentReturnNo)->count() }}">
-                                    {{ $currentReturnNo }}
+                        @if ($currentReturnNo != $previousReturnNo)
+                            <tr>
+                                <td>{{ $currentReturnNo }}</td>
+                                <td>
+                                    <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#statusModal{{ $picker->returnStock->return_no }}">View Status</button>
                                 </td>
-                            @endif
-                            <td>
-                                <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#statusModal{{ $picker->returnStock->return_no }}">View Status</button>
-                            </td>
-                        </tr>
-                        @php
-                            $previousReturnNo = $currentReturnNo;
-                        @endphp
+                            </tr>
+                            @php
+                                $previousReturnNo = $currentReturnNo;
+                            @endphp
+                        @endif
                     @endforeach
                 </tbody>
             </table>
+            
         </div>
         <!-- /.card-body -->
     </div>

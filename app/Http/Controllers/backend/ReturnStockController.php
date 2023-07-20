@@ -98,17 +98,21 @@ public function storeReturnStock(Request $request)
     // Attach the product data to the return stock record
     $returnStock->products()->attach($productData);
 
+    $returnStock->receive_status = null;
+    $returnStock->save();
+
     // Redirect or respond with a success message
     return redirect()->back()->with('success', 'Return stock information has been successfully saved.');
 }
+
 
 
 public function returnStockList()
 {
     $userId = auth()->user()->id;
 
-    $returnStockList = ReturnStock::where('user_id', $userId)->get();
-    $pickers = Picker::whereIn('return_stock_id', $returnStockList->pluck('id'))->with('returnStock.products')->get();
+    $returnStockList = ReturnStock::where('user_id', $userId)->with('products')->get();
+    $pickers = Picker::whereIn('return_stock_id', $returnStockList->pluck('id'))->with('returnStock')->get();
 
     return view('backend.return_stock.return_stock_status_cust', compact('pickers'));
 }
@@ -116,15 +120,17 @@ public function returnStockList()
 
 
 
+
 public function returnStockListAdmin()
 {
+    $pickers = Picker::all();
+    $returnStockList = ReturnStock::with(['products', 'pickers'])->get();
+    $users = User::all();
 
-        $pickers = Picker::all();
-        $returnStockList = ReturnStock::with('products')->get();
-        $users = User::all();
-   
     return view('backend.return_stock.receive_return_stock_admin', compact('returnStockList', 'users', 'pickers'));
 }
+
+
 
 
 
@@ -161,10 +167,16 @@ public function assignTask(Request $request)
 
     Picker::insert($pickerData);
 
+    // Update the status in the return_stock table as "Received"
+    $returnStock = ReturnStock::find($returnStockId);
+    $returnStock->receive_status = 'Received';
+    $returnStock->save();
+
     // Perform any other necessary actions
 
     return redirect()->back()->with('success', 'Task assigned successfully.');
 }
+
 
 
 

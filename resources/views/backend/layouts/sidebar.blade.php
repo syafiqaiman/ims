@@ -65,6 +65,15 @@
           </a>
         </li>
         <li class="nav-item">
+          <a href="{{URL::to('/check_new_product')}}" class="nav-link">
+            <i class="nav-icon fas fa-bell"></i>
+            <p>
+              New Product Request
+              <!-- <span class="right badge badge-danger">New</span> -->
+            </p>
+          </a>
+        </li>
+        <li class="nav-item">
           <a href="{{URL::to('/review_request')}}" class="nav-link">
             <i class="nav-icon fas fa-bell"></i>
             <p>

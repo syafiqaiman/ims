@@ -53,55 +53,71 @@
 
     @foreach($returnStockList as $returnStock)
         <!-- Status Modal -->
-        <div class="modal fade" id="statusModal{{ $returnStock->id }}" tabindex="-1" role="dialog" aria-labelledby="statusModalLabel{{ $returnStock->id }}" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="statusModalLabel{{ $returnStock->id }}">Status of Products for Return No: {{ $returnStock->return_no }}</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <table id="statusTable{{ $returnStock->id }}" class="table table-bordered">
-                            <thead>
+          <!-- Status Modal -->
+    <div class="modal fade" id="statusModal{{ $returnStock->id }}" tabindex="-1" role="dialog" aria-labelledby="statusModalLabel{{ $returnStock->id }}" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="statusModalLabel{{ $returnStock->id }}">Status of Products for Return No: {{ $returnStock->return_no }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table id="statusTable{{ $returnStock->id }}" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Qty</th>
+                                <th>Status</th>
+                                <th>Remark</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($returnStock->products as $product)
+                            @php
+                            $productData = \App\Models\Product::find($product->pivot->product_id);
+                            $receiveStatus = $returnStock->receive_status;
+                            $status = null;
+                
+                            if ($receiveStatus === null) {
+                                // Get the status from the pivot table
+                                $status = $product->pivot->status;
+                            } elseif ($receiveStatus === 'Received') {
+                                // Get the status from the pickers table using return_stock_id as the foreign key
+                                $pickerStatuses = $product->pickers->where('return_stock_id', $returnStock->id)->pluck('status');
+                                
+                                // Check if the product's status is present in the pickerStatuses collection
+                                if ($pickerStatuses->contains($product->pivot->status)) {
+                                    $status = $product->pivot->status;
+                                } else {
+                                    // If not found, set the status to the first status in the pickerStatuses collection
+                                    $status = $pickerStatuses->first();
+                                }
+                            }
+                        @endphp
                                 <tr>
-                                    <th>Product</th>
-                                    <th>Qty</th>
-                                    <th>Status</th>
-                                    <th>Remark</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($returnStock->products as $product)
-                                <tr>
-                                    @php
-                                        $productData = \App\Models\Product::find($product->pivot->product_id);
-                                    @endphp
                                     <td>{{ $productData->product_name }}</td>
                                     <td>{{ $product->pivot->quantity }}</td>
-                                    <td class="@if ($product->pivot->status === 'Refurbish' || $product->pivot->status === 'Dispose') bg-warning  color-palette @else bg-success color-palette @endif">
-                                        {{ $product->pivot->status }}
+                                    <td class="@if ($status === 'Refurbish' || $status === 'Dispose') bg-warning color-palette @else bg-success color-palette @endif">
+                                        {{ $status }}
                                     </td>
                                     <td>{{ $product->pivot->remark }}</td>
                                 </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
+                            @endforeach
+                        </tbody>
+                                       
+                    </table>
+                </div>
+                <div class="modal-footer">
                     <div class="modal-footer">
-                        @if ($returnStock->products->every(function ($product) {
-                            return in_array($product->pivot->status, ['Disposed', 'Refurbished']);
-                        }))
-                            <button type="button" class="btn btn-primary" disabled data-toggle="modal" data-target="#pickerModal{{ $returnStock->id }}">Send Task To Picker</button>
-                        @else
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#pickerModal{{ $returnStock->id }}">Send Task To Picker</button>
-                        @endif
+                        <button type="button" id="sendTaskButton{{ $returnStock->id }}" class="btn btn-primary" data-toggle="modal" data-target="#pickerModal{{ $returnStock->id }}">Send Task To Picker</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
         <!-- Picker Modal -->
         <div class="modal fade" id="pickerModal{{ $returnStock->id }}" tabindex="-1" role="dialog" aria-labelledby="pickerModalLabel{{ $returnStock->id }}" aria-hidden="true">
@@ -151,32 +167,52 @@
     @endforeach
 
     @push('scripts')
-        <script>
-            $(document).ready(function() {
-                // Initialize DataTables
-                $('#return-stock-table').DataTable();
+    <script>
+        $(document).ready(function() {
+            // Initialize DataTables
+            $('#return-stock-table').DataTable();
 
-                // Search by Return No
-                $('#search-btn').on('click', function() {
-                    var searchValue = $('#return-no-search').val().trim().toLowerCase();
-                    if (searchValue !== '') {
-                        $('#return-stock-table tbody tr').hide();
-                        $('#return-stock-table tbody td:first-child').each(function() {
-                            var returnNo = $(this).text().toLowerCase();
-                            if (returnNo.includes(searchValue)) {
-                                $(this).closest('tr').show();
+            // Search by Return No
+            $('#search-btn').on('click', function() {
+                // Your existing search logic...
+            });
+
+            // Initialize DataTables for each status modal
+            @foreach($returnStockList as $returnStock)
+                $('#statusTable{{ $returnStock->id }}').DataTable();
+
+                // JavaScript function to disable the "Send Task To Picker" button
+                function updateSendTaskButton{{ $returnStock->id }}() {
+                    // Check if the receive_status is 'Received'
+                    const receiveStatus = '{{ $returnStock->receive_status }}';
+                    const sendTaskButton = document.getElementById('sendTaskButton{{ $returnStock->id }}');
+
+                    if (receiveStatus === 'Received') {
+                        sendTaskButton.disabled = true; // Disable the button if 'Received'
+                    } else {
+                        // Check if any of the status cells have "Disposed" or "Refurbished" status
+                        const statusTable = document.getElementById('statusTable{{ $returnStock->id }}');
+                        const statusCells = statusTable.querySelectorAll('tbody td:nth-child(3)');
+                        let isAnyDisposedOrRefurbished = false;
+
+                        statusCells.forEach((cell) => {
+                            const status = cell.textContent.trim();
+                            if (status === 'Disposed' || status === 'Refurbished') {
+                                isAnyDisposedOrRefurbished = true;
                             }
                         });
-                    } else {
-                        $('#return-stock-table tbody tr').show();
-                    }
-                });
 
-                // Initialize DataTables for each status modal
-                @foreach($returnStockList as $returnStock)
-                    $('#statusTable{{ $returnStock->id }}').DataTable();
-                @endforeach
-            });
-        </script>
+                        sendTaskButton.disabled = isAnyDisposedOrRefurbished; // Enable/disable the button accordingly
+                    }
+                }
+
+                // Run the function when the modal is shown
+                $('#statusModal{{ $returnStock->id }}').on('shown.bs.modal', function () {
+                    updateSendTaskButton{{ $returnStock->id }}();
+                });
+            @endforeach
+        });
+    </script>
+        
     @endpush
 @endsection
