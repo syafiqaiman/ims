@@ -40,7 +40,7 @@
                                         @endif
                                         <td>{{ $row->company_name }}</td>
                                         <td>{{ $row->product_name }}</td>
-                                        <td>{{ $row->occupied }}/400</td>
+                                        <td>{{ $row->occupied }}/3000</td>
                                     </tr>
                                 @endforeach
                             @endforeach
