@@ -131,10 +131,12 @@
                 <div class="card-header p-4" style="padding: 0 !important;">
                     <div class="d-flex justify-content-between align-items-center">
                         <h5 class="m-0" style="font-size: 14px; color: #D48E15;">MONTHLY REPORT</h5>
-                        <p class="text-right mb-0" style="font-family: Arial; font-size: 8px;">Created on: {{ now()->format('Y-m-d') }}
+                        <p class="text-right mb-0" style="font-family: Arial; font-size: 8px;">Created on:
+                            {{ now()->format('Y-m-d') }}
                         </p>
                     </div>
-                    <p class="text-black" style="font-size: 12px;">{{ $startDate->format('Y-m-d') }} - {{ $endDate->format('Y-m-d') }}</p>
+                    <p class="text-black" style="font-size: 12px;">{{ $startDate->format('Y-m-d') }} -
+                        {{ $endDate->format('Y-m-d') }}</p>
                 </div>
 
                 {{-- TABLE --}}
@@ -220,22 +222,22 @@
                                 @endif
                             </td>
                         </tr>
+
                         <tr>
                             <th style="font-size: 14px;">Total Sales Volume </th>
                             <td style="font-size: 14px;">{{ $totalSalesVolume }} units sold this month</td>
                         </tr>
-                        <tr>
-                            {{-- <th style="font-size: 14px;">Revenue generated </th>
-                            <td style="font-size: 14px;">RM {{ $totalRevenue }}</td>
-                        </tr> --}} {{-- Discarded because we dont know the customer actual price --}}
                     </table>
+
+                    <h5 class="m-0" style="font-size: 14px; color: #D48E15;">RETURN DETAILS</h5>
+                    <!-- Add a new section for Return Stock Metrics -->
 
                     <p class="end-of-statement">End of Statement</p>
 
                 </div>
 
             </div>
-            {{-- FOOTER         --}}
+            {{-- FOOTER --}}
             <div class="card-footer bg-white">
                 <p class="text-center mb-0" style="font-weight: bold; color: black; font-size: 8px;">ARKOD SMART LOGITECH
                     SDN BHD</p>

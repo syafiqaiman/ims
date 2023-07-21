@@ -19,6 +19,7 @@ use App\Models\Floor;
 use App\Models\Restock;
 use App\Models\ProductRequest;
 use App\Models\Order;
+use App\Models\Quantity;
 
 class PDFReportController extends Controller
 {
