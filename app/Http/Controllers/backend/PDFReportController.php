@@ -138,9 +138,26 @@ class PDFReportController extends Controller
                 ->take(1) // Adjust the number as per your requirement
                 ->get()
                 ->toArray(); // Convert the collection to an array
+
+            $returnMetrics = DB::table('pickers')
+                ->join('products', 'products.id', '=', 'pickers.product_id')
+                ->select('products.product_name', 'pickers.status', DB::raw('SUM(pickers.quantity) as total_quantity'))
+                ->groupBy('products.product_name', 'pickers.status')
+                ->orderBy('products.product_name')
+                ->get();
+
+            // Prepare $rowspanValue array
+            $rowspanValue = [];
+            foreach ($returnMetrics as $row) {
+                if (!isset($rowspanValue[$row->product_name])) {
+                    $rowspanValue[$row->product_name] = 1;
+                } else {
+                    $rowspanValue[$row->product_name]++;
+                }
+            }
         }
 
-        return view('backend.report.PDFReport', compact('startDate', 'endDate', 'data', 'totalSalesVolume', 'totalRevenue', 'beginningInventory', 'endingInventory', 'occupiedCapacity', 'totalCapacity', 'utilizationRate', 'ordersFulfilled', 'topSellingProducts', 'lowSellingProducts'));
+        return view('backend.report.PDFReport', compact('startDate', 'endDate', 'data', 'totalSalesVolume', 'totalRevenue', 'beginningInventory', 'endingInventory', 'occupiedCapacity', 'totalCapacity', 'utilizationRate', 'ordersFulfilled', 'topSellingProducts', 'lowSellingProducts', 'returnMetrics', 'rowspanValue'));
 
 
         //$pdf = PDF::loadView('backend.report.PDFReport', compact('data'));

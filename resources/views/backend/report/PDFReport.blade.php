@@ -231,7 +231,33 @@
 
                     <h5 class="m-0" style="font-size: 14px; color: #D48E15;">RETURN DETAILS</h5>
                     <!-- Add a new section for Return Stock Metrics -->
-
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Product Name</th>
+                                <th>Quantity</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php
+                                $currentProduct = null;
+                            @endphp
+                            @foreach ($returnMetrics as $row)
+                                <tr>
+                                    @if ($currentProduct !== $row->product_name)
+                                        <td rowspan="{{ $rowspanValue[$row->product_name] }}">{{ $row->product_name }}
+                                        </td>
+                                        @php
+                                            $currentProduct = $row->product_name;
+                                        @endphp
+                                    @endif
+                                    <td>{{ $row->total_quantity }}</td>
+                                    <td>{{ $row->status }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                     <p class="end-of-statement">End of Statement</p>
 
                 </div>
