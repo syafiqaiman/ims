@@ -259,6 +259,16 @@
     </li>
 
     <li class="nav-item">
+      <a href="{{URL::to('/mystatus_new_product')}}" class="nav-link">
+        <i class="nav-icon fas fa-bell"></i>
+        <p>
+          Status of Approval
+          <!-- <span class="right badge badge-danger">New</span> -->
+        </p>
+      </a>
+    </li>
+
+    <li class="nav-item">
       <a href="{{URL::to('/list_product')}}" class="nav-link">
         <i class="nav-icon fas fa-server"></i>
         <p>

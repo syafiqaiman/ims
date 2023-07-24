@@ -24,7 +24,7 @@ class DeliveryController extends Controller
         return view('backend.delivery.delivery_form', ['products' => $products]);
     }
 
-    private function generatePONumber()
+    private function generateDONumber()
     {
         // Get the current timestamp
         $timestamp = time();
@@ -32,11 +32,11 @@ class DeliveryController extends Controller
         // Generate a unique identifier based on the timestamp
         $identifier = substr($timestamp, -6); // Example: Use the last 6 digits of the timestamp
 
-        // Construct the PO number with a prefix and the identifier
-        $po_number = 'PO-' . $identifier;
+        // Construct the DO number with a prefix and the identifier
+        $do_number = 'DO-' . $identifier;
 
-        // Return the PO number
-        return $po_number;
+        // Return the DO number
+        return $do_number;
     }
 
     public function storeDelivery(Request $request)
@@ -58,7 +58,7 @@ class DeliveryController extends Controller
         ]);
     
         // Generate a unique PO number for the order_no column
-        $orderNo = $this->generatePONumber();
+        $orderNo = $this->generateDONumber();
     
         // Create a new delivery record
         $delivery = new Delivery;

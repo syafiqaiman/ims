@@ -68,11 +68,11 @@
                             <tr>
                                 <td>{{ $product->product_name }}</td>
                                 <td>{{ $product->pivot->quantity }}</td>
-                                <td>
-                                    @if ($product->pivot->status == 'Disposed' || $product->pivot->status == 'Refurbished')
-                                        <span class="badge bg-success">{{ $product->pivot->status }}</span>
+                                <td class="@if ($picker->status === 'Disposed' || $picker->status === 'Refurbished') bg-success @else bg-warning @endif color-palette">
+                                    @if ($picker->status === 'Disposed' || $picker->status === 'Refurbished')
+                                        {{ $picker->status }}
                                     @else
-                                        <span class="badge bg-warning">In Process</span>
+                                        In Process
                                     @endif
                                 </td>                                
                             </tr>

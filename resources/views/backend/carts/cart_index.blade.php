@@ -116,11 +116,20 @@
               @endforeach
             </select>
           </div>
-    </div>    
-      <div class="d-flex justify-content-between align-items-center">
-        <button type="submit" class="btn btn-primary">Assign</button>
-      </div>
-    </form>
+          <div class="form-group">
+            <label for="order_no">Delivery Order No:</label>
+            <select name="order_no" class="form-control">
+              <option value="">Select Order No</option>
+              @foreach ($deliveries as $deliveryOrder)
+                <option value="{{ $deliveryOrder->order_no }}">{{ $deliveryOrder->order_no }}</option>
+              @endforeach
+            </select>
+          </div>
+          </div>    
+          <div class="d-flex justify-content-between align-items-center">
+          <button type="submit" class="btn btn-primary">Assign</button>
+          </div>
+        </form>
        @endif
     </div>
   </div>

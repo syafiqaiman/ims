@@ -109,10 +109,13 @@ public function storeReturnStock(Request $request)
 
 public function returnStockList()
 {
-    $userId = auth()->user()->id;
+    $user_id = auth()->user()->id;
 
-    $returnStockList = ReturnStock::where('user_id', $userId)->with('products')->get();
-    $pickers = Picker::whereIn('return_stock_id', $returnStockList->pluck('id'))->with('returnStock')->get();
+    $returnStockList = ReturnStock::where('user_id', $user_id)->with('products')->get();
+    $pickers = Picker::with('returnStock.products')
+        ->whereHas('returnStock.products', function ($query) use ($user_id) {
+            $query->where('user_id', $user_id);
+        })->get();
 
     return view('backend.return_stock.return_stock_status_cust', compact('pickers'));
 }

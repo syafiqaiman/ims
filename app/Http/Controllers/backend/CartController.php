@@ -5,6 +5,7 @@ namespace App\Http\Controllers\backend;
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Models\Company;
+use App\Models\Delivery;
 use App\Models\Product;
 use App\Models\Picker;
 use App\Models\Rack;
@@ -40,6 +41,8 @@ class CartController extends Controller
 
     // check if the authenticated user is an admin (role 1)
     if ($user->role == 1) {
+
+        $deliveries = Delivery::all();
         // if admin, get all products and users info from the database
         $users = DB::table('users')->get();
         $list = DB::table('products')
@@ -54,7 +57,7 @@ class CartController extends Controller
     }
 
     // return the view with the list of products and the cart data
-    return view('backend.carts.cart_index', compact('list', 'cart', 'users' ,'total'));
+    return view('backend.carts.cart_index', compact('list', 'cart', 'users' ,'total', 'deliveries'));
 }
 
 
@@ -144,7 +147,7 @@ public function update(Request $request, $id)
         
         // Get the selected user ID
         $user_id = $request->input('user_id');
-        $order_no = $this->generatePONumber(); // Replace with your logic to generate a unique order number
+        $order_no = $request->input('order_no');
         
         if (empty($user_id)) {
             return redirect()->back()->with('error', 'Please select a picker!');
@@ -191,7 +194,7 @@ public function update(Request $request, $id)
             $picker->rack_id = $product->rack_id; // Make sure to adjust this if necessary
             $picker->quantity = $item['quantity'];
             $picker->status = 'Pending';
-            $picker->order_no = $order_no; // Set the order number
+            $picker->order_no = $order_no;
             $picker->save();
         }
         

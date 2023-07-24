@@ -12,6 +12,7 @@ use App\Models\Product;
 use App\Models\Company;
 use App\Models\User;
 use App\Models\Rack;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Restock;
 use App\Models\ProductRequest;
 
@@ -30,6 +31,7 @@ class ProductController extends Controller
 {
     // get the authenticated user
     $user = auth()->user();
+    $user_id = auth()->user()->id;
 
     // check if the authenticated user is an admin (role 1)
     if ($user->role == 1) {
@@ -52,7 +54,7 @@ class ProductController extends Controller
                 ->join('companies', 'products.company_id', '=', 'companies.id')
                 ->join('weights', 'products.id', '=', 'weights.product_id')
                 ->select('products.id','weights.weight_of_product', 'companies.company_name', 'products.product_name', 'products.product_desc', 'products.item_per_carton', 'products.carton_quantity', 'quantities.total_quantity', 'quantities.remaining_quantity', 'products.weight_per_item', 'products.weight_per_carton', 'products.product_dimensions', 'products.product_image', 'products.date_to_be_stored')
-                ->where('products.user_id', $user->id)
+                ->where('products.user_id', $user_id)
                 ->get();
         } else {
             // if the user is not an admin or of role 3, get products owned by the user
@@ -534,6 +536,10 @@ public function storeProductRequest(Request $request)
         'email' => 'required|email',
     ]);
 
+    if ($validatedData['total_weight'] > 200) {
+        return redirect()->back()->with('error', 'Total weight cannot exceed 200kg.');
+    }
+
     // Handle the product image upload
     if ($request->hasFile('product_image')) {
         $file = $request->file('product_image');
@@ -561,6 +567,7 @@ public function storeProductRequest(Request $request)
         'address' => $validatedData['address'],
         'phone_number' => $validatedData['phone_number'],
         'email' => $validatedData['email'],
+        'status' => $validatedData = 'Under Review'
     ]);
 
  
@@ -571,13 +578,15 @@ public function storeProductRequest(Request $request)
 }
 
 
-public function viewRequestProductList(){
+public function viewRequestProductList()
+{
+    $user = Auth::user();
+    $company_id = $user->company_id;
 
-    $user_id = auth()->user()->id;
+    $allRequestProduct = ProductRequest::where('company_id', $company_id)
+                        ->get();
 
-    $allRequestProduct = DB::table('product_request')->get();
-
-return view('backend.product.product_request_list', compact('allRequestProduct'));
+    return view('backend.product.product_request_list', compact('allRequestProduct'));
 }
 
 public function DisplayIntoChoosenProductForm(){
@@ -653,6 +662,7 @@ public function approveProductRequest($id, Request $request)
     $product = new Product();
     $product->product_name = $productRequest->product_name;
     $product->product_desc = $productRequest->product_desc;
+    $product->product_price = $productRequest->product_price;
     $product->carton_quantity = $productRequest->carton_quantity;
     $product->item_per_carton = $productRequest->item_per_carton;
     $product->product_dimensions = $productRequest->product_dimensions;
@@ -692,7 +702,8 @@ public function approveProductRequest($id, Request $request)
         ->update(['occupied' => $occupied_weight + $total_weight]);
 
     // Delete the product request from the database
-    $productRequest->delete();
+    $productRequest->status = 'Approved';
+    $productRequest->save();
 
     // Redirect back or to a success page
     return redirect()->back()->with('success', 'Product request approved and added to products.');
@@ -709,7 +720,8 @@ public function rejectProductRequest($id)
     $productRequest = ProductRequest::findOrFail($id);
 
     // Delete the product request from the database
-    $productRequest->delete();
+    $productRequest->status = 'Rejected';
+    $productRequest->save();
 
     // Redirect back or to a success page
     return redirect()->back()->with('success', 'Product request rejected.');
@@ -718,8 +730,40 @@ public function rejectProductRequest($id)
     // return redirect()->route('productRequests.index')->with('success', 'Product request rejected.');
 }
 
+public function showAddRequestStatus()
+{
+    $user = auth()->user();
 
+    // Retrieve the company_id associated with the authenticated user
+    $company_id = $user->company_id;
 
+    // Filter the product requests based on the company_id
+    $newproduct = DB::table('product_request')
+        ->where('company_id', $company_id)
+        ->get();
+
+    return view('backend.product.request_add_product_status', compact('newproduct'));
+}
+
+public function CancelNewAddRequestCust($id)
+{
+    // Find the request by ID
+    $request = ProductRequest::find($id);
+
+    if (!$request) {
+        return redirect()->back()->with('error', 'Request not found.');
+    }
+
+    // Check if the request status is "Under Review"
+    if ($request->status !== 'Under Review') {
+        return redirect()->back()->with('error', 'Error.');
+    }
+
+    // Delete the request from the database
+    $request->delete();
+
+    return redirect()->back()->with('success', 'Request removed successfully.');
+}
 
 }
 

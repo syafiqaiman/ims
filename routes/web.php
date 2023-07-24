@@ -55,6 +55,8 @@ Route::get('/customer_add_product', [ProductController::class, 'CustomerAddProdu
 Route::post('/request_product', [ProductController::class, 'storeProductRequest'])->name('productrequest');
 Route::get('/product_request_list', [ProductController::class, 'viewRequestProductList'])->name('viewrequestproduct');
 Route::get('/check_new_product', [ProductController::class, 'adminCheckNewProductRequest'])->name('checknewproduct');
+Route::get('/mystatus_new_product', [ProductController::class, 'showAddRequestStatus'])->name('addnewproductcust');
+Route::get('/mystatus_new_product/{id}', [ProductController::class, 'CancelNewAddRequestCust'])->name('CustRemovenewproduct');
 Route::post('/check_new_product/{id}/approve', [ProductController::class, 'approveProductRequest'])->name('approveProductRequest');
 Route::get('/check_new_product/{id}/reject', [ProductController::class, 'rejectProductRequest'])->name('rejectProductRequest');
 Route::get('/cancel-reorder-request/{id}', [ProductController::class, 'CancelReorderRequestCust'])->name('cancelReorderRequest');
