@@ -109,3 +109,6 @@ Route::get('/report', [App\Http\Controllers\backend\PDFReportController::class, 
 
 // Product Report Monthly
 Route::get('/product-report/{id}', [App\Http\Controllers\backend\ProductReportController::class, 'index'])->name('product-report.index');
+
+// Weekly Report for admin
+Route::get('/admin/weekly-report', [App\Http\Controllers\backend\PDFReportController::class, 'showWeeklyReport']);

@@ -164,4 +164,11 @@ class PDFReportController extends Controller
 
         //return $pdf->stream('report.pdf');                // This line generate an error 126 (Software incompatibility with M1 Mac models)
     }
+
+    public function showWeeklyReport()
+    {
+        $weeklyReports = DB::table('weekly_reports')->get(); // Retrieve the weekly report data from the database
+
+        return view('backend.report.Weekly-Report', ['weeklyReports' => $weeklyReports]);
+    }
 }

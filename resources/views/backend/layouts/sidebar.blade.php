@@ -182,6 +182,16 @@
               </p>
             </a>
           </li>
+
+          <li class="nav-item">
+            <a href="{{URL::to('/admin/weekly-report')}}" class="nav-link">
+              <i class="nav-icon fas fa-th"></i>
+              <p>
+                Weekly Report
+                <!-- <span class="right badge badge-danger">New</span> -->
+              </p>
+            </a>
+          </li>
         
 @endif
 
