@@ -20,6 +20,8 @@ use App\Models\Restock;
 use App\Models\ProductRequest;
 use App\Models\Order;
 use App\Models\Quantity;
+use App\Models\WeeklyReport;
+
 
 class PDFReportController extends Controller
 {
@@ -171,4 +173,62 @@ class PDFReportController extends Controller
 
         return view('backend.report.Weekly-Report', ['weeklyReports' => $weeklyReports]);
     }
+
+    public function generateWeeklyReports()
+    {
+        // Replace with the start and end dates of the week
+        $startDate = '2023-05-12 00:00:00';
+        $endDate = '2023-05-18 23:59:59';
+
+        // Build the query
+        $query = DB::table('orders as o')
+            ->join('products as p', 'o.product_id', '=', 'p.id')
+            ->join('companies as c', 'o.company_id', '=', 'c.id')
+            ->join('quantities as q', 'o.product_id', '=', 'q.product_id')
+            ->leftJoin(
+                DB::raw('(SELECT company_id, product_id, SUM(CASE WHEN quantity > 0 THEN quantity ELSE 0 END) AS quantity
+                FROM orders GROUP BY company_id, product_id) as inflow'),
+                function ($join) {
+                    $join->on('o.company_id', '=', 'inflow.company_id')
+                        ->on('o.product_id', '=', 'inflow.product_id');
+                }
+            )
+            ->leftJoin(
+                DB::raw('(SELECT company_id, product_id, SUM(ABS(quantity)) AS quantity
+                FROM orders GROUP BY company_id, product_id) as outflow'),
+                function ($join) {
+                    $join->on('o.company_id', '=', 'outflow.company_id')
+                        ->on('o.product_id', '=', 'outflow.product_id');
+                }
+            )
+            ->select(
+                'o.company_id',
+                'c.company_name',
+                DB::raw('WEEK(MIN(o.created_at)) AS week_number'),
+                DB::raw('IFNULL(SUM(inflow.quantity), 0) AS total_inflow_quantity'),
+                DB::raw('IFNULL(SUM(outflow.quantity), 0) AS total_outflow_quantity'),
+                DB::raw('IFNULL(SUM(inflow.quantity), 0) - IFNULL(SUM(outflow.quantity), 0) AS net_change_quantity'),
+                'q.remaining_quantity as remaining_quantity'
+            )
+            ->whereBetween('o.created_at', [$startDate, $endDate])
+            ->groupBy('o.company_id', 'c.company_name', 'q.remaining_quantity');
+
+        // Execute the query and insert data into the weekly_reports table
+        $weeklyReportsData = $query->get();
+        foreach ($weeklyReportsData as $reportData) {
+            WeeklyReport::create([
+                'company_id' => $reportData->company_id,
+                'company_name' => $reportData->company_name,
+                'week_number' => $reportData->week_number,
+                'total_inflow_quantity' => $reportData->total_inflow_quantity,
+                'total_outflow_quantity' => $reportData->total_outflow_quantity,
+                'net_change_quantity' => $reportData->net_change_quantity,
+                'remaining_quantity' => $reportData->remaining_quantity,
+            ]);
+        }
+
+        // Optionally, you can return a response to indicate the success of the operation
+        return response()->json(['message' => 'Weekly reports generated successfully.']);
+    }
+
 }
