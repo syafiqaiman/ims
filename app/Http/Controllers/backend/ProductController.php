@@ -699,6 +699,8 @@ class ProductController extends Controller
 
     public function approveProductRequest($id, Request $request)
     {
+        //return response()->json($request, 200);
+
         // Retrieve the product request by ID
         $productRequest = ProductRequest::findOrFail($id);
 
@@ -720,35 +722,7 @@ class ProductController extends Controller
         $rack_id = $request->input('hidden_rack_id');
         $floor_id = $request->input('hidden_floor_id');
 
-        if ($floor_id === null) {
-            // Get the rack capacity and occupied weight
-            $rack_data = DB::table('rack_locations')
-                ->where('id', $rack_id)
-                ->select('capacity', 'occupied')
-                ->first();
-
-            if ($rack_data === null) {
-                return redirect()->back()->with('error', 'Invalid rack location selected. Please choose a valid rack location.')->withInput();
-            }
-
-            $rack_capacity = $rack_data->capacity;
-            $occupied_weight = $rack_data->occupied;
-
-            // Calculate the remaining capacity
-            $remaining_capacity = $rack_capacity - $occupied_weight;
-
-            // Check if the total weight exceeds the limit of 200
-            if ($total_weight > 200) {
-                return redirect()->back()->with('error', 'Total weight exceeds limit of 200. Please adjust your inputs.')->withInput();
-            }
-
-            // Check if the remaining capacity is less than the weight of the new product
-            if ($remaining_capacity < $total_weight) {
-                return redirect()->back()->with('error', 'Rack capacity exceeded. Remaining capacity: ' . $remaining_capacity . '. Please adjust your inputs.')->withInput();
-            }
-
-        } else if ($rack_id === null) {
-
+        if ($floor_id != null) {
             // Get the floor capacity and occupied weight
             $floor_data = DB::table('floor_locations')
                 ->where('id', $floor_id)
@@ -774,6 +748,32 @@ class ProductController extends Controller
             if ($remaining_capacity < $total_weight) {
                 return redirect()->back()->with('error', 'Floor capacity exceeded. Remaining capacity: ' . $remaining_capacity . '. Please adjust your inputs.')->withInput();
 
+            }
+        } else if ($rack_id != null) {
+            // Get the rack capacity and occupied weight
+            $rack_data = DB::table('rack_locations')
+                ->where('id', $rack_id)
+                ->select('capacity', 'occupied')
+                ->first();
+
+            if ($rack_data === null) {
+                return redirect()->back()->with('error', 'Invalid rack location selected. Please choose a valid rack location.')->withInput();
+            }
+
+            $rack_capacity = $rack_data->capacity;
+            $occupied_weight = $rack_data->occupied;
+
+            // Calculate the remaining capacity
+            $remaining_capacity = $rack_capacity - $occupied_weight;
+
+            // Check if the total weight exceeds the limit of 200
+            if ($total_weight > 200) {
+                return redirect()->back()->with('error', 'Total weight exceeds limit of 200. Please adjust your inputs.')->withInput();
+            }
+
+            // Check if the remaining capacity is less than the weight of the new product
+            if ($remaining_capacity < $total_weight) {
+                return redirect()->back()->with('error', 'Rack capacity exceeded. Remaining capacity: ' . $remaining_capacity . '. Please adjust your inputs.')->withInput();
             }
 
         } else {
