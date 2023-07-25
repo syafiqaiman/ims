@@ -100,10 +100,12 @@
 
                                             <div class="form-group">
                                                 <label for="floor_id">Floor Location</label>
-                                                <select name="floor_id" class="form-control" id="floor_id" onchange="updateFloorId(this)">
+                                                <select name="floor_id" class="form-control" id="floor_id"
+                                                    onchange="updateFloorId(this)">
                                                     <option value="">Select Floor Location</option>
                                                     @foreach ($floors as $location)
-                                                        <option value="{{ $location->id }}">{{ $location->location_codes }}</option>
+                                                        <option value="{{ $location->id }}">
+                                                            {{ $location->location_codes }}</option>
                                                     @endforeach
                                                 </select>
                                                 @error('floor_id')
@@ -128,7 +130,8 @@
                                             <!-- Hidden input field to store the selected rack_id -->
                                             <input type="hidden" id="hidden_rack_id" name="hidden_rack_id" value="">
                                             <!-- New hidden input field for floor_id -->
-                                            <input type="hidden" id="hidden_floor_id" name="hidden_floor_id" value="">
+                                            <input type="hidden" id="hidden_floor_id" name="hidden_floor_id"
+                                                value="">
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary"
@@ -187,23 +190,20 @@
             var floorId = document.getElementById('hidden_floor_id').value;
             var href = linkElement.getAttribute('href');
 
-            if (rackId ===  '')
-            {
+            if (rackId === '') {
                 // Append floor_id to the form action URL
                 var updatedHref = href + '?floor_id=' + floorId;
 
                 // Update the href attribute of the Approve link
                 linkElement.setAttribute('href', updatedHref);
 
-            } else if (floorId === '')
-            {
+            } else if (floorId === '') {
                 // Append rack_id to the form action URL
                 var updatedHref = href + '?rack_id=' + rackId;
 
                 // Update the href attribute of the Approve link
                 linkElement.setAttribute('href', updatedHref);
-            } else 
-            {
+            } else {
                 // Submit the form
                 linkElement.click();
             }
