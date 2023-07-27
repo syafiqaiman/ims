@@ -20,10 +20,8 @@
                     <label for="company_id">My Company</label>
                     <select name="company_id" class="form-control select2 select2-hidden-accessible" style="width: 100%;" data-select2-id="1" tabindex="-1" aria-hidden="true">
                         <option value="">Select Company Name</option>
-                        @foreach($companies as $company)
                         <option value="{{ $company->id }}">{{ $company->company_name }}</option>
-                        @endforeach
-                    </select>
+                    </select>                    
                     @error('company_id')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
@@ -33,7 +31,7 @@
 
                 <div class="form-group">
                     <label for="product_name">Product Name</label>
-                    <input type="text" name="product_name" class="form-control @error('product_name') is-invalid @enderror" id="product_name" placeholder="Enter Product Name">
+                    <input type="text" name="product_name" class="form-control @error('product_name') is-invalid @enderror" id="product_name" placeholder="Enter Product Name" value="{{ old('product_name') }}">
                     @error('product_name')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
@@ -43,7 +41,7 @@
 
                 <div class="form-group">
                     <label for="product_desc">Product Description</label>
-                    <input type="text" name="product_desc" class="form-control @error('product_desc') is-invalid @enderror" id="product_desc" placeholder="Enter Product Description">
+                    <input type="text" name="product_desc" class="form-control @error('product_desc') is-invalid @enderror" id="product_desc" placeholder="Enter Product Description" value="{{ old('product_desc') }}">
                     @error('product_desc')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
@@ -53,7 +51,7 @@
 
                 <div class="form-group">
                     <label for="carton_quantity">Carton Quantity</label>
-                    <input type="number" name="carton_quantity" class="form-control @error('carton_quantity') is-invalid @enderror" id="carton_quantity" placeholder="Enter Quantity">
+                    <input type="number" name="carton_quantity" class="form-control @error('carton_quantity') is-invalid @enderror" id="carton_quantity" placeholder="Enter Quantity" value="{{ old('carton_quantity') }}">
                     @error('carton_quantity')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
@@ -63,7 +61,7 @@
 
                 <div class="form-group">
                     <label for="item_per_carton">Item Per Carton</label>
-                    <input type="number" name="item_per_carton" class="form-control @error('item_per_carton') is-invalid @enderror" id="item_per_carton" placeholder="Enter Quantity">
+                    <input type="number" name="item_per_carton" class="form-control @error('item_per_carton') is-invalid @enderror" id="item_per_carton" placeholder="Enter Quantity" value="{{ old('item_per_carton') }}">
                     @error('item_per_carton')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
@@ -73,7 +71,7 @@
 
                 <div class="form-group">
                   <label for="product_dimensions">Product Dimension</label>
-                  <input type="text" name="product_dimensions" class="form-control @error('product_dimensions') is-invalid @enderror" id="product_dimensions" placeholder="Enter Product Dimension">
+                  <input type="text" name="product_dimensions" class="form-control @error('product_dimensions') is-invalid @enderror" id="product_dimensions" placeholder="Enter Product Dimension" value="{{ old('product_dimension') }}">
                   @error('product_dimensions')
                   <span class="invalid-feedback" role="alert">
                       <strong>{{ $message }}</strong>
@@ -117,7 +115,7 @@
 
                 <div class="form-group">
                     <label for="product_price">Product Price</label>
-                    <input type="text" name="product_price" class="form-control @error('product_price') is-invalid @enderror" id="product_price" placeholder="Enter Product Price">
+                    <input type="text" name="product_price" class="form-control @error('product_price') is-invalid @enderror" id="product_price" placeholder="Enter Product Price" value="{{ old('product_price') }}">
                     @error('product_price')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
@@ -155,9 +153,7 @@
                     <label for="company_id">My Company</label>
                     <select name="company_id" id="company_id" class="form-control select2 select2-hidden-accessible" style="width: 100%;" data-select2-id="1" tabindex="-1" aria-hidden="true">
                         <option value="">Select Company Name</option>
-                        @foreach($companies as $company)
                         <option value="{{ $company->id }}" data-address="{{ $company->address }}" data-phone_number="{{ $company->phone_number }}" data-email="{{ $company->email }}">{{ $company->company_name }}</option>
-                        @endforeach
                     </select>
                     @error('company_id')
                     <span class="invalid-feedback" role="alert">

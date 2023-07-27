@@ -23,7 +23,7 @@
                     <td>{{$request->product_name}}</td>
                     <td>
                         @if ($request->status === 'Under Review')
-                            <button class="bg-info color-palette">Under Review</button>
+                            <button class="btn btn-info">Under Review</button>
                         @elseif ($request->status === 'Approved')
                             <button class="btn btn-success">Approved</button>
                         {{-- @elseif ($request->status === 'Rejected')

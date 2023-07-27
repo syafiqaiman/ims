@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Delivery;
+use App\Models\Picker;
+use App\Models\User;
 
 class DeliveryController extends Controller
 {
@@ -88,6 +90,15 @@ class DeliveryController extends Controller
         return redirect()->back()->with('success', 'Delivery information has been successfully saved.');
     }
     
-    
+
+    public function deliveryOrderList()
+    {
+        $pickers = Picker::all();
+        $deliveryOrdersList = Delivery::with(['products', 'pickers'])->get();
+        $users = User::all();
+
+        return view('backend.delivery_orders.delivery_order_list', compact('deliveryOrdersList', 'users', 'pickers'));
+    }
+
 
 }

@@ -509,12 +509,18 @@ public function CustomerAddProductForm(Request $request)
     // Get the user's company
     $company = Company::where('user_id', $user_id)->first();
 
+    if (!$company) {
+        // Redirect to the "add company" page with a message
+        return redirect()->route('company.create')->with('error', 'Please register your company first.');
+    }
+
     // Get all companies
-    $companies = Company::where('id', $company->id)->get();
+    $companies = Company::all();
 
     // Return the view with the company and companies
     return view('backend.product.request_product', compact('company', 'companies'));
 }
+
 
 public function storeProductRequest(Request $request)
 {
@@ -732,14 +738,15 @@ public function rejectProductRequest($id)
 
 public function showAddRequestStatus()
 {
-    $user = auth()->user();
+    // Get the user's ID
+    $user_id = auth()->user()->id;
 
-    // Retrieve the company_id associated with the authenticated user
-    $company_id = $user->company_id;
+    // Get the user's company
+    $company = Company::where('user_id', $user_id)->first();
 
     // Filter the product requests based on the company_id
     $newproduct = DB::table('product_request')
-        ->where('company_id', $company_id)
+        ->where('company_id', $company)
         ->get();
 
     return view('backend.product.request_add_product_status', compact('newproduct'));

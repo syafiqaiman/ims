@@ -55,7 +55,7 @@
 <div class="form-group">
 <label for="exampleInputEmail1">Product Name</label>
 <input type="text" name="product_name"  class="form-control @error('title') is-invalid @enderror"
- id="exampleInputEmail1" placeholder="Enter Product Name">
+ id="exampleInputEmail1" placeholder="Enter Product Name" value="{{ old('product_name') }}">
 
 @error('title')
 <span class="invalid-feedback" role="alert">
@@ -65,10 +65,10 @@
 </div>
 
 <div class="form-group">
-    <label for="product_price">Product Price</label>
+    <label for="product_price">Product Price (Per Item)</label>
     <input type="text" name="product_price" class="form-control @error('product_price') is-invalid @enderror" id="product_price" placeholder="Enter Product Price">
     @error('product_price')
-    <span class="invalid-feedback" role="alert">
+    <span class="invalid-feedback" role="alert" value="{{ old('product_price') }}">
         <strong>{{ $message }}</strong>
     </span>
     @enderror
@@ -77,7 +77,7 @@
 <div class="form-group">
   <label for="exampleInputEmail1">Product Description</label>
   <input type="text" name="product_desc"  class="form-control @error('title') is-invalid @enderror"
-   id="exampleInputEmail1" placeholder="Enter Product Description">
+   id="exampleInputEmail1" placeholder="Enter Product Description" value="{{ old('product_desc') }}">
   
   @error('title')
   <span class="invalid-feedback" role="alert">
@@ -89,9 +89,9 @@
 
 
 <div class="form-group">
-  <label for="exampleInputEmail1">Carton Quantity</label>
+  <label for="exampleInputEmail1">Total Carton Quantity</label>
   <input type="number" name="carton_quantity"  class="form-control @error('title') is-invalid @enderror"
-   id="carton_quantity" placeholder="Enter Quantity">
+   id="carton_quantity" placeholder="Enter Quantity" value="{{ old('carton_quantity') }}>
   
   @error('slug')
   <span class="invalid-feedback" role="alert">
@@ -103,7 +103,7 @@
   <div class="form-group">
     <label for="exampleInputEmail1">Item Per Carton</label>
     <input type="number" name="item_per_carton"  class="form-control @error('title') is-invalid @enderror"
-     id="exampleInputEmail1" placeholder="Enter Quantity">
+     id="exampleInputEmail1" placeholder="Enter Quantity" value="{{ old('item_per_carton') }}">
     
     @error('slug')
     <span class="invalid-feedback" role="alert">
@@ -113,9 +113,9 @@
     </div>
 
 <div class="form-group">
-    <label for="exampleInputEmail1">Product Dimension</label>
+    <label for="exampleInputEmail1">Product Dimension (10x10x10)</label>
     <input type="text" name="product_dimensions"  class="form-control @error('title') is-invalid @enderror"
-     id="exampleInputEmail1" placeholder="Product Dimensions">
+     id="exampleInputEmail1" placeholder="Product Dimensions" value="{{ old('product_dimensions') }}">
     
     @error('title')
     <span class="invalid-feedback" role="alert">
@@ -147,7 +147,7 @@
 </div>
 
 <div class="form-group">
-  <label for="exampleInputEmail1">Total Weight (kg)</label>
+  <label for="exampleInputEmail1">Total Weight (kg)   [Total Weight Must Not Exceed 200kg When Adding Product to Rack]</label>
   <input type="text" name="total_weight" id="total_weight" class="form-control @error('title') is-invalid @enderror" readonly>
   @error('title')
   <span class="invalid-feedback" role="alert">

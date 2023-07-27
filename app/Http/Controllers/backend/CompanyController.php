@@ -84,7 +84,7 @@ return view('backend.company.detail_company', compact('companies'));
         $company->save();
     
         // Redirect back to the previous page with a success message
-        return redirect()->back()->with('success', 'Company details added successfully!');
+        return redirect()->route('customerproductadd')->with('success', 'Company details added successfully!');
     }
     
 
