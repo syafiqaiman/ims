@@ -14,10 +14,9 @@ use App\Http\Controllers\backend\CartController;
 use App\Http\Controllers\backend\CompanyController;
 use App\Http\Controllers\backend\RackController;
 use App\Http\Controllers\backend\OrderController;
-use App\Http\Controllers\backend\InvoiceController;
-
-
-
+use App\Http\Controllers\backend\PDFReportController;
+use App\Http\Controllers\backend\FloorController;
+use App\Http\Controllers\backend\ProductReportController;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -102,13 +101,13 @@ Route::get('/invoice/{order_no}', [OrderController::class, 'show'])->name('order
 Route::get('invoice/{id}/download', [InvoiceController::class, 'download'])->name('invoice.download');
 
 // Floor
-Route::get('/floors', [App\Http\Controllers\backend\FloorController::class, 'index'])->name('floor.index'); // Get listing of the floor list
+Route::get('/floors', [FloorController::class, 'index'])->name('floor.index'); // Get listing of the floor list
 
 // PDF Report Monthly
-Route::get('/report', [App\Http\Controllers\backend\PDFReportController::class, 'index'])->name('report.index');
+Route::get('/report', [PDFReportController::class, 'index'])->name('report.index');
 
 // Product Report Monthly
-Route::get('/product-report/{id}', [App\Http\Controllers\backend\ProductReportController::class, 'index'])->name('product-report.index');
+Route::get('/product-report/{id}', [ProductReportController::class, 'index'])->name('product-report.index');
 
 // Weekly Report for admin
-Route::get('/admin/weekly-report', [App\Http\Controllers\backend\PDFReportController::class, 'showWeeklyReport']);
+Route::get('/admin/weekly-report', [PDFReportController::class, 'showWeeklyReport']);
