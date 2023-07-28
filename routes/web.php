@@ -78,8 +78,8 @@ Route::get('my_stock_level', [QuantityController::class, 'MyStockLevel'])->name(
 // Picker task
 Route::get('picker_task', [PickerController::class, 'PickerTaskList'])->name('pickertask');
 Route::post('/picker/confirm-collection/{id}/{quantity}', [PickerController::class, 'confirmCollection'])->name('picker.confirm');
-Route::get('/picker/history',  [PickerController::class, 'history'])->name('picker.history');
-Route::get('/picker_status',  [PickerController::class, 'AdminView'])->name('picker.viewstatus');
+Route::get('/picker/history', [PickerController::class, 'history'])->name('picker.history');
+Route::get('/picker_status', [PickerController::class, 'AdminView'])->name('picker.viewstatus');
 
 // Cart
 Route::get('cart_index', [CartController::class, 'ItemList'])->name('quantity.index');
@@ -102,7 +102,7 @@ Route::get('/invoice/{order_no}', [OrderController::class, 'show'])->name('order
 Route::get('invoice/{id}/download', [InvoiceController::class, 'download'])->name('invoice.download');
 
 // Floor
-Route::get('/floors', [App\Http\Controllers\backend\FloorController::class, 'index'])->name('floor.index');       // Get listing of the floor list
+Route::get('/floors', [App\Http\Controllers\backend\FloorController::class, 'index'])->name('floor.index'); // Get listing of the floor list
 
 // PDF Report Monthly
 Route::get('/report', [App\Http\Controllers\backend\PDFReportController::class, 'index'])->name('report.index');
