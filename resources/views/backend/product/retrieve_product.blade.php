@@ -81,6 +81,7 @@
                                         <div class="modal-body">
                                             <p>Please set the rack/floor location and date to be stored for this product</p>
 
+                                            <!-- New input fields for rack_id and floor_id -->
                                             <div class="form-group">
                                                 <label for="rack_id">Rack Location</label>
                                                 <select name="rack_id" class="form-control" id="rack_id"
@@ -126,17 +127,11 @@
                                                 @enderror
                                             </div>
 
-
-                                            <!-- Hidden input field to store the selected rack_id -->
-                                            <input type="hidden" id="hidden_rack_id" name="hidden_rack_id" value="">
-                                            <!-- New hidden input field for floor_id -->
-                                            <input type="hidden" id="hidden_floor_id" name="hidden_floor_id"
-                                                value="">
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary"
                                                 data-dismiss="modal">Cancel</button>
-                                            <button type="submit" class="btn btn-primary">Approve</button>
+                                            <button class="btn btn-primary" onclick="submitForm(this)">Approve</button>
                                         </div>
                                     </form>
                                 </div>
@@ -177,37 +172,28 @@
     <script>
         function updateRackId(selectElement) {
             var rackId = selectElement.value;
-            document.getElementById('hidden_rack_id').value = rackId;
+            // document.getElementById('hidden_rack_id').value = rackId;
+            document.getElementById('rack_id').value = rackId; // Assign the selected rack_id to the rack_id input field
         }
 
         function updateFloorId(selectElement) {
             var floorId = selectElement.value;
-            document.getElementById('hidden_floor_id').value = floorId;
+            // document.getElementById('hidden_floor_id').value = floorId;
+            document.getElementById('floor_id').value = floorId; // Assign the selected floor_id to the floor_id input field
         }
 
         function submitForm(linkElement) {
-            var rackId = document.getElementById('hidden_rack_id').value;
-            var floorId = document.getElementById('hidden_floor_id').value;
-            var href = linkElement.getAttribute('href');
+            var rackId = document.getElementById('rack_id').value; // Get the selected rack_id from the dropdown
+            var floorId = document.getElementById('floor_id').value; // Get the selected floor_id from the dropdown
 
-            if (rackId === '') {
-                // Append floor_id to the form action URL
-                var updatedHref = href + '?floor_id=' + floorId;
+            // Set the hidden rack_id and floor_id input values
+            document.getElementById('hidden_rack_id').value = rackId || '';
+            document.getElementById('hidden_floor_id').value = floorId || '';
 
-                // Update the href attribute of the Approve link
-                linkElement.setAttribute('href', updatedHref);
-
-            } else if (floorId === '') {
-                // Append rack_id to the form action URL
-                var updatedHref = href + '?rack_id=' + rackId;
-
-                // Update the href attribute of the Approve link
-                linkElement.setAttribute('href', updatedHref);
-            } else {
-                // Submit the form
-                linkElement.click();
-            }
+            // Submit the form
+            linkElement.click();
         }
+
 
         $(function() {
             $("#restock-table").DataTable({

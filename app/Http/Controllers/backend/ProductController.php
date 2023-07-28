@@ -699,6 +699,7 @@ class ProductController extends Controller
 
     public function approveProductRequest($id, Request $request)
     {
+        // To be used when debugging error
         //return response()->json($request, 200);
 
         // Retrieve the product request by ID
@@ -715,14 +716,10 @@ class ProductController extends Controller
         $total_weight = $total_quantity * $productRequest->weight_per_item;
 
         // Set the rack and floor id from user's form input
-        // $rack_id = $request->rack_id;
-        // $floor_id = $request->floor_id;
+        $rack_id = $request->rack_id;
+        $floor_id = $request->floor_id;
 
-        // Set the rack and floor id from user's form input
-        $rack_id = $request->input('hidden_rack_id');
-        $floor_id = $request->input('hidden_floor_id');
-
-        if ($floor_id != null) {
+        if ($floor_id != null && $rack_id === null) {
             // Get the floor capacity and occupied weight
             $floor_data = DB::table('floor_locations')
                 ->where('id', $floor_id)
@@ -749,7 +746,7 @@ class ProductController extends Controller
                 return redirect()->back()->with('error', 'Floor capacity exceeded. Remaining capacity: ' . $remaining_capacity . '. Please adjust your inputs.')->withInput();
 
             }
-        } else if ($rack_id != null) {
+        } else if ($rack_id != null && $floor_id === null) {
             // Get the rack capacity and occupied weight
             $rack_data = DB::table('rack_locations')
                 ->where('id', $rack_id)
@@ -792,8 +789,8 @@ class ProductController extends Controller
         $product->product_image = $productRequest->product_image;
         $product->company_id = $productRequest->company_id;
         $product->user_id = $user->id; // Assign the user_id associated with the company
-        $product->rack_id = $request->input('hidden_rack_id'); // Get the selected rack_id from the hidden input field
-        $product->floor_id = $request->input('hidden_floor_id'); // Get the selected floor_id from the hidden input field
+        $product->rack_id = $request->input('rack_id'); // Get the selected rack_id from the hidden input field
+        $product->floor_id = $request->input('floor_id'); // Get the selected floor_id from the hidden input field
         $product->date_to_be_stored = $request->input('date_to_be_stored');
         $product->save();
 
