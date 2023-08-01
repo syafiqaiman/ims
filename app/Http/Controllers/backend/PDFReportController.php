@@ -161,10 +161,9 @@ class PDFReportController extends Controller
 
         return view('backend.report.PDFReport', compact('startDate', 'endDate', 'data', 'totalSalesVolume', 'totalRevenue', 'beginningInventory', 'endingInventory', 'occupiedCapacity', 'totalCapacity', 'utilizationRate', 'ordersFulfilled', 'topSellingProducts', 'lowSellingProducts', 'returnMetrics', 'rowspanValue'));
 
-
         //$pdf = PDF::loadView('backend.report.PDFReport', compact('data'));
 
-        //return $pdf->stream('report.pdf');                // This line generate an error 126 (Software incompatibility with M1 Mac models)
+        //return $pdf->stream('report.pdf');      // This line generate an error 126 (Software incompatibility with M1 Mac models)
     }
 
     public function generateWeeklyReports(Request $request) // This function generates weekly report based on the submitted date from the form
