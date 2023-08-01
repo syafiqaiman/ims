@@ -167,18 +167,11 @@ class PDFReportController extends Controller
         //return $pdf->stream('report.pdf');                // This line generate an error 126 (Software incompatibility with M1 Mac models)
     }
 
-    public function showWeeklyReport()
-    {
-        $weeklyReports = DB::table('weekly_reports')->get(); // Retrieve the weekly report data from the database
-
-        return view('backend.report.Weekly-Report', ['weeklyReports' => $weeklyReports]);
-    }
-
-    public function generateWeeklyReports()
+    public function generateWeeklyReports(Request $request) // This function generates weekly report based on the submitted date from the form
     {
         // Replace with the start and end dates of the week
-        $startDate = '2023-05-12 00:00:00';
-        $endDate = '2023-05-18 23:59:59';
+        $startDate = $request->start_date;
+        $endDate = $request->end_date;
 
         // Build the query
         $query = DB::table('orders as o')
@@ -228,7 +221,13 @@ class PDFReportController extends Controller
         }
 
         // Optionally, you can return a response to indicate the success of the operation
-        return response()->json(['message' => 'Weekly reports generated successfully.']);
+        return redirect()->route('showWeeklyReport')->with('success', 'Weekly reports generated successfully.');
     }
 
+    public function showWeeklyReport()
+    {
+        $weeklyReports = DB::table('weekly_reports')->get(); // Retrieve the weekly report data from the database
+
+        return view('backend.report.Weekly-Report', ['weeklyReports' => $weeklyReports]);
+    }
 }

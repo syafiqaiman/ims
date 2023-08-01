@@ -1,8 +1,23 @@
-@extends('backend.layouts.app') <!-- Replace with the layout you want to extend -->
+@extends('backend.layouts.app')
 
 @section('content')
     <div class="container">
         <h1>Weekly Report</h1>
+
+        <form method="GET" action="{{ URL::to('/admin/generate-weekly-report') }}">
+            @csrf
+            <div class="form-group">
+                <label for="start_date">Start Date:</label>
+                <input type="date" name="start_date" id="start_date" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="end_date">End Date:</label>
+                <input type="date" name="end_date" id="end_date" class="form-control">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Generate</button>
+        </form>
 
         <table class="table">
             <thead>
@@ -16,7 +31,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($weeklyReports as $report)
+                @foreach ($weeklyReports as $report)
                     <tr>
                         <td>{{ $report->company_name }}</td>
                         <td>{{ $report->week_number }}</td>
