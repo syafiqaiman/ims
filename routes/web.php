@@ -110,9 +110,5 @@ Route::get('/report', [PDFReportController::class, 'index'])->name('report.index
 Route::get('/product-report/{id}', [ProductReportController::class, 'index'])->name('product-report.index');
 
 // Weekly Report for admin
-// Route::get('/admin/weekly-report', [PDFReportController::class, 'showWeeklyReports'])->name('showWeeklyReports');
-// Route::get('/admin/generate-weekly-reports', [PDFReportController::class, 'generateWeeklyReports'])->name('generateWeeklyReports');
-
-// Weekly Report for admin
 Route::get('/admin/weekly-report', [PDFReportController::class, 'showWeeklyReport'])->name('showWeeklyReport');
 Route::get('/admin/generate-weekly-report', [PDFReportController::class, 'generateWeeklyReports'])->name('generateWeeklyReports');
