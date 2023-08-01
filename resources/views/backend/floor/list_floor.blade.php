@@ -1,6 +1,6 @@
 @extends('backend.layouts.app')
 @section('content')
-<title>Floor List</title>
+    <title>Floor List</title>
     <div class="row">
         <div class="col-md-12">
             <div class="card card-primary">
@@ -31,20 +31,32 @@
                         <tbody>
                             @foreach ($flooring->groupBy('location_codes') as $location => $rows)
                                 @php
-                                    $rowspan = count($rows);
+                                    $totalWeight = 0; // Initialize the total weight for each floor location
                                 @endphp
                                 @foreach ($rows as $index => $row)
-                                    <tr>
-                                        @if ($index === 0)
-                                            <td rowspan="{{ $rowspan }}">{{ $row->location_codes }}</td>
-                                        @endif
-                                        <td>{{ $row->company_name }}</td>
-                                        <td>{{ $row->product_name }}</td>
-                                        <td>{{ $row->occupied }}/3000</td>
-                                    </tr>
+                                    @php
+                                        $totalWeight += $row->occupied; // Sum up the weight for each product in the same floor location
+                                    @endphp
                                 @endforeach
+                                <tr>
+                                    <td rowspan="{{ count($rows) }}">{{ $location }}</td>
+                                    @foreach ($rows as $index => $row)
+                                        @if ($index > 0)
+                                <tr>
+                            @endif
+                            <td>{{ $row->company_name }}</td>
+                            <td>{{ $row->product_name }}</td>
+                            @if ($index === 0)
+                                <td rowspan="{{ count($rows) }}">{{ $totalWeight }}/3000</td>
+                            @endif
+                            @if ($index > 0)
+                                </tr>
+                            @endif
+                            @endforeach
+                            </tr>
                             @endforeach
                         </tbody>
+
                     </table>
                 </div>
                 <!-- /.card-body -->
@@ -54,37 +66,35 @@
     </div>
 
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-    var searchInput = document.getElementById('searchInput');
-    var searchButton = document.getElementById('searchButton');
-    var table = document.getElementById('example1');
-    var rows = table.getElementsByTagName('tr');
+        document.addEventListener('DOMContentLoaded', function() {
+            var searchInput = document.getElementById('searchInput');
+            var searchButton = document.getElementById('searchButton');
+            var table = document.getElementById('example1');
+            var rows = table.getElementsByTagName('tr');
 
-    searchButton.addEventListener('click', function() {
-        var searchText = searchInput.value.toLowerCase();
+            searchButton.addEventListener('click', function() {
+                var searchText = searchInput.value.toLowerCase();
 
-        for (var i = 1; i < rows.length; i++) {
-            var rackLocationCell = rows[i].getElementsByTagName('td')[0];
-            var rackLocationText = rackLocationCell.textContent.toLowerCase();
+                for (var i = 1; i < rows.length; i++) {
+                    var rackLocationCell = rows[i].getElementsByTagName('td')[0];
+                    var rackLocationText = rackLocationCell.textContent.toLowerCase();
 
-            var companyCell = rows[i].getElementsByTagName('td')[1];
-            var companyText = companyCell.textContent.toLowerCase();
+                    var companyCell = rows[i].getElementsByTagName('td')[1];
+                    var companyText = companyCell.textContent.toLowerCase();
 
-            var productNameCell = rows[i].getElementsByTagName('td')[2];
-            var productNameText = productNameCell.textContent.toLowerCase();
+                    var productNameCell = rows[i].getElementsByTagName('td')[2];
+                    var productNameText = productNameCell.textContent.toLowerCase();
 
-            var isVisible = rackLocationText.includes(searchText) || companyText.includes(searchText) || productNameText.includes(searchText);
+                    var isVisible = rackLocationText.includes(searchText) || companyText.includes(
+                        searchText) || productNameText.includes(searchText);
 
-            if (isVisible) {
-                rows[i].style.display = '';
-            } else {
-                rows[i].style.display = 'none';
-            }
-        }
-    });
-});
-
-
+                    if (isVisible) {
+                        rows[i].style.display = '';
+                    } else {
+                        rows[i].style.display = 'none';
+                    }
+                }
+            });
+        });
     </script>
-    
 @endsection
