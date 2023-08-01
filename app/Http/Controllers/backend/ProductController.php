@@ -130,10 +130,10 @@ class ProductController extends Controller
                 ->first();
 
             $floor_capacity = $floor_data->capacity;
-            $occupied_weight_floor = $floor_data->occupied;
+            $occupied_weight = $floor_data->occupied;
 
             // Calculate the remaining capacity for floor
-            $remaining_capacity_floor = $floor_capacity - $occupied_weight_floor;
+            $remaining_capacity_floor = $floor_capacity - $occupied_weight;
 
         } else if ($floor_id === null) {
             // Check if the total weight exceeds the limit of 200
@@ -229,7 +229,7 @@ class ProductController extends Controller
             DB::table('weights')->insert([
                 'product_id' => $product_id,
                 'weight_of_product' => $total_weight,
-                'rack_id' => $data['rack_id'],
+                'floor_id' => $data['floor_id'],
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
