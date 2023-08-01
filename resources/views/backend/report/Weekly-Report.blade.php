@@ -4,7 +4,7 @@
     <div class="container">
         <h1>Weekly Report</h1>
 
-        <form method="GET" action="{{ URL::to('/admin/generate-weekly-report') }}">
+        <form method="GET" action="{{ URL::to('/admin/generate-weekly-report') }}" style="padding-bottom: 2vh">
             @csrf
             <div class="form-group">
                 <label for="start_date">Start Date:</label>
