@@ -621,11 +621,13 @@ public function adminCheckNewProductRequest()
 
     $newrequest = DB::table('product_request')
         ->join('companies', 'product_request.company_id', '=', 'companies.id')
-        ->select('product_request.id', 'companies.company_name', 'companies.address', 'companies.phone_number', 'companies.email', 'product_request.product_name','product_request.carton_quantity','product_request.item_per_carton','product_request.product_dimensions','product_request.total_weight','product_request.product_price', 'product_request.product_image','product_request.product_desc','product_request.weight_per_carton', 'product_request.weight_per_item')
+        ->select('product_request.id', 'companies.company_name', 'companies.address', 'companies.phone_number', 'companies.email', 'product_request.product_name', 'product_request.carton_quantity', 'product_request.item_per_carton', 'product_request.product_dimensions', 'product_request.total_weight', 'product_request.product_price', 'product_request.product_image', 'product_request.product_desc', 'product_request.weight_per_carton', 'product_request.weight_per_item')
+        ->whereNotIn('product_request.status', ['Approved', 'Rejected']) // Exclude rows with status 'Approved' or 'Rejected'
         ->get();
 
-    return view('backend.product.retrieve_product', compact('newrequest','racks'));
+    return view('backend.product.retrieve_product', compact('newrequest', 'racks'));
 }
+
 
 public function approveProductRequest($id, Request $request)
 {
@@ -736,7 +738,7 @@ public function rejectProductRequest($id)
     // return redirect()->route('productRequests.index')->with('success', 'Product request rejected.');
 }
 
-public function showAddRequestStatus()
+public function showAddRequestStatus(Request $request)
 {
     // Get the user's ID
     $user_id = auth()->user()->id;
@@ -744,13 +746,19 @@ public function showAddRequestStatus()
     // Get the user's company
     $company = Company::where('user_id', $user_id)->first();
 
+    // Make sure the company exists before proceeding
+    if (!$company) {
+        return redirect()->route('home')->with('error', 'Company not found.');
+    }
+
     // Filter the product requests based on the company_id
     $newproduct = DB::table('product_request')
-        ->where('company_id', $company)
+        ->where('company_id', $company->id) // Use $company->id to get the company ID
         ->get();
 
-    return view('backend.product.request_add_product_status', compact('newproduct'));
+    return view('backend.product.request_add_product_status', compact('newproduct', 'company', 'user_id'));
 }
+
 
 public function CancelNewAddRequestCust($id)
 {
