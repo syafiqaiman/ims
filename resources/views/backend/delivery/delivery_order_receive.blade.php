@@ -23,7 +23,7 @@
                     <tr>
                         <th>Delivery No.</th>
                         <th>View The Detail of Delivery Order</th>
-                        <th>Handled by</th>
+                        {{-- <th>Handled by</th> --}}
                     </tr>
                 </thead>
                 <tbody>
@@ -33,7 +33,7 @@
                             <td>
                                 <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#statusModal{{ $deliveryOrder->id }}">View Request</button>
                             </td>
-                            <td>
+                            {{-- <td>
                                 @php
                                     $picker = $pickers->where('delivery_order_id', $deliveryOrder->id)->first();
                                     $pickerUser = $picker ? $users->where('id', $picker->user_id)->first() : null;
@@ -41,7 +41,7 @@
                                 @if($pickerUser)
                                     {{ $pickerUser->name }}
                                 @endif
-                            </td>
+                            </td> --}}
                         </tr>
                     @endforeach
                 </tbody>
@@ -68,8 +68,8 @@
                                 <tr>
                                     <th>Product</th>
                                     <th>Qty</th>
-                                    <th>Status</th>
-                                    <th>Remark</th>
+                                    {{-- <th>Status</th>
+                                    <th>Remark</th> --}}
                                 </tr>
                             </thead>
                             <tbody>
@@ -80,10 +80,10 @@
                                     <tr>
                                         <td>{{ $productData->product_name }}</td>
                                         <td>{{ $product->pivot->quantity }}</td>
-                                        <td class="@if ($product->pivot->status === 'Approved') bg-success @elseif ($product->pivot->status === 'Rejected') bg-danger @else bg-warning @endif">
+                                        {{-- <td class="@if ($product->pivot->status === 'Approved') bg-success @elseif ($product->pivot->status === 'Rejected') bg-danger @else bg-warning @endif">
                                             {{ $product->pivot->status }}
                                         </td>
-                                        <td>{{ $product->pivot->remark }}</td>
+                                        <td>{{ $product->pivot->remark }}</td> --}}
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -101,13 +101,14 @@
     <script>
         $(document).ready(function() {
             // Initialize DataTables
-            $('#delivery-orders-table').DataTable();
-
+            var table = $('#delivery-orders-table').DataTable();
+    
             // Search by Delivery No
             $('#search-btn').on('click', function() {
-                // Your existing search logic...
+                var searchText = $('#delivery-no-search').val().trim();
+                table.search(searchText).draw();
             });
-
+    
             // Initialize DataTables for each status modal
             @foreach($deliveryOrdersList as $deliveryOrder)
                 $('#statusTable{{ $deliveryOrder->id }}').DataTable();

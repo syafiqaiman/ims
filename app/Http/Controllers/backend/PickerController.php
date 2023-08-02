@@ -258,20 +258,25 @@ public function disposeProductPicker($pickerId)
 
 public function returnOrderTask()
 {
+    $user = Auth::user();
+
     $pickers = Picker::with(['product' => function ($query) {
-        $query->select('id', 'rack_id');
-    }])
-    ->with(['product.rack' => function ($query) {
-        $query->select('id', 'location_code');
-    }])
-    ->whereIn('status', ['Dispose', 'Refurbish'])
-    ->whereNotNull('return_stock_id')
-    ->join('return_stock', 'pickers.return_stock_id', '=', 'return_stock.id')
-    ->select('pickers.*', 'return_stock.return_no AS return_no')
-    ->get();
+            $query->select('id', 'rack_id');
+        }])
+        ->with(['product.rack' => function ($query) {
+            $query->select('id', 'location_code');
+        }])
+        ->where('pickers.user_id', $user->id) // Fully qualify user_id with table name
+        ->whereIn('pickers.status', ['Dispose', 'Refurbish']) // Fully qualify status with table name
+        ->whereNotNull('pickers.return_stock_id') // Fully qualify return_stock_id with table name
+        ->join('return_stock', 'pickers.return_stock_id', '=', 'return_stock.id')
+        ->select('pickers.*', 'return_stock.return_no AS return_no')
+        ->get();
 
     return view('backend.picker.return_stock_task', compact('pickers'));
 }
+
+
 
 
 
