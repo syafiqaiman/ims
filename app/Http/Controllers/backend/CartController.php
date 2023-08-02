@@ -147,11 +147,26 @@ public function update(Request $request, $id)
         
         // Get the selected user ID
         $user_id = $request->input('user_id');
-        $order_no = $request->input('order_no');
+        $selected_delivery_id = $request->input('order_no'); // Retrieve the selected delivery order ID
         
         if (empty($user_id)) {
             return redirect()->back()->with('error', 'Please select a picker!');
         }
+
+        if (empty($user_id) || empty($selected_delivery_id)) {
+            return redirect()->back()->with('error', 'Please select a picker and a delivery order!');
+        }
+    
+        $delivery = Delivery::find($selected_delivery_id); // Retrieve the delivery record
+    
+        if (empty($delivery)) {
+            return redirect()->back()->with('error', 'Please select the delivery order!');
+        }
+
+        if (!$delivery) {
+            return redirect()->back()->with('error', 'Selected delivery order not found!');
+        }
+        
         
         // Deduct the items from the remaining quantity and update the product and quantity
         foreach ($cart as $id => $item) {
@@ -194,7 +209,7 @@ public function update(Request $request, $id)
             $picker->rack_id = $product->rack_id; // Make sure to adjust this if necessary
             $picker->quantity = $item['quantity'];
             $picker->status = 'Pending';
-            $picker->order_no = $order_no;
+            $picker->order_no = $selected_delivery_id; 
             $picker->save();
         }
         

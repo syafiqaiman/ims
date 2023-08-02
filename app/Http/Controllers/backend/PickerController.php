@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Picker;
 use App\Models\Product;
+use App\Models\Delivery;
 use App\Models\Quantity;
 use App\Models\Weight;
 use App\Models\Order;
@@ -39,9 +40,16 @@ class PickerController extends Controller
             $picker->company_id = $product->company_id;
             $rack_location = Rack::where('id', $product->rack_id)->first();
             $picker->location_code = $rack_location->location_code; // Get the location_code from the rack_location
+        
+            // Access the order_no from the delivery associated with the picker
+            $delivery = Delivery::find($picker->order_no);
     
-            // Access the order_no from the pickers table
-            $picker->order_no = $picker->order_no;
+            if ($delivery) {
+                $picker->order_no = $delivery->order_no;
+            } else {
+                // Handle case when corresponding delivery record is not found
+                $picker->order_no = 'Not Found'; // Set a placeholder value
+            }
     
             if ($picker->status !== 'Collected' && $picker->status !== 'Packing') {
                 $allCollected = false; // Set to false if any picker is not collected

@@ -121,7 +121,7 @@
             <select name="order_no" class="form-control">
               <option value="">Select Order No</option>
               @foreach ($deliveries as $deliveryOrder)
-                <option value="{{ $deliveryOrder->order_no }}">{{ $deliveryOrder->order_no }}</option>
+                <option value="{{ $deliveryOrder->id }}">{{ $deliveryOrder->order_no }}</option>
               @endforeach
             </select>
           </div>

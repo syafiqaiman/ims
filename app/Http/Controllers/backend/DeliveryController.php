@@ -97,7 +97,7 @@ class DeliveryController extends Controller
         $deliveryOrdersList = Delivery::with(['products', 'pickers'])->get();
         $users = User::all();
 
-        return view('backend.delivery_orders.delivery_order_list', compact('deliveryOrdersList', 'users', 'pickers'));
+        return view('backend.delivery.delivery_order_list', compact('deliveryOrdersList', 'users', 'pickers'));
     }
 
 

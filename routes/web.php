@@ -64,7 +64,7 @@ Route::get('/cancel-reorder-request/{id}', [ProductController::class, 'CancelReo
 // Delivery
 Route::get('/delivery_form', [DeliveryController::class, 'deliveryFormCust'])->name('deliveryform');
 Route::post('/delivery/form_sent', [DeliveryController::class, 'storeDelivery'])->name('delivery.submit');
-
+Route::get('/delivery_order_list', [DeliveryController::class, 'deliveryOrderList'])->name('deliveryOrderList');
 //Return Stock
 Route::get('return-stock-form', [ReturnStockController::class, 'CustReturnStockForm'])->name('returnstockform');
 Route::post('return-stock-submit', [ReturnStockController::class, 'storeReturnStock'])->name('return-stock.store');
