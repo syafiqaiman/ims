@@ -11,6 +11,7 @@ use App\Models\Quantity;
 use App\Models\Weight;
 use App\Models\Order;
 use App\Models\Rack;
+use App\Models\Floor;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -38,8 +39,12 @@ class PickerController extends Controller
             $product = Product::find($picker->product_id);
             $picker->product_name = $product->name;
             $picker->company_id = $product->company_id;
+
             $rack_location = Rack::where('id', $product->rack_id)->first();
-            $picker->location_code = $rack_location->location_code; // Get the location_code from the rack_location
+            $floor_location = Floor::where('id', $product->floor_id)->first();
+
+            $picker->location_code = $rack_location->location_code ?? null; // Get the location_code from the rack_location
+            $picker->location_codes = $floor_location->location_codes ?? null; // Get the location_codes from the floor_location
         
             // Access the order_no from the delivery associated with the picker
             $delivery = Delivery::find($picker->order_no);
@@ -93,7 +98,8 @@ class PickerController extends Controller
             $order->product()->associate($product);
             $order->user_id = Auth::user()->id;
             $order->quantity = $picker->quantity;
-            $order->rack_id = $picker->rack_id;
+            $order->rack_id = $picker->rack_id ?? null;
+            $order->floor_id = $picker->floor_id ?? null;
             $order->order_no = $picker->order_no;
             $order->company_id = $product->company_id;
             $order->save();
@@ -198,6 +204,11 @@ public function rerackProductAdmin($pickerId)
         $rackLocation = Rack::where('id', $product->rack_id)->first();
         $rackLocation->occupied += $product->weight_per_item * $picker->quantity;
         $rackLocation->save();
+        
+        // Update the occupied_weight in the floor_locations table
+        $floorLocation = Floor::where('id', $product->floor_id)->first();
+        $floorLocation->occupied += $product->weight_per_item * $picker->quantity;
+        $floorLocation->save();
          
         // Set the picker status to "Reracked"
         $picker->status = 'Reracking';
@@ -259,10 +270,13 @@ public function disposeProductPicker($pickerId)
 public function returnOrderTask()
 {
     $pickers = Picker::with(['product' => function ($query) {
-        $query->select('id', 'rack_id');
+        $query->select('id', 'rack_id', 'floor_id');
     }])
     ->with(['product.rack' => function ($query) {
         $query->select('id', 'location_code');
+    }])
+    ->with(['product.floor' => function ($query) {
+        $query->select('id', 'location_codes');
     }])
     ->whereIn('status', ['Dispose', 'Refurbish'])
     ->whereNotNull('return_stock_id')
@@ -282,7 +296,8 @@ public function refurbishedProduct($pickerId)
 
     if ($picker) {
         $product = $picker->product;
-        $rackLocation = $product->rack->location;
+        $rackLocation = $product->rack->location ?? null;
+        $floorLocation = $product->floor->location ?? null; 
 
         // Update the quantity in the quantities table
         $quantity = Quantity::where('product_id', $product->id)->first();
@@ -295,10 +310,19 @@ public function refurbishedProduct($pickerId)
         $weight->weight_of_product += $product->weight_per_item * $picker->quantity;
         $weight->save();
 
-        // Update the occupied_weight in the rack_locations table
         $rack = Rack::where('id', $product->rack_id)->first();
-        $rack->occupied += $product->weight_per_item * $picker->quantity;
-        $rack->save();
+        $floor = Floor::where('id', $product->floor_id)->first();
+        
+        if ($rack != null ){
+            // Update the occupied_weight in the rack_locations table
+            $rack->occupied += $product->weight_per_item * $picker->quantity;
+            $rack->save();
+        } else if ($floor != null){
+            // Update the occupied_weight in the rack_locations table
+            $floor->occupied += $product->weight_per_item * $picker->quantity;
+            $floor->save();
+        }
+        
 
         // Set the picker status to "Reracked"
         $picker->status = 'Refurbished';
