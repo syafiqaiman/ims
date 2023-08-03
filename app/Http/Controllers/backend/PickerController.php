@@ -107,31 +107,42 @@ class PickerController extends Controller
 
 
 
-public function history()
-{
-    $user = Auth::user();
-    $pickers = Picker::where('user_id', $user->id)
-                      ->where('status', 'Collected')
-                      ->update(['status' => 'Packing']);
-
-    $orders = Order::with('product')
-                   ->join('products', 'orders.product_id', '=', 'products.id')
-                   ->where('orders.user_id', $user->id) // Retrieve orders of the logged-in picker only
-                   ->orderBy('created_at', 'desc')
-                   ->select('orders.id', 'orders.user_id', 'orders.product_id', 'orders.quantity', 'orders.created_at', 'orders.updated_at', 'products.product_name')
-                   ->get()
-                   ->groupBy(function($order) {
-                        // Group orders by date
-                        return $order->created_at->format('Y-m-d');
-                   });
-                   
-    $dates = $orders->keys(); // Get the dates for the tabs
+    public function history()
+    {
+        $user = Auth::user();
+        
+        // Update status of pickers
+        $pickers = Picker::where('user_id', $user->id)
+                          ->where('status', 'Collected')
+                          ->update(['status' => 'Packing']);
     
-    return view('backend.picker.picker_history', [
-        'orders' => $orders,
-        'dates' => $dates,
-    ]);
-}
+        // Retrieve orders and associated delivery order numbers
+        $orders = Order::with('product', 'delivery') // Load the 'delivery' relationship
+                       ->join('products', 'orders.product_id', '=', 'products.id')
+                       ->join('delivery', 'orders.order_no', '=', 'delivery.id')
+                       ->where('orders.user_id', $user->id)
+                       ->orderBy('created_at', 'desc')
+                       ->select('orders.id', 'orders.user_id', 'orders.product_id', 'orders.quantity', 'orders.order_no','delivery.order_no', 'orders.created_at', 'orders.updated_at', 'products.product_name')
+                       ->get()
+                       ->groupBy(function($order) {
+                            return $order->created_at->format('d-m-Y');
+                       });
+                       
+        // Retrieve delivery order numbers for each picker entry
+        $pickerOrders = Picker::where('user_id', $user->id)
+                               ->pluck('order_no')
+                               ->toArray();
+    
+        $dates = $orders->keys();
+    
+        return view('backend.picker.picker_history', [
+            'orders' => $orders,
+            'dates' => $dates,
+            'pickerOrders' => $pickerOrders,
+        ]);
+    }
+    
+    
 
 public function AdminView()
 {
