@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Delivery;
+use App\Models\Weight;
+use App\Models\Rack;
+use App\Models\Quantity;
 use App\Models\Picker;
 use App\Models\User;
 
@@ -100,5 +103,69 @@ class DeliveryController extends Controller
         return view('backend.delivery.delivery_order_receive', compact('deliveryOrdersList', 'users', 'pickers'));
     }
 
+    public function assignTaskDO(Request $request)
+    {
+        $validatedData = $request->validate([
+            'user_id' => 'required',
+            'delivery_id' => 'required',
+            'product_id' => 'required|array',
+            'quantity' => 'required|array',
+        ]);
+    
+        $userId = $validatedData['user_id'];
+        $deliveryId = $validatedData['delivery_id'];
+        $productIds = $validatedData['product_id'];
+        $quantities = $validatedData['quantity'];
+    
+        $cart = []; // Initialize an array to hold cart items for further processing
+    
+        foreach ($productIds as $index => $productId) {
+            $cart[$productId] = [
+                'quantity' => $quantities[$index],
+            ];
+        }
+    
+        foreach ($cart as $id => $item) {
+            $quantity_to_deduct = $item['quantity'];
+    
+            $quantity = Quantity::where('product_id', $id)->firstOrFail();
+            $product = Product::findOrFail($quantity->product_id);
+            $num_cartons = floor($quantity_to_deduct / $product->item_per_carton);
+            $num_items = $quantity_to_deduct % $product->item_per_carton;
+            $quantity_deducted = $num_cartons * $product->item_per_carton + $num_items;
+    
+            if ($quantity->remaining_quantity < $quantity_deducted) {
+                return redirect()->back()->with('error', 'Not enough stock!');
+            }
+    
+            $quantity->remaining_quantity -= $quantity_deducted;
+            $quantity->sold_carton_quantity += $num_cartons;
+            $quantity->sold_item_quantity += $num_items; // Remove the calculation here
+            $quantity->save();
+    
+            $total_weight = $product->weight_per_item * $quantity_deducted;
+            $rack = Rack::where('id', $product->rack_id)->firstOrFail();
+            $rack->occupied = max(0, $rack->occupied - $total_weight);
+            $rack->save();
+    
+            $weight = Weight::where('product_id', $product->id)->firstOrFail();
+            $weight->weight_of_product -= $total_weight;
+            $weight->save();
+    
+            $picker = new Picker();
+            $picker->user_id = $userId;
+            $picker->product_id = $id;
+            $picker->rack_id = $rack->id; // Adjust this based on your structure
+            $picker->quantity = $item['quantity'];
+            $picker->status = 'Pending';
+            $picker->order_no = $deliveryId;
+            $picker->save();
+        }
+    
+        // Perform any other necessary actions
+    
+        return redirect()->back()->with('success', 'Order placed and products assigned successfully!');
+    }
+    
 
 }
