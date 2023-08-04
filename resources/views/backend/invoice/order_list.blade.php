@@ -40,7 +40,6 @@
                 <b>Order ID:</b> {{ $orderGroup->first()->id }}<br>
                 <b>Product ID:</b> {{ $orderGroup->first()->product_id }}<br>
                 <b>Rack ID:</b> {{ $orderGroup->first()->rack_id }}<br>
-                <b>Quantity:</b> {{ $orderGroup->first()->quantity }}
             </div>
             <!-- /.col -->
         </div>
@@ -54,7 +53,7 @@
                             <th>#</th>
                             <th>Product Name</th>
                             <th>Quantity</th>
-                            {{-- <th>Subtotal</th> --}}
+                            <th>Subtotal</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -63,7 +62,7 @@
                                 <td>{{ $index + 1 }}</td>
                                 <td>{{ $order->product->product_name }}</td>
                                 <td>{{ $order->quantity }}</td>
-                                {{-- <td>{{ $order->product->price * $order->quantity }}</td> --}}
+                                <td>{{ $order->product->product_price * $order->quantity }}</td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -75,32 +74,14 @@
         <!-- /.row -->
         <div class="row">
             <!-- accepted payments column -->
-            <div class="col-6">
-                <p class="lead">Payment Methods:</p>
-                <img src="https://via.placeholder.com/100" alt="Visa">
-                <img src="https://via.placeholder.com/100" alt="Mastercard">
-                <img src="https://via.placeholder.com/100" alt="American Express">
-                <img src="https://via.placeholder.com/100" alt="Paypal">
-                <p class="text-muted well well-sm shadow-none" style="margin-top: 10px;">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tincidunt facilisis libero sed cursus.
-                </p>
-            </div>
             <!-- /.col -->
             <div class="col-6">
                 <p class="lead">Amount Due {{ $orderGroup->first()->created_at->format('Y-m-d') }}</p>
                 <div class="table-responsive">
                     <table class="table">
                         <tr>
-                            <th style="width:50%">Subtotal:</th>
-                            {{-- <td>{{ $orderGroup->first()->product->price * $orderGroup->first()->quantity }}</td> --}}
-                        </tr>
-                        <tr>
-                            <th>Tax (0%):</th>
-                            <td>$0.00</td>
-                        </tr>
-                        <tr>
                             <th>Total:</th>
-                            {{-- <td>{{ $orderGroup->first()->product->price * $orderGroup->first()->quantity }}</td> --}}
+                            <td>{{ $orderGroup->first()->product->product_price * $orderGroup->first()->quantity }}</td>
                         </tr>
                     </table>
                 </div>

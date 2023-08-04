@@ -40,7 +40,6 @@
                     <b>Order ID:</b> {{ $orderGroup->first()->id }}<br>
                     <b>Product ID:</b> {{ $orderGroup->first()->product_id }}<br>
                     <b>Rack ID:</b> {{ $orderGroup->first()->rack_id }}<br>
-                    <b>Quantity:</b> {{ $orderGroup->first()->quantity }}
                 </div>
                 <!-- /.col -->
             </div>
@@ -74,25 +73,14 @@
             
             <!-- /.row -->
             <div class="row">
-                <!-- accepted payments column -->
-                <div class="col-6">
-                    <p class="lead">Payment Methods:</p>
-                    <img src="{{ asset('backend/dist/img/credit/visa.png') }}" alt="Visa">
-                    <img src="{{ asset('backend/dist/img/credit/mastercard.png') }}" alt="Mastercard">
-                    <img src="{{ asset('backend/dist/img/credit/american-express.png') }}" alt="American Express">
-                    <img src="{{ asset('backend/dist/img/credit/paypal2.png') }}" alt="Paypal">
-                    <p class="text-muted well well-sm shadow-none" style="margin-top: 10px;">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tincidunt facilisis libero sed cursus.
-                    </p>
-                </div>
                 <!-- /.col -->
                 <div class="col-6">
-                    <p class="lead">Amount Due {{ $orderGroup->first()->created_at->format('Y-m-d') }}</p>
+        
                     <div class="table-responsive">
                         <table class="table">
                             <tr>
                                 <th style="width:50%">Subtotal:</th>
-                                {{-- <td>{{ $orderGroup->first()->product->price * $orderGroup->first()->quantity }}</td> --}}
+                                <td>{{ $orderGroup->first()->product->product_price * $orderGroup->first()->quantity }}</td>
                             </tr>
                             <tr>
                                 <th>Tax (0%):</th>
@@ -100,7 +88,7 @@
                             </tr>
                             <tr>
                                 <th>Total:</th>
-                                {{-- <td>{{ $orderGroup->first()->product->price * $orderGroup->first()->quantity }}</td> --}}
+                                <td>{{ $orderGroup->first()->product->product_price * $orderGroup->first()->quantity }}</td>
                             </tr>
                         </table>
                     </div>

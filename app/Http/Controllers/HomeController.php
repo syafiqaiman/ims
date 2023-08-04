@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\Order;
 use App\Models\User;
 use App\Models\ReturnStock;
+use App\Models\Delivery;
 
 class HomeController extends Controller
 {
@@ -50,9 +51,12 @@ class HomeController extends Controller
     ->where('receive_status', 'Received')
     ->distinct('return_no')
     ->count();
+    $receivedDeliveryCount = Delivery::where('user_id', $user->id)
+    ->distinct('order_no')
+    ->count();
 
 
-    return view('home', compact('productsCount', 'ordersCount', 'usersCount','userProductsCount', 'completedOrdersCount', 'completedReturnStocksCount'));
+    return view('home', compact('productsCount', 'ordersCount', 'usersCount','userProductsCount', 'completedOrdersCount', 'completedReturnStocksCount','receivedDeliveryCount'));
 
 
     }
