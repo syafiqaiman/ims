@@ -23,7 +23,7 @@ use App\Models\Quantity;
 use App\Models\WeeklyReport;
 
 
-class PDFReportController extends Controller
+class ReportController extends Controller
 {
     public function __construct()
     {
