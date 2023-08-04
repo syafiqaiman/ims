@@ -79,6 +79,15 @@ Route::get('picker_task', [PickerController::class, 'PickerTaskList'])->name('pi
 Route::post('/picker/confirm-collection/{id}/{quantity}', [PickerController::class, 'confirmCollection'])->name('picker.confirm');
 Route::get('/picker/history', [PickerController::class, 'history'])->name('picker.history');
 Route::get('/picker_status', [PickerController::class, 'AdminView'])->name('picker.viewstatus');
+Route::post('/rerack-product/{pickerId}', [PickerController::class, 'rerackProductAdmin'])->name('rerackProductAdmin');
+Route::post('/rerack-product-picker/{pickerId}', [PickerController::class, 'rerackProductPicker'])->name('rerackProductPicker');
+Route::post('/dispose-product/{pickerId}', [PickerController::class, 'disposeProductAdmin'])->name('disposeProductAdmin');
+Route::post('/dispose-product-picker/{pickerId}', [PickerController::class, 'disposeProductPicker'])->name('disposeProductPicker');
+Route::get('/picker-tasks-count', [SidebarController::class, 'getCountPickerTasks'])->name('picker_tasks_count');
+Route::get('/picker-return-count', [SidebarController::class, 'getCountPickerReturn'])->name('picker_return_count');
+Route::get('/return-order-task', [PickerController::class, 'returnOrderTask'])->name('return_stock_task');
+Route::post('/refurbish-product-task/{pickerId}', [PickerController::class, 'refurbishedProduct'])->name('refurbishedProduct');
+
 
 // Cart
 Route::get('cart_index', [CartController::class, 'ItemList'])->name('quantity.index');
