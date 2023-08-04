@@ -225,7 +225,3 @@ class PDFReportController extends Controller
     public function showWeeklyReport()
     {
         $weeklyReports = DB::table('weekly_reports')->get(); // Retrieve the weekly report data from the database
-
-        return view('backend.report.Weekly-Report', ['weeklyReports' => $weeklyReports]);
-    }
-}

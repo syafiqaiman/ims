@@ -67,7 +67,15 @@ class ProductController extends Controller
         // return the view with the list of products
         return view('backend.product.list_product', compact('list'));
     }
+        // return the view with the list of products
+        return view('backend.product.list_product', compact('list'));
+    }
 
+
+    public function getUsers(Request $request)
+    {
+        $company = Company::find($request->company_id);
+        $users = $company->users;
 
     public function getUsers(Request $request)
     {
@@ -96,10 +104,20 @@ class ProductController extends Controller
             ->where('companies.id', $company_id)
             ->select('users.id', 'users.name')
             ->get();
+        // Get the users associated with the selected company
+        $users = DB::table('users')
+            ->join('companies', 'users.id', '=', 'companies.user_id')
+            ->where('companies.id', $company_id)
+            ->select('users.id', 'users.name')
+            ->get();
 
         // Get all products
         $allProducts = DB::table('products')->get();
+        // Get all products
+        $allProducts = DB::table('products')->get();
 
+        // Return the view with the companies, users, and products
+        return view('backend.product.create_product', compact('companies', 'users', 'allProducts', 'racks', 'floors'));
         // Return the view with the companies, users, and products
         return view('backend.product.create_product', compact('companies', 'users', 'allProducts', 'racks', 'floors'));
     }
@@ -110,6 +128,18 @@ class ProductController extends Controller
      * Store a newly created resource in storage.
      */
     public function ProductInsert(Request $request)
+    {
+        // Calculate the total quantity
+        $total_quantity = $request->carton_quantity * $request->item_per_carton;
+        $total_weight = $total_quantity * $request->weight_per_item;
+        $rack_id = $request->rack_id;
+        $floor_id = $request->floor_id;
+
+        if ($rack_id === null) {
+            // Check if the total weight exceeds the limit of 200
+            if ($total_weight > 200) {
+                return redirect()->back()->with('error', 'Total weight exceeds limit of 200. Please adjust your inputs.')->withInput();
+            }
     {
         // Calculate the total quantity
         $total_quantity = $request->carton_quantity * $request->item_per_carton;
@@ -145,10 +175,39 @@ class ProductController extends Controller
                 ->where('id', $rack_id)
                 ->select('capacity', 'occupied')
                 ->first();
+            $floor_data = DB::table('floor_locations')
+                ->where('id', $floor_id)
+                ->select('capacity', 'occupied')
+                ->first();
+
+            $floor_capacity = $floor_data->capacity;
+            $occupied_weight = $floor_data->occupied;
+
+            // Calculate the remaining capacity for floor
+            $remaining_capacity_floor = $floor_capacity - $occupied_weight;
+
+        } else if ($floor_id === null) {
+            // Check if the total weight exceeds the limit of 200
+            if ($total_weight > 200) {
+                return redirect()->back()->with('error', 'Total weight exceeds limit of 200. Please adjust your inputs.')->withInput();
+            }
+
+            // Get the rack capacity, occupied weight, floor capacity, and occupied weight
+            $rack_data = DB::table('rack_locations')
+                ->where('id', $rack_id)
+                ->select('capacity', 'occupied')
+                ->first();
 
             $rack_capacity = $rack_data->capacity;
             $occupied_weight = $rack_data->occupied;
+            $rack_capacity = $rack_data->capacity;
+            $occupied_weight = $rack_data->occupied;
 
+            // Calculate the remaining capacity for rack 
+            $remaining_capacity_rack = $rack_capacity - $occupied_weight;
+        } else {
+            return redirect()->back()->with('error', 'Please select at least one storage location.')->withInput();
+        }
             // Calculate the remaining capacity for rack 
             $remaining_capacity_rack = $rack_capacity - $occupied_weight;
         } else {
@@ -171,11 +230,47 @@ class ProductController extends Controller
             // Only one of rack_id or floor_id is required
             'floor_id' => 'required_without:rack_id', // Only one of floor_id or rack_id is required
         ]);
+        $validatedData = $request->validate([
+            'company_id' => 'required',
+            'product_name' => 'required|string|max:255',
+            'product_desc' => 'required|string',
+            'weight_per_item' => 'required|numeric',
+            'weight_per_carton' => 'required|numeric',
+            'product_dimensions' => 'required|string|max:255',
+            'date_to_be_stored' => 'required|date',
+            'carton_quantity' => 'required|integer',
+            'product_price' => 'required|numeric',
+            'item_per_carton' => 'required|integer',
+            //'product_image' => 'required|image|max:2048'      // Commented out for ease of testing
+            'rack_id' => 'required_without:floor_id',
+            // Only one of rack_id or floor_id is required
+            'floor_id' => 'required_without:rack_id', // Only one of floor_id or rack_id is required
+        ]);
 
         $company = DB::table('companies')
             ->where('id', $request->company_id)
             ->first();
+        $company = DB::table('companies')
+            ->where('id', $request->company_id)
+            ->first();
 
+        $data = [
+            'user_id' => $company->user_id,
+            'company_id' => $request->company_id,
+            'product_name' => $request->product_name,
+            'product_desc' => $request->product_desc,
+            'item_per_carton' => $request->item_per_carton,
+            'carton_quantity' => $request->carton_quantity,
+            'product_price' => $request->product_price,
+            'weight_per_item' => $request->weight_per_item,
+            'weight_per_carton' => $request->weight_per_carton,
+            'product_dimensions' => $request->product_dimensions,
+            'rack_id' => $request->rack_id,
+            'floor_id' => $request->floor_id,
+            'date_to_be_stored' => $request->date_to_be_stored,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ];
         $data = [
             'user_id' => $company->user_id,
             'company_id' => $request->company_id,
@@ -199,11 +294,27 @@ class ProductController extends Controller
             $filename = date('YmdHi') . '.' . $file->getClientOriginalExtension();
             $file->storeAs('public/Image', $filename);
             $data['product_image'] = $filename;
+        if ($request->hasFile('product_image')) {
+            $file = $request->file('product_image');
+            $filename = date('YmdHi') . '.' . $file->getClientOriginalExtension();
+            $file->storeAs('public/Image', $filename);
+            $data['product_image'] = $filename;
 
             // Move the file to the desired folder
             Storage::move('public/' . $filename, 'public/Image/' . $filename);
         }
+            // Move the file to the desired folder
+            Storage::move('public/' . $filename, 'public/Image/' . $filename);
+        }
 
+        // Check if the remaining capacity is less than the weight of the new product
+        if ($rack_id === null) {
+            if ($remaining_capacity_floor < $total_weight) {
+                return redirect()->back()->with('error', 'Floor capacity exceeded. Remaining capacity: ' . $remaining_capacity_floor . '. Please adjust your inputs.')->withInput();
+            }
+
+            // Insert data into the products table
+            $product_id = DB::table('products')->insertGetId($data);
         // Check if the remaining capacity is less than the weight of the new product
         if ($rack_id === null) {
             if ($remaining_capacity_floor < $total_weight) {
@@ -390,6 +501,11 @@ class ProductController extends Controller
             ->where('weights.product_id', '!=', $id) // exclude the product being deleted
             ->sum('weights.weight_of_product');
 
+        $newOccupiedFloor = DB::table('weights')
+            ->join('floor_locations', 'floor_locations.id', '=', 'weights.floor_id')
+            ->where('floor_locations.id', '=', $floorId)
+            ->where('weights.product_id', '!=', $id) // exclude the product being deleted
+            ->sum('weights.weight_of_product');
 
             DB::table('rack_locations')
                 ->where('id', '=', $rack_id)
@@ -575,6 +691,9 @@ class ProductController extends Controller
         if (!$request) {
             return redirect()->back()->with('error', 'Request not found.');
         }
+        if (!$request) {
+            return redirect()->back()->with('error', 'Request not found.');
+        }
 
         // Check if the request status is "Under Review"
         if ($request->status !== 'Under Review') {
@@ -583,7 +702,11 @@ class ProductController extends Controller
 
         // Delete the request from the database
         $request->delete();
+        // Delete the request from the database
+        $request->delete();
 
+        return redirect()->back()->with('success', 'Request removed successfully.');
+    }
         return redirect()->back()->with('success', 'Request removed successfully.');
     }
 
@@ -640,7 +763,16 @@ class ProductController extends Controller
             $filename = date('YmdHi') . '.' . $file->getClientOriginalExtension();
             $file->storeAs('public/Image', $filename);
             $data['product_image'] = $filename;
+        // Handle the product image upload
+        if ($request->hasFile('product_image')) {
+            $file = $request->file('product_image');
+            $filename = date('YmdHi') . '.' . $file->getClientOriginalExtension();
+            $file->storeAs('public/Image', $filename);
+            $data['product_image'] = $filename;
 
+            // Move the file to the desired folder
+            Storage::move('public/' . $filename, 'public/Image/' . $filename);
+        }
             // Move the file to the desired folder
             Storage::move('public/' . $filename, 'public/Image/' . $filename);
         }
