@@ -112,7 +112,7 @@
                         </form>                 
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" form="assignTaskForm{{ $deliveryOrder->id }}" class="btn btn-primary">Assign Picker</button>
+                        <button id="assignBtn{{ $deliveryOrder->id }}" type="submit" form="assignTaskForm{{ $deliveryOrder->id }}" class="btn btn-primary">Assign Picker</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     </div>
                 </div>
@@ -121,7 +121,7 @@
     @endforeach
 
     @push('scripts')
-    <script>
+   <script>
         $(document).ready(function() {
             // Initialize DataTables
             var table = $('#delivery-orders-table').DataTable();

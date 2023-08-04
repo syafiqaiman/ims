@@ -141,6 +141,16 @@
                             </li>
 
                             <li class="nav-item">
+                                <a href="{{URL::to('/delivery_order_list')}}" class="nav-link">
+                                  <i class="nav-icon fas fa-truck"></i>
+                                  <p>
+                                    Delivery Order List
+                                    <!-- <span class="right badge badge-danger">New</span> -->
+                                  </p>
+                                </a>
+                              </li>
+                    
+                            <li class="nav-item">
                                 <a href="{{ URL::to('/cart_index') }}" class="nav-link">
                                     <i class="nav-icon fas fa-edit"></i>
                                     <p>
