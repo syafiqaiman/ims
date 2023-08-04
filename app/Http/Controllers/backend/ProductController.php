@@ -12,6 +12,7 @@ use App\Models\Product;
 use App\Models\Company;
 use App\Models\User;
 use App\Models\Rack;
+use App\Models\Floor;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Restock;
 use App\Models\ProductRequest;
@@ -39,9 +40,10 @@ class ProductController extends Controller
         $list = DB::table('products')
         ->join('quantities', 'products.id', '=', 'quantities.product_id')
         ->join('companies', 'products.company_id', '=', 'companies.id')
-        ->join('rack_locations', 'products.rack_id', '=', 'rack_locations.id')
+        ->leftjoin('rack_locations', 'products.rack_id', '=', 'rack_locations.id')
+        ->leftjoin('floor_locations', 'products.floor_id', '=', 'floor_locations.id')
         ->join('weights', 'products.id', '=', 'weights.product_id')
-        ->select('products.id','rack_locations.location_code', 'companies.company_name', 'products.product_name', 'products.product_desc', 'products.item_per_carton', 'products.carton_quantity', 'quantities.total_quantity', 'quantities.remaining_quantity', 'products.weight_per_item', 'products.weight_per_carton', 'weights.weight_of_product', 'products.product_dimensions', 'products.product_image', 'products.date_to_be_stored')
+        ->select('products.id','rack_locations.location_code', 'floor_locations.location_codes', 'companies.company_name', 'products.product_name', 'products.product_desc', 'products.item_per_carton', 'products.carton_quantity', 'quantities.total_quantity', 'quantities.remaining_quantity', 'products.weight_per_item', 'products.weight_per_carton', 'weights.weight_of_product', 'products.product_dimensions', 'products.product_image', 'products.date_to_be_stored')
         ->get();
 
 
