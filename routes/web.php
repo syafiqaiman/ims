@@ -13,6 +13,7 @@ use App\Http\Controllers\backend\PickerController;
 use App\Http\Controllers\backend\CartController;
 use App\Http\Controllers\backend\CompanyController;
 use App\Http\Controllers\backend\RackController;
+use App\Http\Controllers\backend\FloorController;
 use App\Http\Controllers\backend\OrderController;
 use App\Http\Controllers\backend\InvoiceController;
 use App\Http\Controllers\SidebarController;
@@ -114,6 +115,9 @@ Route::post('/cart_clear', [CartController::class, 'clear'])->name('cart.clear')
 
 // Rack
 Route::get('/racks', [RackController::class, 'RackList'])->name('rack.list');
+
+// Floor
+Route::get('/floors', [FloorController::class, 'index'])->name('floor.list');
 
 // Orders
 Route::get('/orders/{companyId}', [OrderController::class, 'orderList'])->name('orderList');
