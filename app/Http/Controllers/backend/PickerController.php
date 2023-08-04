@@ -12,7 +12,6 @@ use App\Models\Weight;
 use App\Models\Order;
 use App\Models\Rack;
 use App\Models\Floor;
-use App\Models\Floor;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
