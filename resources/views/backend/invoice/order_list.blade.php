@@ -1,5 +1,3 @@
-<!-- resources/views/invoice/show.blade.php -->
-
 @extends('backend.layouts.app')
 
 @section('content')
@@ -20,25 +18,27 @@
             <div class="col-sm-4 invoice-col">
                 From
                 <address>
-                    <strong>{{ $company->company_name }}</strong><br>
-                    {{ $company->address }}<br>
-                    Phone: {{ $company->phone_number }}<br>
-                    Email: {{ $company->email }}
+                    <strong>{{ $delivery->sender_name }}</strong><br>
+                    {{ $delivery->sender_address }}<br>
+                    {{ $delivery->sender_postcode }}, {{ $delivery->sender_state }}<br>
+                    Phone: {{ $delivery->sender_phone }}
                 </address>
             </div>
             <!-- /.col -->
             <div class="col-sm-4 invoice-col">
                 To
                 <address>
-                    <strong>{{ $orderGroup->first()->user_id }}</strong>
+                    <strong>{{ $delivery->receiver_name }}</strong><br>
+                    {{ $delivery->receiver_address }}<br>
+                    {{ $delivery->receiver_postcode }}, {{ $delivery->receiver_state }}<br>
+                    Phone: {{ $delivery->receiver_phone }}
                 </address>
             </div>
             <!-- /.col -->
             <div class="col-sm-4 invoice-col">
-                <b>Invoice #{{ $orderGroup->first()->id }}</b><br>
+                <b>Invoice #{{ $delivery->order_no }}</b><br>
                 <br>
-                <b>Order ID:</b> {{ $orderGroup->first()->id }}<br>
-                <b>Product ID:</b> {{ $orderGroup->first()->product_id }}<br>
+                <b>Order ID:</b> {{ $delivery->order_no }}<br>
                 <b>Rack ID:</b> {{ $orderGroup->first()->rack_id }}<br>
             </div>
             <!-- /.col -->
@@ -52,7 +52,7 @@
                         <tr>
                             <th>#</th>
                             <th>Product Name</th>
-                            <th>Quantity</th>
+                            <th>Quantity (item)</th>
                             <th>Subtotal</th>
                         </tr>
                     </thead>
@@ -62,7 +62,7 @@
                                 <td>{{ $index + 1 }}</td>
                                 <td>{{ $order->product->product_name }}</td>
                                 <td>{{ $order->quantity }}</td>
-                                <td>{{ $order->product->product_price * $order->quantity }}</td>
+                                <td>RM{{ $order->product->product_price * $order->quantity }}</td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -73,19 +73,26 @@
         
         <!-- /.row -->
         <div class="row">
-            <!-- accepted payments column -->
+
             <!-- /.col -->
-            <div class="col-6">
-                <p class="lead">Amount Due {{ $orderGroup->first()->created_at->format('Y-m-d') }}</p>
+            {{-- <div class="col-6">
                 <div class="table-responsive">
                     <table class="table">
+                        <tr>
+                            <th style="width:50%">Subtotal:</th>
+                            <td>{{ $orderGroup->first()->product->product_price * $orderGroup->first()->quantity }}</td>
+                        </tr>
+                        <tr>
+                            <th>Tax (0%):</th>
+                            <td>$0.00</td>
+                        </tr>
                         <tr>
                             <th>Total:</th>
                             <td>{{ $orderGroup->first()->product->product_price * $orderGroup->first()->quantity }}</td>
                         </tr>
                     </table>
                 </div>
-            </div>
+            </div> --}}
             <!-- /.col -->
         </div>
         <!-- /.row -->

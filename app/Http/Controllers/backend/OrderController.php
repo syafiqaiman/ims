@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\Company;
+use App\Models\Delivery;
 use Illuminate\Support\Facades\View;
 use PDF;
 
@@ -56,8 +57,13 @@ public function show($orderNo)
     $companyId = $orderGroup->first()->product->company_id;
     $company = Company::find($companyId);
 
+    // Retrieve delivery information
+    $delivery = Delivery::where('id', $orderNo)->first();
+
     // Pass the data to the view
-    return view('backend.invoice.order_list', compact('orderGroup', 'company'));
+    return view('backend.invoice.order_list', compact('orderGroup', 'company', 'delivery'));
 }
+
+
 
 }
