@@ -85,7 +85,13 @@ public function getUsers(Request $request)
     {
      // Get all companies
     $companies = Company::all();
+
+    // Get all the racks
     $racks = Rack::all();
+    
+    // Get all the floors
+    $floors = Floor::all();
+
     // Get the selected company's ID
     $company_id = $request->input('company');
 
@@ -100,7 +106,7 @@ public function getUsers(Request $request)
     $allProducts = DB::table('products')->get();
 
     // Return the view with the companies, users, and products
-    return view('backend.product.create_product', compact('companies', 'users', 'allProducts','racks'));
+    return view('backend.product.create_product', compact('companies', 'users', 'allProducts','racks', 'floors'));
     }
     
 

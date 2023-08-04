@@ -52,6 +52,21 @@
                   @enderror
                 </div>       
 
+                <div class="form-group">
+                  <label for="floor_ids">Floor Location</label>
+                  <select name="floor_id" class="form-control" id="floor_id">
+                      <option value="">Select Floor Location</option>
+                      @foreach($floors as $location)
+                          <option value="{{ $location->id }}">{{ $location->location_codes }}</option>
+                      @endforeach
+                  </select>
+                  @error('floor_id')
+                      <span class="invalid-feedback" role="alert">
+                          <strong>{{ $message }}</strong>
+                      </span>
+                  @enderror
+                </div>       
+
 <div class="form-group">
 <label for="exampleInputEmail1">Product Name</label>
 <input type="text" name="product_name"  class="form-control @error('title') is-invalid @enderror"
