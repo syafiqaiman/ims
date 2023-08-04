@@ -34,7 +34,6 @@ class PDFReportController extends Controller
     {
         // Get the authenticated user
         $user = auth()->user();
-        $user_id = auth()->user()->id;
 
         if ($user->role == 3) {
             // If the user is of role 3, get products owned by the user with role 3
@@ -71,6 +70,8 @@ class PDFReportController extends Controller
                     'quantities.sold_item_quantity'
                 )
                 ->where('products.user_id', $user->id)
+                ->whereDate('quantities.created_at', '>=', $startDate)
+                ->whereDate('quantities.created_at', '<=', $endDate)
                 ->distinct()
                 ->get();
 
@@ -92,17 +93,15 @@ class PDFReportController extends Controller
 
             // Retrieve the beginning inventory count
             $beginningInventory = DB::table('quantities')
-                ->join('products', 'products.id', '=', 'quantities.product_id')
-                ->whereDate('quantities.updated_at', '>=', now()->startOfMonth())
-                ->where('products.user_id', $user->id)
-                ->SUM('remaining_quantity');
+                ->whereDate('created_at', '>=', now()->startOfMonth())
+                ->orderBy('created_at')
+                ->value('total_quantity');
 
             // Retrieve the ending inventory count
             $endingInventory = DB::table('quantities')
-                ->join('products', 'products.id', '=', 'quantities.product_id')
-                ->whereDate('quantities.updated_at', '<=', now()->endOfMonth())
-                ->where('products.user_id', $user->id)
-                ->SUM('remaining_quantity');
+                ->whereDate('created_at', '<=', now()->endOfMonth())
+                ->orderByDesc('created_at')
+                ->value('total_quantity');
 
             // Get the total capacity of the warehouse
             $totalCapacity = DB::table('rack_locations')->sum('capacity');
@@ -147,7 +146,6 @@ class PDFReportController extends Controller
                 ->select('products.product_name', 'pickers.status', DB::raw('SUM(pickers.quantity) as total_quantity'))
                 ->groupBy('products.product_name', 'pickers.status')
                 ->orderBy('products.product_name')
-                ->where('products.user_id', $user->id)
                 ->get();
 
             // Prepare $rowspanValue array
@@ -212,7 +210,6 @@ class PDFReportController extends Controller
         foreach ($weeklyReportsData as $reportData) {
             WeeklyReport::create([
                 'company_id' => $reportData->company_id,
-                'company_name' => $reportData->company_name,
                 'week_number' => $reportData->week_number,
                 'total_inflow_quantity' => $reportData->total_inflow_quantity,
                 'total_outflow_quantity' => $reportData->total_outflow_quantity,

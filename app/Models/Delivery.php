@@ -16,5 +16,6 @@ class Delivery extends Model
     return $this->belongsToMany(Product::class, 'delivery_product')->withPivot('quantity');
 }
 
+
 }
 

@@ -416,5 +416,4 @@ document.getElementById('logout-form').submit();"
         </nav>
         <!-- /.sidebar-menu -->
     </div>
-    <!-- /.sidebar -->
 </aside>

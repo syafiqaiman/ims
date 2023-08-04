@@ -145,30 +145,22 @@ public function assignTask(Request $request)
         'return_stock_id' => 'required',
         'product_id' => 'required|array',
         'quantity' => 'required|array',
-        'status' => 'required|array',
-        'remark' => 'required|array'
     ]);
 
     $userId = $validatedData['user_id'];
     $returnStockId = $validatedData['return_stock_id'];
     $productIds = $validatedData['product_id'];
     $quantities = $validatedData['quantity'];
-    $statuses = $validatedData['status'];
-    $remarks = $validatedData['remark'];
 
-    $pickerData = [];
     foreach ($productIds as $index => $productId) {
-        $pickerData[] = [
-            'user_id' => $userId,
-            'return_stock_id' => $returnStockId,
-            'product_id' => $productId,
-            'quantity' => $quantities[$index],
-            'status' => $statuses[$index],
-            'remark' => $remarks[$index]
-        ];
+        $picker = new Picker();
+        $picker->user_id = $userId;
+        $picker->return_stock_id = $returnStockId;
+        $picker->product_id = $productId;
+        $picker->quantity = $quantities[$index];
+        $picker->status = 'Pending'; // or set the appropriate status
+        $picker->save();
     }
-
-    Picker::insert($pickerData);
 
     // Update the status in the return_stock table as "Received"
     $returnStock = ReturnStock::find($returnStockId);
@@ -179,6 +171,7 @@ public function assignTask(Request $request)
 
     return redirect()->back()->with('success', 'Task assigned successfully.');
 }
+
 
 
 

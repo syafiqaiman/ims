@@ -23,7 +23,7 @@
                     <tr>
                         <th>Delivery No.</th>
                         <th>View The Detail of Delivery Order</th>
-                        <th>Handled by</th>
+                        <th>Handled by</th> <!-- New column -->
                     </tr>
                 </thead>
                 <tbody>
@@ -35,7 +35,7 @@
                             </td>
                             <td>
                                 @php
-                                    $picker = $pickers->where('delivery_order_id', $deliveryOrder->id)->first();
+                                    $picker = $pickers->where('order_no', $deliveryOrder->id)->first();
                                     $pickerUser = $picker ? $users->where('id', $picker->user_id)->first() : null;
                                 @endphp
                                 @if($pickerUser)
@@ -68,8 +68,8 @@
                                 <tr>
                                     <th>Product</th>
                                     <th>Qty</th>
-                                    <th>Status</th>
-                                    <th>Remark</th>
+                                    {{-- <th>Status</th>
+                                    <th>Remark</th> --}}
                                 </tr>
                             </thead>
                             <tbody>
@@ -80,16 +80,39 @@
                                     <tr>
                                         <td>{{ $productData->product_name }}</td>
                                         <td>{{ $product->pivot->quantity }}</td>
-                                        <td class="@if ($product->pivot->status === 'Approved') bg-success @elseif ($product->pivot->status === 'Rejected') bg-danger @else bg-warning @endif">
+                                        {{-- <td class="@if ($product->pivot->status === 'Approved') bg-success @elseif ($product->pivot->status === 'Rejected') bg-danger @else bg-warning @endif">
                                             {{ $product->pivot->status }}
                                         </td>
-                                        <td>{{ $product->pivot->remark }}</td>
+                                        <td>{{ $product->pivot->remark }}</td> --}}
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
+                        <form id="assignTaskForm{{ $deliveryOrder->id }}" action="{{ route('delivery.assignPicker') }}" method="POST">
+                            @csrf
+                            <div class="form-group">
+                                <label for="user_id">Assign Picker:</label>
+                                <select name="user_id" class="form-control">
+                                    <option value="">Select Picker</option>
+                                    @foreach ($users as $user)
+                                        @if ($user->role == 2)
+                                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                            </div>
+                            <input type="hidden" name="delivery_id" value="{{ $deliveryOrder->id }}">
+                            @foreach ($deliveryOrder->products as $product)
+                                @php
+                                    $productData = \App\Models\Product::find($product->pivot->product_id);
+                                @endphp
+                                <input type="hidden" name="product_id[]" value="{{ $productData->id }}">
+                                <input type="hidden" name="quantity[]" value="{{ $product->pivot->quantity }}">
+                            @endforeach
+                        </form>                 
                     </div>
                     <div class="modal-footer">
+                        <button type="submit" form="assignTaskForm{{ $deliveryOrder->id }}" class="btn btn-primary">Assign Picker</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     </div>
                 </div>
@@ -101,16 +124,27 @@
     <script>
         $(document).ready(function() {
             // Initialize DataTables
-            $('#delivery-orders-table').DataTable();
+            var table = $('#delivery-orders-table').DataTable();
 
             // Search by Delivery No
             $('#search-btn').on('click', function() {
-                // Your existing search logic...
+                var searchText = $('#delivery-no-search').val().trim();
+                table.search(searchText).draw();
             });
 
             // Initialize DataTables for each status modal
             @foreach($deliveryOrdersList as $deliveryOrder)
                 $('#statusTable{{ $deliveryOrder->id }}').DataTable();
+            @endforeach
+
+            // Disable "Assign Picker" button if the delivery order is already handled
+            @foreach($deliveryOrdersList as $deliveryOrder)
+                @php
+                    $picker = $pickers->where('order_no', $deliveryOrder->id)->first();
+                @endphp
+                @if($picker)
+                    $('#assignBtn{{ $deliveryOrder->id }}').prop('disabled', true);
+                @endif
             @endforeach
         });
     </script>

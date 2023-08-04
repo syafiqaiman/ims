@@ -18,10 +18,14 @@ class SidebarController extends Controller
     }
 
     public function getCountPickerReturn()
-    {
-        $count = Picker::whereIn('status', ['Refurbish', 'Dispose'])
-            ->count();
-    
-        return $count;
-    }
+{
+    $user_id = auth()->user()->id;
+
+    $count = Picker::where('user_id', $user_id)
+        ->whereIn('status', ['Refurbish', 'Dispose'])
+        ->count();
+
+    return $count;
+}
+
 }
