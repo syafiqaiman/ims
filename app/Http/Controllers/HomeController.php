@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Order;
 use App\Models\User;
+use App\Models\ReturnStock;
 
 class HomeController extends Controller
 {
@@ -30,12 +31,28 @@ class HomeController extends Controller
     // get the authenticated user
     $user = auth()->user();
 
-    
+    //For Admin
+
     $productsCount = Product::count();
     $ordersCount = Order::count();
     $usersCount = User::count();
-    
-    return view('home', compact('productsCount', 'ordersCount', 'usersCount'));
+
+    //For Picker
+
+    $completedOrdersCount = Order::where('user_id', $user->id)->distinct('order_no')->count();
+
+
+
+    //For Customer
+
+    $userProductsCount = Product::where('user_id', $user->id)->count();
+    $completedReturnStocksCount = ReturnStock::where('user_id', $user->id)
+    ->where('receive_status', 'Received')
+    ->distinct('return_no')
+    ->count();
+
+
+    return view('home', compact('productsCount', 'ordersCount', 'usersCount','userProductsCount', 'completedOrdersCount', 'completedReturnStocksCount'));
 
 
     }

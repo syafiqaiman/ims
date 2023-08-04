@@ -68,6 +68,7 @@ class DeliveryController extends Controller
         // Create a new delivery record
         $delivery = new Delivery;
         $delivery->order_no = $orderNo;
+        $delivery->user_id = auth()->user()->id;
         $delivery->sender_name = $validatedData['sender_name'];
         $delivery->sender_address = $validatedData['sender_address'];
         $delivery->sender_postcode = $validatedData['sender_postcode'];
@@ -78,6 +79,7 @@ class DeliveryController extends Controller
         $delivery->receiver_postcode = $validatedData['receiver_postcode'];
         $delivery->receiver_state = $validatedData['receiver_state'];
         $delivery->receiver_phone = $validatedData['receiver_phone'];
+        $delivery->status = 'Pending';
         $delivery->save();
     
         // Handle the product data
@@ -162,7 +164,11 @@ class DeliveryController extends Controller
             $picker->save();
         }
     
-        // Perform any other necessary actions
+    
+         // Update the status of the delivery to Received
+         $delivery = Delivery::findOrFail($deliveryId);
+         $delivery->status = 'Received';
+         $delivery->save();
     
         return redirect()->back()->with('success', 'Order placed and products assigned successfully!');
     }

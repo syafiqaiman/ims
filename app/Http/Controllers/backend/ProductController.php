@@ -258,7 +258,6 @@ public function ProductUpdate(Request $request, $id)
     ]);
 
     $data = [
-        'user_id' => auth()->user()->id,
         'company_id' => $request->company_id,
         'product_name' => $request->product_name,
         'product_desc' => $request->product_desc,
@@ -617,7 +616,7 @@ public function adminCheckNewProductRequest()
 {
     $user_id = auth()->user()->id;
 
-    $racks = Rack::all();
+    $racks = Rack::where('occupied', '=', 0.00)->get();
 
     $newrequest = DB::table('product_request')
         ->join('companies', 'product_request.company_id', '=', 'companies.id')
