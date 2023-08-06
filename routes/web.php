@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\backend\FloorController;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
