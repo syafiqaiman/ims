@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\backend\FloorController;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -136,5 +137,7 @@ Route::get('/report-create', [ReportController::class, 'generateReport'])->name(
 Route::get('/product-report/{id}', [ProductReportController::class, 'index'])->name('product-report.index');
 
 // Weekly Report for admin
+Route::get('weekly-report', [ReportController::class, 'showWeeklyReport'])->name('showWeeklyReport');
+Route::get('generate-weekly-report', [ReportController::class, 'generateWeeklyReports'])->name('generateWeeklyReports');
 Route::get('weekly-report', [ReportController::class, 'showWeeklyReport'])->name('showWeeklyReport');
 Route::get('generate-weekly-report', [ReportController::class, 'generateWeeklyReports'])->name('generateWeeklyReports');
