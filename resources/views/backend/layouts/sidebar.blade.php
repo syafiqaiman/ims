@@ -107,7 +107,7 @@
 
                             <li class="nav-item">
                                 <a href="{{ URL::to('/weekly-report') }}" class="nav-link">
-                                    <i class="nav-icon fas fa-chart-line"></i>
+                                    <i class="nav-icon fas fa-file"></i>
                                     <p>
                                         Weekly Report
                                         <!-- <span class="right badge badge-danger">New</span> -->
