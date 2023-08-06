@@ -84,8 +84,8 @@
                             
                             <div class="small-box bg-success">
                             <div class="inner">
-                            <h3>53<sup style="font-size: 20px">%</sup></h3>
-                            <p>Bounce Rate</p>
+                            <h3>{{  $completedReturnOrdersCount }}</h3>
+                            <p>Completed Return Order Task</p>
                             </div>
                             <div class="icon">
                             <i class="ion ion-stats-bars"></i>
@@ -98,13 +98,13 @@
                             
                             <div class="small-box bg-warning">
                             <div class="inner">
-                            <h3>44</h3>
-                            <p>User Registrations</p>
+                            <h3>{{ $incomingDeliveryTask }}</h3>
+                            <p>Pending Pick and Pack Task</p>
                             </div>
                             <div class="icon">
                             <i class="ion ion-person-add"></i>
                             </div>
-                            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                            <a href="{{URL::to('/picker_task')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                             </div>
                             </div>
                             
@@ -112,13 +112,13 @@
                             
                             <div class="small-box bg-danger">
                             <div class="inner">
-                            <h3>65</h3>
-                            <p>Unique Visitors</p>
+                            <h3>{{ $incomingReturnOrderTask }}</h3>
+                            <p>Pending Return Order Task</p>
                             </div>
                             <div class="icon">
                             <i class="ion ion-pie-graph"></i>
                             </div>
-                            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                            <a href="{{URL::to('/return-order-task')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                             </div>
                             </div>
                             

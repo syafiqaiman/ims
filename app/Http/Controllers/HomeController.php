@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\User;
 use App\Models\ReturnStock;
 use App\Models\Delivery;
+use App\Models\Picker;
 
 class HomeController extends Controller
 {
@@ -41,6 +42,16 @@ class HomeController extends Controller
     //For Picker
 
     $completedOrdersCount = Order::where('user_id', $user->id)->distinct('order_no')->count();
+    $completedReturnOrdersCount = Picker::where('user_id', $user->id)
+    ->whereIn('status', ['Refurbished', 'Disposed'])
+    ->distinct('return_stock_id')
+    ->count();
+    $incomingDeliveryTask = Picker::where('user_id', $user->id)
+    ->where('status', 'Pending')
+    ->count();
+    $incomingReturnOrderTask = Picker::where('user_id', $user->id)
+    ->whereIn('status', ['Refurbish', 'Dispose'])
+    ->count();
 
 
 
@@ -56,7 +67,7 @@ class HomeController extends Controller
     ->count();
 
 
-    return view('home', compact('productsCount', 'ordersCount', 'usersCount','userProductsCount', 'completedOrdersCount', 'completedReturnStocksCount','receivedDeliveryCount'));
+    return view('home', compact('productsCount', 'ordersCount', 'usersCount','userProductsCount', 'completedOrdersCount', 'completedReturnStocksCount','receivedDeliveryCount', 'completedReturnOrdersCount', 'incomingReturnOrderTask' , 'incomingDeliveryTask'));
 
 
     }
