@@ -32,12 +32,8 @@
                             @foreach ($flooring->groupBy('location_codes') as $location => $rows)
                                 @php
                                     $totalWeight = 0; // Initialize the total weight for each floor location
+                                    $firstProduct = $rows->first(); // Get the first product in the floor location
                                 @endphp
-                                @foreach ($rows as $index => $row)
-                                    @php
-                                        $totalWeight += $row->occupied; // Sum up the weight for each product in the same floor location
-                                    @endphp
-                                @endforeach
                                 <tr>
                                     <td rowspan="{{ count($rows) }}">{{ $location }}</td>
                                     @foreach ($rows as $index => $row)
@@ -47,7 +43,7 @@
                             <td>{{ $row->company_name }}</td>
                             <td>{{ $row->product_name }}</td>
                             @if ($index === 0)
-                                <td rowspan="{{ count($rows) }}">{{ $totalWeight }}/3000</td>
+                                <td rowspan="{{ count($rows) }}">{{ $firstProduct->occupied }}/3000</td>
                             @endif
                             @if ($index > 0)
                                 </tr>

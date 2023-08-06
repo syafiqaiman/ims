@@ -31,18 +31,25 @@
                         <tbody>
                             @foreach ($racking->groupBy('location_code') as $location => $rows)
                                 @php
-                                    $rowspan = count($rows);
+                                    $totalWeight = 0; // Initialize the total weight for each floor location
+                                    $firstProduct = $rows->first(); // Get the first product in the floor location
                                 @endphp
-                                @foreach ($rows as $index => $row)
-                                    <tr>
-                                        @if ($index === 0)
-                                            <td rowspan="{{ $rowspan }}">{{ $row->location_code }}</td>
-                                        @endif
-                                        <td>{{ $row->company_name }}</td>
-                                        <td>{{ $row->product_name }}</td>
-                                        <td>{{ $row->occupied }}/200</td>
-                                    </tr>
-                                @endforeach
+                                <tr>
+                                    <td rowspan="{{ count($rows) }}">{{ $location }}</td>
+                                    @foreach ($rows as $index => $row)
+                                        @if ($index > 0)
+                                <tr>
+                            @endif
+                            <td>{{ $row->company_name }}</td>
+                            <td>{{ $row->product_name }}</td>
+                            @if ($index === 0)
+                                <td rowspan="{{ count($rows) }}">{{ $firstProduct->occupied }}/200</td>
+                            @endif
+                            @if ($index > 0)
+                                </tr>
+                            @endif
+                            @endforeach
+                            </tr>
                             @endforeach
                         </tbody>
                     </table>

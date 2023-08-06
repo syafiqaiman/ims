@@ -18,7 +18,8 @@ use App\Http\Controllers\backend\OrderController;
 use App\Http\Controllers\backend\InvoiceController;
 use App\Http\Controllers\SidebarController;
 use App\Http\Controllers\backend\ReturnStockController;
-use App\Http\Controllers\backend\PDFReportController;
+use App\Http\Controllers\backend\ReportController;
+use App\Http\Controllers\backend\ProductReportController;
 
 
 
@@ -128,11 +129,12 @@ Route::get('/invoice/{order_no}', [OrderController::class, 'show'])->name('order
 Route::get('invoice/{id}/download', [InvoiceController::class, 'download'])->name('invoice.download');
 
 // PDF Report Monthly
-Route::get('/report', [PDFReportController::class, 'index'])->name('report.index');
+Route::get('/report', [ReportController::class, 'showReport'])->name('showReport');
+Route::get('/report-create', [ReportController::class, 'generateReport'])->name('generateReport');
 
 // Product Report Monthly
 Route::get('/product-report/{id}', [ProductReportController::class, 'index'])->name('product-report.index');
 
 // Weekly Report for admin
-Route::get('weekly-report', [PDFReportController::class, 'showWeeklyReport'])->name('showWeeklyReport');
-Route::get('generate-weekly-report', [PDFReportController::class, 'generateWeeklyReports'])->name('generateWeeklyReports');
+Route::get('weekly-report', [ReportController::class, 'showWeeklyReport'])->name('showWeeklyReport');
+Route::get('generate-weekly-report', [ReportController::class, 'generateWeeklyReports'])->name('generateWeeklyReports');
