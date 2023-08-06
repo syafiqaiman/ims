@@ -33,7 +33,7 @@
             <tbody>
                 @foreach ($weeklyReports as $report)
                     <tr>
-                        <td>{{ $report->company_id}}</td>
+                        <td>{{ $report->company_name}}</td>
                         <td>{{ $report->week_number }}</td>
                         <td>{{ $report->total_inflow_quantity }}</td>
                         <td>{{ $report->total_outflow_quantity }}</td>
