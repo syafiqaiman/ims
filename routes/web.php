@@ -69,6 +69,7 @@ Route::get('/delivery_form', [DeliveryController::class, 'deliveryFormCust'])->n
 Route::post('/delivery/form_sent', [DeliveryController::class, 'storeDelivery'])->name('delivery.submit');
 Route::get('/delivery_order_list', [DeliveryController::class, 'deliveryOrderList'])->name('deliveryOrderList');
 Route::post('/assign-task-do', [DeliveryController::class, 'assignTaskDO'])->name('delivery.assignPicker');
+
 //Return Stock
 Route::get('return-stock-form', [ReturnStockController::class, 'CustReturnStockForm'])->name('returnstockform');
 Route::post('return-stock-submit', [ReturnStockController::class, 'storeReturnStock'])->name('return-stock.store');
@@ -106,7 +107,7 @@ Route::post('/refurbish-product-task/{pickerId}', [PickerController::class, 'ref
 
 
 // Cart
-Route::get('cart_index', [CartController::class, 'ItemList'])->name('quantity.index');
+Route::get('cart_index', [CartController::class, 'ItemList'])->name('cartquantity.index');
 Route::get('/cart_view', [CartController::class, 'ItemList'])->name('quantitycart');
 Route::post('/cart/add/{id}', [CartController::class, 'addToCart'])->name('cart.add');
 Route::post('/cart/remove/{id}', [CartController::class, 'cartRemove'])->name('cart.remove');
