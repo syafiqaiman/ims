@@ -139,5 +139,3 @@ Route::get('/product-report/{id}', [ProductReportController::class, 'index'])->n
 // Weekly Report for admin
 Route::get('weekly-report', [ReportController::class, 'showWeeklyReport'])->name('showWeeklyReport');
 Route::get('generate-weekly-report', [ReportController::class, 'generateWeeklyReports'])->name('generateWeeklyReports');
-Route::get('weekly-report', [ReportController::class, 'showWeeklyReport'])->name('showWeeklyReport');
-Route::get('generate-weekly-report', [ReportController::class, 'generateWeeklyReports'])->name('generateWeeklyReports');

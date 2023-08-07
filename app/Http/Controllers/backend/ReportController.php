@@ -339,6 +339,7 @@ class ReportController extends Controller
         foreach ($weeklyReportsData as $reportData) {
             WeeklyReport::create([
                 'company_id' => $reportData->company_id,
+                'company_name' => $reportData->company_name,
                 'week_number' => $reportData->week_number,
                 'total_inflow_quantity' => $reportData->total_inflow_quantity,
                 'total_outflow_quantity' => $reportData->total_outflow_quantity,

@@ -13,7 +13,9 @@ class WeeklyReport extends Model
 
     protected $fillable = [
         'company_id',
-
+        'company_name',
+        'startDate',
+        'endDate',
         'week_number',
         'total_inflow_quantity',
         'total_outflow_quantity',
