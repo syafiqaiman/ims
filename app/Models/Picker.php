@@ -20,9 +20,28 @@ class Picker extends Model
     }
 
     public function user()
-{
-    return $this->belongsTo(User::class);
-}
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function rack()
+    {
+        return $this->belongsTo(Rack::class);
+    }
+
+    public function floor()
+    {
+        return $this->belongsTo(Floor::class);
+    }
+
+    protected $fillable = [
+        'user_id',
+        'product_id',
+        'quantity',
+        'status',
+        'order_no',
+        'floor_id',
+        'rack_id',
+    ];
 
 }
-

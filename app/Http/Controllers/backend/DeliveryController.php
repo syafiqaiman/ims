@@ -107,7 +107,7 @@ class DeliveryController extends Controller
         return view('backend.delivery.delivery_order_receive', compact('deliveryOrdersList', 'users', 'pickers'));
     }
 
-    public function assignTaskDO(Request $request)
+        public function assignTaskDO(Request $request)   // Default working code - not including floor_id
     {
         $validatedData = $request->validate([
             'user_id' => 'required',
@@ -151,9 +151,6 @@ class DeliveryController extends Controller
             $rack = Rack::where('id', $product->rack_id)->firstOrFail();
             $rack->occupied = max(0, $rack->occupied - $total_weight);
             $rack->save();
-            $floors = Floor::where('id', $product->floor_id)->firstOrFail();
-            $floors->occupied = max(0, $floors->occupied - $total_weight);
-            $floors->save();
 
             $weight = Weight::where('product_id', $product->id)->firstOrFail();
             $weight->weight_of_product -= $total_weight;
@@ -163,23 +160,18 @@ class DeliveryController extends Controller
             $picker->user_id = $userId;
             $picker->product_id = $id;
             $picker->rack_id = $rack->id; // Adjust this based on your structure
-            $picker->floor_id = $floors->id; // Adjust this based on your structure
             $picker->quantity = $item['quantity'];
             $picker->status = 'Pending';
             $picker->order_no = $deliveryId;
             $picker->save();
         }
 
-
-         // Update the status of the delivery to Received
-         $delivery = Delivery::findOrFail($deliveryId);
-         $delivery->status = 'Received';
-         $delivery->save();
+        // Perform any other necessary actions
 
         return redirect()->back()->with('success', 'Order placed and products assigned successfully!');
     }
 
-    // public function assignTaskDO(Request $request)
+    // public function assignTaskDO(Request $request)      // To be implemented in the future
     // {
     //     //return response()->json($request, 200);
 
@@ -223,37 +215,51 @@ class DeliveryController extends Controller
 
     //         $total_weight = $product->weight_per_item * $quantity_deducted;
 
+    //         // Find the rack_id of the product
     //         $rack = Rack::where('id', $product->rack_id)->firstOrFail();
 
+    //         // Find the floor_id of the product
     //         $floor = Floor::where('id', $product->floor_id)->firstOrFail();
 
     //         if ($rack != null) {
     //             $rack->occupied = max(0, $rack->occupied - $total_weight);
     //             $rack->save();
+                
+    //             $weight = Weight::where('product_id', $product->id)->firstOrFail();
+    //             $weight->weight_of_product -= $total_weight;
+    //             $weight->save();
 
+    //             $picker = new Picker();
+    //             $picker->user_id = $userId;
+    //             $picker->product_id = $id;
+    //             $picker->rack_id = $rack->id;
+    //             $picker->quantity = $item['quantity'];
+    //             $picker->status = 'Pending';
+    //             $picker->order_no = $deliveryId;
+    //             $picker->save();
+                
     //         } else if ($floor != null) {
+    //             $floor->occupied = max(0, $floor->occupied - $total_weight);
+    //             $floor->save();
+                
+    //             $weight = Weight::where('product_id', $product->id)->firstOrFail();
+    //             $weight->weight_of_product -= $total_weight;
+    //             $weight->save();
+       
+    //             $picker = new Picker();
+    //             $picker->user_id = $userId;
+    //             $picker->product_id = $id;
+    //             $picker->floor_id = $floor->id;
+    //             $picker->quantity = $item['quantity'];
+    //             $picker->status = 'Pending';
+    //             $picker->order_no = $deliveryId;
+    //             $picker->save();
 
     //         } else {
     //             return redirect()->back()->with('error', 'Product rack/floor location is invalid.');
     //         }
 
-    //         $weight = Weight::where('product_id', $product->id)->firstOrFail();
-    //         $weight->weight_of_product -= $total_weight;
-    //         $weight->save();
 
-    //         $picker = new Picker();
-    //         $picker->user_id = $userId;
-    //         $picker->product_id = $id;
-    //         $picker->rack_id = $rack->id ?? null; // Adjust this based on your structure
-    //         $picker->floor_id = $floor->id ?? null; // Adjust this based on your structure
-    //         // $picker->rack_id = $product->rack_id ?? null; // Adjust this based on your structure
-    //         // $picker->floor_id = $product->floor_id ?? null; // Adjust this based on your structure
-    //         // $picker->rack_id = $rack ?? $floor->firstWhere('product_id', $id)->rack_id;
-    //         // $picker->floor_id = $floor ?? $rack->firstWhere('product_id', $id)->floor_id;
-    //         $picker->quantity = $item['quantity'];
-    //         $picker->status = 'Pending';
-    //         $picker->order_no = $deliveryId;
-    //         $picker->save();
     //     }
 
     //     //Update the status of the delivery to Received
@@ -265,6 +271,4 @@ class DeliveryController extends Controller
 
     //     return redirect()->back()->with('success', 'Order placed and products assigned successfully!');
     // }
-
-
 }
