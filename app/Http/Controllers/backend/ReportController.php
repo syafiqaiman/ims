@@ -290,9 +290,13 @@ class ReportController extends Controller
 
     public function showWeeklyReport()
     {
+        $companies = DB::table('companies')
+            ->select('company_name', 'id')
+            ->get();
+
         $weeklyReports = DB::table('weekly_reports')->get(); // Retrieve the weekly report data from the database
 
-        return view('backend.report.Weekly-Report', ['weeklyReports' => $weeklyReports]);
+        return view('backend.report.Weekly-Report', ['weeklyReports' => $weeklyReports], compact('companies'));
     }
 
     public function generateWeeklyReports(Request $request) // This function generates weekly report based on the submitted date from the form
@@ -332,24 +336,31 @@ class ReportController extends Controller
                 'q.remaining_quantity as remaining_quantity'
             )
             ->whereBetween('o.created_at', [$startDate, $endDate])
+            ->where('o.company_id', $request->company_id)
             ->groupBy('o.company_id', 'c.company_name', 'q.remaining_quantity');
 
-        // Execute the query and insert data into the weekly_reports table
-        $weeklyReportsData = $query->get();
-        foreach ($weeklyReportsData as $reportData) {
-            WeeklyReport::create([
-                'company_id' => $reportData->company_id,
-                'company_name' => $reportData->company_name,
-                'week_number' => $reportData->week_number,
-                'total_inflow_quantity' => $reportData->total_inflow_quantity,
-                'total_outflow_quantity' => $reportData->total_outflow_quantity,
-                'net_change_quantity' => $reportData->net_change_quantity,
-                'remaining_quantity' => $reportData->remaining_quantity,
-            ]);
+        if ($query->get('total_inflow_quantity') === null) {
+            return redirect()->route('showWeeklyReport')->with('error', 'There is no data to be shown in this week.');
+        } else 
+        {
+            // Execute the query and insert data into the weekly_reports table
+            $weeklyReportsData = $query->get();
+            foreach ($weeklyReportsData as $reportData) {
+                WeeklyReport::create([
+                    'company_id' => $reportData->company_id,
+                    'company_name' => $reportData->company_name,
+                    'week_number' => $reportData->week_number,
+                    'total_inflow_quantity' => $reportData->total_inflow_quantity,
+                    'total_outflow_quantity' => $reportData->total_outflow_quantity,
+                    'net_change_quantity' => $reportData->net_change_quantity,
+                    'remaining_quantity' => $reportData->remaining_quantity,
+                ]);
+            }
+    
+            // Optionally, you can return a response to indicate the success of the operation
+            return redirect()->route('showWeeklyReport')->with('success', 'Weekly reports generated successfully.');
         }
 
-        // Optionally, you can return a response to indicate the success of the operation
-        return redirect()->route('showWeeklyReport')->with('success', 'Weekly reports generated successfully.');
     }
 
 }

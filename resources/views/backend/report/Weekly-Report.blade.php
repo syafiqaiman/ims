@@ -16,6 +16,16 @@
                 <input type="date" name="end_date" id="end_date" class="form-control">
             </div>
 
+            <div class="form-group">
+                <label for="company_id">Company:</label>
+                <select name="company_id" id="company_id" class="form-control">
+                    <option value="">Select Company</option>
+                    @foreach ($companies as $company)
+                        <option value="{{ $company->id }}">{{ $company->company_name }}</option>
+                    @endforeach
+                </select>
+            </div>
+
             <button type="submit" class="btn btn-primary">Generate</button>
         </form>
 
