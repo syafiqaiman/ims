@@ -141,39 +141,93 @@ class ProductController extends Controller
             // Calculate the remaining capacity
             $remaining_capacity = $rack_capacity - $occupied_weight;
 
-        } else if ($floor_id != null) {
-            // Get the floor capacity and occupied weight
-            $floor_data = DB::table('floor_locations')
-                ->where('id', $floor_id)
-                ->select('capacity', 'occupied')
-                ->first();
+                } else if ($floor_id === null) {
+                    // Check if the total weight exceeds the limit of 200
+                    if ($total_weight > 200) {
+                        return redirect()->back()->with('error', 'Total weight exceeds limit of 200. Please adjust your inputs.')->withInput();
+                    }
 
-            $floor_capacity = $floor_data->capacity;
-            $occupied_weight = $floor_data->occupied;
+                    // Get the rack capacity, occupied weight, floor capacity, and occupied weight
+                    $rack_data = DB::table('rack_locations')
+                        ->where('id', $rack_id)
+                        ->select('capacity', 'occupied')
+                        ->first();
+                    $floor_data = DB::table('floor_locations')
+                        ->where('id', $floor_id)
+                        ->select('capacity', 'occupied')
+                        ->first();
 
-            // Calculate the remaining capacity
-            $remaining_capacity = $floor_capacity - $occupied_weight;
-        }
+                    $floor_capacity = $floor_data->capacity;
+                    $occupied_weight = $floor_data->occupied;
 
-        $validatedData = $request->validate([
-            'company_id' => 'required',
-            'product_name' => 'required|string|max:255',
-            'product_desc' => 'required|string',
-            'weight_per_item' => 'required|numeric',
-            'weight_per_carton' => 'required|numeric',
-            'product_dimensions' => 'required|string|max:255',
-            'date_to_be_stored' => 'required|date',
-            'carton_quantity' => 'required|integer',
-            'product_price' => 'required|numeric',
-            'item_per_carton' => 'required|integer',
-            'product_image' => 'required|image|max:2048',
-            'rack_id' => 'required_without:floor_id',
-            'floor_id' => 'required_without:rack_id'
-        ]);
+                    // Calculate the remaining capacity for floor
+                    $remaining_capacity_floor = $floor_capacity - $occupied_weight;
 
-        $company = DB::table('companies')
-            ->where('id', $request->company_id)
-            ->first();
+                } else if ($floor_id === null) {
+                    // Check if the total weight exceeds the limit of 200
+                    if ($total_weight > 200) {
+                        return redirect()->back()->with('error', 'Total weight exceeds limit of 200. Please adjust your inputs.')->withInput();
+                    }
+
+                    // Get the rack capacity, occupied weight, floor capacity, and occupied weight
+                    $rack_data = DB::table('rack_locations')
+                        ->where('id', $rack_id)
+                        ->select('capacity', 'occupied')
+                        ->first();
+
+                    $rack_capacity = $rack_data->capacity;
+                    $occupied_weight = $rack_data->occupied;
+                    $rack_capacity = $rack_data->capacity;
+                    $occupied_weight = $rack_data->occupied;
+
+                    // Calculate the remaining capacity for rack 
+                    $remaining_capacity_rack = $rack_capacity - $occupied_weight;
+                } else {
+                    return redirect()->back()->with('error', 'Please select at least one storage location.')->withInput();
+                }
+                // Calculate the remaining capacity for rack 
+                $remaining_capacity_rack = $rack_capacity - $occupied_weight;
+
+
+                $validatedData = $request->validate([
+                    'company_id' => 'required',
+                    'product_name' => 'required|string|max:255',
+                    'product_desc' => 'required|string',
+                    'weight_per_item' => 'required|numeric',
+                    'weight_per_carton' => 'required|numeric',
+                    'product_dimensions' => 'required|string|max:255',
+                    'date_to_be_stored' => 'required|date',
+                    'carton_quantity' => 'required|integer',
+                    'product_price' => 'required|numeric',
+                    'item_per_carton' => 'required|integer',
+                    //'product_image' => 'required|image|max:2048'      // Commented out for ease of testing
+                    'rack_id' => 'required_without:floor_id',
+                    // Only one of rack_id or floor_id is required
+                    'floor_id' => 'required_without:rack_id', // Only one of floor_id or rack_id is required
+                ]);
+                $validatedData = $request->validate([
+                    'company_id' => 'required',
+                    'product_name' => 'required|string|max:255',
+                    'product_desc' => 'required|string',
+                    'weight_per_item' => 'required|numeric',
+                    'weight_per_carton' => 'required|numeric',
+                    'product_dimensions' => 'required|string|max:255',
+                    'date_to_be_stored' => 'required|date',
+                    'carton_quantity' => 'required|integer',
+                    'product_price' => 'required|numeric',
+                    'item_per_carton' => 'required|integer',
+                    //'product_image' => 'required|image|max:2048'      // Commented out for ease of testing
+                    'rack_id' => 'required_without:floor_id',
+                    // Only one of rack_id or floor_id is required
+                    'floor_id' => 'required_without:rack_id', // Only one of floor_id or rack_id is required
+                ]);
+
+                $company = DB::table('companies')
+                    ->where('id', $request->company_id)
+                    ->first();
+                $company = DB::table('companies')
+                    ->where('id', $request->company_id)
+                    ->first();
 
         $data = [
             'user_id' => $company->user_id,

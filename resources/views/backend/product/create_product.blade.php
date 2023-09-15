@@ -130,17 +130,7 @@
   @enderror
   </div>
 
-  <div class="form-group">
-    <label for="exampleInputEmail1">Item Per Carton</label>
-    <input type="number" name="item_per_carton"  class="form-control @error('title') is-invalid @enderror"
-     id="exampleInputEmail1" placeholder="Enter Quantity" value="{{ old('item_per_carton') }}">
-    
-    @error('slug')
-    <span class="invalid-feedback" role="alert">
-    <strong>{{ $message }}</strong>
-    </span>
-    @enderror
-    </div>
+
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Item Per Carton</label>
                                 <input type="number" name="item_per_carton"
