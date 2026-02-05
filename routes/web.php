@@ -13,7 +13,7 @@ use App\Http\Controllers\backend\PickerController;
 use App\Http\Controllers\backend\CartController;
 use App\Http\Controllers\backend\CompanyController;
 use App\Http\Controllers\backend\RackController;
-use App\Http\Controllers\backend\FloorControllerController;
+use App\Http\Controllers\backend\FloorController;
 use App\Http\Controllers\backend\OrderController;
 use App\Http\Controllers\backend\InvoiceController;
 use App\Http\Controllers\SidebarController;
