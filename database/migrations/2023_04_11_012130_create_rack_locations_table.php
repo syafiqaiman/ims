@@ -11,8 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('weights', function (Blueprint $table) {
-            $table->unsignedBigInteger('floor_id')->nullable();
+        Schema::create('rack_locations', function (Blueprint $table) {
+            $table->id();
+            $table->string('location_code');
+            $table->integer('capacity')->default(0);
+            $table->integer('occupied')->default(0);
+            $table->timestamps();
         });
     }
 
@@ -21,8 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('weights', function (Blueprint $table) {
-            $table->dropColumn('floor_id');
-        });
+        Schema::dropIfExists('rack_locations');
     }
 };

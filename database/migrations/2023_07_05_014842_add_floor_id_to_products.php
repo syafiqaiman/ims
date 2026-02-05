@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::table('products', function (Blueprint $table) {
             $table->unsignedBigInteger('floor_id')->nullable();
-            $table->foreign('floor_id')->references('id')->on('floor_locations');
         });
     }
 
@@ -23,7 +22,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->dropForeign(['floor_id']);
             $table->dropColumn('floor_id');
         });
     }
